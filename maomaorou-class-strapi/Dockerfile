@@ -1,4 +1,4 @@
-FROM node:18 as dev
+FROM node:18.9.0 as dev
 
 ARG NODE_ENV=development
 
