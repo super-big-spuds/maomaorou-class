@@ -25,6 +25,9 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./maomaorou-class-strapi:/app
+      - /app/node_modules
+      - /app/dist
+      - /app/.strapi
     env_file:
       - ./maomaorou-class-strapi/.env
     environment:
