@@ -1,4 +1,4 @@
-version: '1.0'
+version: '2.4'
 services:
   web:
     build:
@@ -38,6 +38,7 @@ services:
       - database
     networks:
       maomaorou_net:
+    command: "yarn develop -- --watch-admin"
 
   database:
     image: mysql:5.7
