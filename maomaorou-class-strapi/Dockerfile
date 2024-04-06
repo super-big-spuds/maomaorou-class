@@ -10,4 +10,6 @@ COPY ./ ./
 
 RUN yarn install
 
+RUN yarn cs import
+
 EXPOSE 1337
