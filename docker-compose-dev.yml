@@ -38,7 +38,7 @@ services:
       - database
     networks:
       maomaorou_net:
-    command: "yarn develop -- --watch-admin"
+    command: "yarn develop --watch-admin"
 
   database:
     image: mysql:5.7
