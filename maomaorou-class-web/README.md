@@ -2,6 +2,12 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+Compile the graphql schema:
+
+```bash
+npm run compile
+```
+
 First, run the development server:
 
 ```bash

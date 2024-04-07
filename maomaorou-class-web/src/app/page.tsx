@@ -1,6 +1,23 @@
 import Image from "next/image";
+import { gql } from "../__generated__/gql";
+import { createApolloSSRClient } from "@/lib/apollo-client";
 
-export default function Home() {
+const QUERY = gql(`
+  query GetCourse {
+    courses {
+      data {
+        id
+      }
+    }
+  }
+`);
+
+export default async function Home() {
+  const { data } = await createApolloSSRClient().query({
+    query: QUERY,
+  });
+  console.log(data);
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
