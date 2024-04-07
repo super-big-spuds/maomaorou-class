@@ -4,6 +4,24 @@
   "type": "public",
   "permissions": [
     {
+      "action": "api::chapter.chapter.find"
+    },
+    {
+      "action": "api::chapter.chapter.findOne"
+    },
+    {
+      "action": "api::course.course.find"
+    },
+    {
+      "action": "api::course.course.findOne"
+    },
+    {
+      "action": "api::lesson.lesson.find"
+    },
+    {
+      "action": "api::lesson.lesson.findOne"
+    },
+    {
       "action": "plugin::users-permissions.auth.callback"
     },
     {
