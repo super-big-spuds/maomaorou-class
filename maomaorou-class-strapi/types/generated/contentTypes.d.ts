@@ -798,7 +798,8 @@ export interface ApiChapterChapter extends Schema.CollectionType {
   info: {
     singularName: 'chapter';
     pluralName: 'chapters';
-    displayName: 'Chapter';
+    displayName: '\u7AE0\u7BC0';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -841,7 +842,8 @@ export interface ApiCourseCourse extends Schema.CollectionType {
   info: {
     singularName: 'course';
     pluralName: 'courses';
-    displayName: 'Course';
+    displayName: '\u8AB2\u7A0B';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -886,7 +888,7 @@ export interface ApiLessonLesson extends Schema.CollectionType {
   info: {
     singularName: 'lesson';
     pluralName: 'lessons';
-    displayName: 'Lesson';
+    displayName: '\u7AE0\u7BC0\u55AE\u5143';
     description: '';
   };
   options: {
@@ -933,7 +935,7 @@ export interface ApiOrderOrder extends Schema.CollectionType {
   info: {
     singularName: 'order';
     pluralName: 'orders';
-    displayName: 'Order';
+    displayName: '\u8A02\u55AE';
     description: '';
   };
   options: {
@@ -1021,7 +1023,8 @@ export interface ApiPaymentPayment extends Schema.CollectionType {
   info: {
     singularName: 'payment';
     pluralName: 'payments';
-    displayName: 'Payment';
+    displayName: '\u4ED8\u6B3E';
+    description: '';
   };
   options: {
     draftAndPublish: false;

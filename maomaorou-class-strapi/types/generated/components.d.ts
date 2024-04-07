@@ -4,7 +4,8 @@ export interface LessonContentTextContent extends Schema.Component {
   collectionName: 'components_lesson_content_text_contents';
   info: {
     displayName: 'TextContent';
-    icon: 'apps';
+    icon: 'filter';
+    description: '';
   };
   attributes: {
     richText: Attribute.Blocks & Attribute.Required;
