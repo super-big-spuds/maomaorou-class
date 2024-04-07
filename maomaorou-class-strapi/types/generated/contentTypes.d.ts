@@ -771,6 +771,11 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'manyToOne',
       'plugin::users-permissions.role'
     >;
+    orders: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToMany',
+      'api::order.order'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -781,6 +786,271 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'plugin::users-permissions.user',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiChapterChapter extends Schema.CollectionType {
+  collectionName: 'chapters';
+  info: {
+    singularName: 'chapter';
+    pluralName: 'chapters';
+    displayName: 'Chapter';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.String &
+      Attribute.Required &
+      Attribute.DefaultTo<'\u9810\u8A2D\u7AE0\u7BC0\u540D\u7A31'>;
+    course: Attribute.Relation<
+      'api::chapter.chapter',
+      'manyToOne',
+      'api::course.course'
+    >;
+    sequence: Attribute.Integer & Attribute.Required;
+    lessons: Attribute.Relation<
+      'api::chapter.chapter',
+      'oneToMany',
+      'api::lesson.lesson'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::chapter.chapter',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::chapter.chapter',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiCourseCourse extends Schema.CollectionType {
+  collectionName: 'courses';
+  info: {
+    singularName: 'course';
+    pluralName: 'courses';
+    displayName: 'Course';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    image: Attribute.Media & Attribute.Required;
+    description: Attribute.Text &
+      Attribute.Required &
+      Attribute.DefaultTo<'\u9810\u8A2D\u8AB2\u7A0B\u4ECB\u7D39'>;
+    goal: Attribute.Text &
+      Attribute.Required &
+      Attribute.DefaultTo<'\u9810\u8A2D\u8AB2\u7A0B\u76EE\u6A19'>;
+    price: Attribute.Integer & Attribute.Required & Attribute.DefaultTo<100>;
+    durationDay: Attribute.Integer &
+      Attribute.Required &
+      Attribute.DefaultTo<30>;
+    chapters: Attribute.Relation<
+      'api::course.course',
+      'oneToMany',
+      'api::chapter.chapter'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::course.course',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::course.course',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiLessonLesson extends Schema.CollectionType {
+  collectionName: 'lessons';
+  info: {
+    singularName: 'lesson';
+    pluralName: 'lessons';
+    displayName: 'Lesson';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    chapter: Attribute.Relation<
+      'api::lesson.lesson',
+      'manyToOne',
+      'api::chapter.chapter'
+    >;
+    sequence: Attribute.Integer & Attribute.Required;
+    content: Attribute.DynamicZone<
+      ['lesson-content.text-content', 'lesson-content.video-content']
+    > &
+      Attribute.Required &
+      Attribute.SetMinMax<
+        {
+          min: 1;
+          max: 1;
+        },
+        number
+      >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::lesson.lesson',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::lesson.lesson',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiOrderOrder extends Schema.CollectionType {
+  collectionName: 'orders';
+  info: {
+    singularName: 'order';
+    pluralName: 'orders';
+    displayName: 'Order';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    status: Attribute.Enumeration<['pending', 'success', 'cancelled']> &
+      Attribute.Required &
+      Attribute.DefaultTo<'pending'>;
+    user: Attribute.Relation<
+      'api::order.order',
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    order_courses: Attribute.Relation<
+      'api::order.order',
+      'oneToMany',
+      'api::order-course.order-course'
+    >;
+    payments: Attribute.Relation<
+      'api::order.order',
+      'oneToMany',
+      'api::payment.payment'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::order.order',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::order.order',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiOrderCourseOrderCourse extends Schema.CollectionType {
+  collectionName: 'order_courses';
+  info: {
+    singularName: 'order-course';
+    pluralName: 'order-courses';
+    displayName: 'OrderCourse';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    course: Attribute.Relation<
+      'api::order-course.order-course',
+      'oneToOne',
+      'api::course.course'
+    >;
+    order: Attribute.Relation<
+      'api::order-course.order-course',
+      'manyToOne',
+      'api::order.order'
+    >;
+    price: Attribute.Integer & Attribute.Required;
+    expiredAt: Attribute.Date & Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::order-course.order-course',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::order-course.order-course',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiPaymentPayment extends Schema.CollectionType {
+  collectionName: 'payments';
+  info: {
+    singularName: 'payment';
+    pluralName: 'payments';
+    displayName: 'Payment';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    order: Attribute.Relation<
+      'api::payment.payment',
+      'manyToOne',
+      'api::order.order'
+    >;
+    transactionService: Attribute.Enumeration<['newebpay']> &
+      Attribute.Required &
+      Attribute.DefaultTo<'newebpay'>;
+    transactionId: Attribute.String & Attribute.Required & Attribute.Unique;
+    status: Attribute.Enumeration<
+      ['pending', 'success', 'failed', 'cancelled']
+    > &
+      Attribute.Required &
+      Attribute.DefaultTo<'pending'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::payment.payment',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::payment.payment',
       'oneToOne',
       'admin::user'
     > &
@@ -806,6 +1076,12 @@ declare module '@strapi/types' {
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission;
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
+      'api::chapter.chapter': ApiChapterChapter;
+      'api::course.course': ApiCourseCourse;
+      'api::lesson.lesson': ApiLessonLesson;
+      'api::order.order': ApiOrderOrder;
+      'api::order-course.order-course': ApiOrderCourseOrderCourse;
+      'api::payment.payment': ApiPaymentPayment;
     }
   }
 }

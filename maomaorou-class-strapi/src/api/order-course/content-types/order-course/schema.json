@@ -1,0 +1,35 @@
+{
+  "kind": "collectionType",
+  "collectionName": "order_courses",
+  "info": {
+    "singularName": "order-course",
+    "pluralName": "order-courses",
+    "displayName": "OrderCourse",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "course": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::course.course"
+    },
+    "order": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::order.order",
+      "inversedBy": "order_courses"
+    },
+    "price": {
+      "type": "integer",
+      "required": true
+    },
+    "expiredAt": {
+      "type": "date",
+      "required": true
+    }
+  }
+}

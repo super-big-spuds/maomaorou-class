@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "lessons",
+  "info": {
+    "singularName": "lesson",
+    "pluralName": "lessons",
+    "displayName": "Lesson",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "chapter": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::chapter.chapter",
+      "inversedBy": "lessons"
+    },
+    "sequence": {
+      "type": "integer",
+      "required": true
+    },
+    "content": {
+      "type": "dynamiczone",
+      "components": [
+        "lesson-content.text-content",
+        "lesson-content.video-content"
+      ],
+      "max": 1,
+      "min": 1,
+      "required": true
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "payments",
+  "info": {
+    "singularName": "payment",
+    "pluralName": "payments",
+    "displayName": "Payment"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "order": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::order.order",
+      "inversedBy": "payments"
+    },
+    "transactionService": {
+      "type": "enumeration",
+      "enum": [
+        "newebpay"
+      ],
+      "default": "newebpay",
+      "required": true
+    },
+    "transactionId": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "pending",
+        "success",
+        "failed",
+        "cancelled"
+      ],
+      "default": "pending",
+      "required": true
+    }
+  }
+}

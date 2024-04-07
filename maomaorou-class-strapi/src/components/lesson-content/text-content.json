@@ -1,0 +1,14 @@
+{
+  "collectionName": "components_lesson_content_text_contents",
+  "info": {
+    "displayName": "TextContent",
+    "icon": "apps"
+  },
+  "options": {},
+  "attributes": {
+    "richText": {
+      "type": "blocks",
+      "required": true
+    }
+  }
+}

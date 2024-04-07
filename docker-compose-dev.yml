@@ -38,12 +38,11 @@ services:
       - database
     networks:
       maomaorou_net:
-    command: bash -c "yarn cs import && yarn develop --watch-admin"
+    command: bash -c "yarn cs import -y && yarn develop --watch-admin"
 
   database:
     image: mysql:5.7
     platform: linux/amd64
-    restart: always
     networks:
       maomaorou_net:
     ports:
