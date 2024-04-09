@@ -1,8 +1,8 @@
-import { PUBLIC_BACKEND_URL } from "@/lib/env";
+import { LOCAL_BACKEND_URL } from "./src/lib/env";
 import { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
-  schema: `${PUBLIC_BACKEND_URL}/graphql`,
+  schema: `${LOCAL_BACKEND_URL}/graphql`,
   // this assumes that all your source files are in a top-level `src/` directory - you might need to adjust this to your file structure
   documents: ["src/**/*.{ts,tsx}"],
   generates: {
