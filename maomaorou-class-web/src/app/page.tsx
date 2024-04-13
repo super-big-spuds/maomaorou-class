@@ -2,7 +2,6 @@ import Image from "next/image";
 import { gql } from "@/__generated__/gql";
 import { createApolloSSRClient } from "@/lib/apollo-client";
 import Link from "next/link";
-import { getLocalImageURL } from "@/lib/utils";
 
 const QUERY = gql(`
   query GetMainPageQueryData {
@@ -49,10 +48,10 @@ export default async function Home() {
       {/* Banner */}
       <Image
         className="aspect-[4/1] w-full"
-        src={getLocalImageURL(
+        src={
           data.decorationSetting?.data?.attributes?.landingPageBackgroundImage
             .data?.attributes?.url || ""
-        )}
+        }
         alt="MaoMaoRou Background Image"
         width={500}
         height={500}
@@ -69,9 +68,7 @@ export default async function Home() {
               className="w-full aspect-[1/1] hover:-translate-y-[40px] opacity-75 hover:opacity-100 transition-all duration-700"
             >
               <Image
-                src={getLocalImageURL(
-                  course.attributes?.image?.data?.attributes?.url || ""
-                )}
+                src={course.attributes?.image?.data?.attributes?.url || ""}
                 alt={course.attributes?.title || ""}
                 width={384}
                 height={384}

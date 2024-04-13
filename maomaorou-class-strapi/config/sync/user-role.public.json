@@ -16,6 +16,9 @@
       "action": "api::course.course.findOne"
     },
     {
+      "action": "api::decoration-setting.decoration-setting.find"
+    },
+    {
       "action": "api::lesson.lesson.find"
     },
     {

@@ -4,8 +4,3 @@ import { twMerge } from "tailwind-merge";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
-
-export function getLocalImageURL(url: string) {
-  const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL;
-  return `${backendURL}${url}`;
-}
