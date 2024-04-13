@@ -1,8 +1,10 @@
-import { LOCAL_BACKEND_URL } from "./src/lib/env";
 import { CodegenConfig } from "@graphql-codegen/cli";
+import { loadEnvConfig } from "@next/env";
+
+loadEnvConfig(process.cwd());
 
 const config: CodegenConfig = {
-  schema: `${"http://localhost:1338"}/graphql`,
+  schema: `${process.env.BACKEND_URL}/graphql`,
   // this assumes that all your source files are in a top-level `src/` directory - you might need to adjust this to your file structure
   documents: ["src/**/*.{ts,tsx}"],
   generates: {
