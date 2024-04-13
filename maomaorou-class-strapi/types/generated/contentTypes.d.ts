@@ -865,6 +865,9 @@ export interface ApiCourseCourse extends Schema.CollectionType {
       'oneToMany',
       'api::chapter.chapter'
     >;
+    title: Attribute.String &
+      Attribute.Required &
+      Attribute.DefaultTo<'\u8AB2\u7A0B\u540D\u7A31'>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -876,6 +879,37 @@ export interface ApiCourseCourse extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::course.course',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiDecorationSettingDecorationSetting
+  extends Schema.SingleType {
+  collectionName: 'decoration_settings';
+  info: {
+    singularName: 'decoration-setting';
+    pluralName: 'decoration-settings';
+    displayName: '\u88DD\u98FE\u8A2D\u5B9A';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    landingPageBackgroundImage: Attribute.Media & Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::decoration-setting.decoration-setting',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::decoration-setting.decoration-setting',
       'oneToOne',
       'admin::user'
     > &
@@ -1081,6 +1115,7 @@ declare module '@strapi/types' {
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'api::chapter.chapter': ApiChapterChapter;
       'api::course.course': ApiCourseCourse;
+      'api::decoration-setting.decoration-setting': ApiDecorationSettingDecorationSetting;
       'api::lesson.lesson': ApiLessonLesson;
       'api::order.order': ApiOrderOrder;
       'api::order-course.order-course': ApiOrderCourseOrderCourse;

@@ -45,6 +45,11 @@
       "relation": "oneToMany",
       "target": "api::chapter.chapter",
       "mappedBy": "course"
+    },
+    "title": {
+      "type": "string",
+      "required": true,
+      "default": "課程名稱"
     }
   }
 }

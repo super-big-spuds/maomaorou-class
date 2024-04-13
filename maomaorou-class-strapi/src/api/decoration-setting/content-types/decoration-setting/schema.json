@@ -1,0 +1,23 @@
+{
+  "kind": "singleType",
+  "collectionName": "decoration_settings",
+  "info": {
+    "singularName": "decoration-setting",
+    "pluralName": "decoration-settings",
+    "displayName": "裝飾設定"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "landingPageBackgroundImage": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": false,
+      "required": true
+    }
+  }
+}

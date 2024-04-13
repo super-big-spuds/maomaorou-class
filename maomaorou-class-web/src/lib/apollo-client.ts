@@ -7,6 +7,7 @@ export const { getClient: createApolloSSRClient } = registerApolloClient(() => {
     cache: new InMemoryCache(),
     link: new HttpLink({
       uri: `${LOCAL_BACKEND_URL}/graphql`,
+      fetchOptions: { cache: "no-store" },
     }),
   });
 });
