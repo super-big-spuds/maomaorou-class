@@ -70,7 +70,8 @@
           "goal",
           "price",
           "durationDay",
-          "chapters"
+          "chapters",
+          "title"
         ]
       },
       "conditions": []
@@ -100,7 +101,8 @@
           "goal",
           "price",
           "durationDay",
-          "chapters"
+          "chapters",
+          "title"
         ]
       },
       "conditions": []
@@ -116,7 +118,55 @@
           "goal",
           "price",
           "durationDay",
-          "chapters"
+          "chapters",
+          "title"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.create",
+      "actionParameters": {},
+      "subject": "api::decoration-setting.decoration-setting",
+      "properties": {
+        "fields": [
+          "landingPageBackgroundImage"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.delete",
+      "actionParameters": {},
+      "subject": "api::decoration-setting.decoration-setting",
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.publish",
+      "actionParameters": {},
+      "subject": "api::decoration-setting.decoration-setting",
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::decoration-setting.decoration-setting",
+      "properties": {
+        "fields": [
+          "landingPageBackgroundImage"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.update",
+      "actionParameters": {},
+      "subject": "api::decoration-setting.decoration-setting",
+      "properties": {
+        "fields": [
+          "landingPageBackgroundImage"
         ]
       },
       "conditions": []

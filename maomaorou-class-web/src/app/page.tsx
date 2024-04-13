@@ -39,7 +39,7 @@ const QUERY = gql(`
 `);
 
 export default async function Home() {
-  const { data, error } = await createApolloSSRClient().query({
+  const { data } = await createApolloSSRClient().query({
     query: QUERY,
   });
 
@@ -47,7 +47,7 @@ export default async function Home() {
     <div className="flex flex-col items-center justify-between py-4 w-full">
       {/* Banner */}
       <Image
-        className="aspect-[4/1] w-full"
+        className="aspect-[4/1] w-full min-h-[200px]"
         src={
           data.decorationSetting?.data?.attributes?.landingPageBackgroundImage
             .data?.attributes?.url || ""
@@ -58,14 +58,14 @@ export default async function Home() {
       />
 
       {/* Courses */}
-      <div className="flex">
-        <h2>課程介紹</h2>
-        <div className="flex gap-x-4  w-5/6 relative z-10 p-10 justify-center items-center">
+      <div className="flex justify-center w-full flex-col">
+        <h2 className="text-2xl font-bold my-4 text-center">課程介紹</h2>
+        <div className="flex gap-x-4 md:flex-row flex-col relative z-10 md:p-10 sm:p-6 justify-center items-center">
           {data?.courses?.data.map((course) => (
             <Link
               key={course.id}
               href={`/course/${course.attributes?.title}`}
-              className="w-full aspect-[1/1] hover:-translate-y-[40px] opacity-75 hover:opacity-100 transition-all duration-700"
+              className="w-fit aspect-[1/1] hover:-translate-y-[40px] opacity-75 hover:opacity-100 transition-all duration-700"
             >
               <Image
                 src={course.attributes?.image?.data?.attributes?.url || ""}
