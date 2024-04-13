@@ -33,8 +33,6 @@ services:
       - /app/.strapi
     env_file:
       - ./maomaorou-class-strapi/.env
-    environment:
-      - DATABASE_HOST=database
     ports:
       - "1337:1337"
     depends_on:
@@ -42,28 +40,6 @@ services:
     networks:
       maomaorou_net:
     command: bash -c "yarn develop --watch-admin"
-
-  database:
-    image: mysql:5.7
-    platform: linux/amd64
-    networks:
-      maomaorou_net:
-    ports:
-      - 3306:3306
-    env_file:
-      - .env.db
-
-  phpmyadmin:
-    depends_on:
-      - database
-    image: phpmyadmin/phpmyadmin
-    restart: always
-    ports:
-      - '8080:80'
-    env_file:
-      - .env.db
-    networks:
-      maomaorou_net:
       
 networks:
   maomaorou_net:
