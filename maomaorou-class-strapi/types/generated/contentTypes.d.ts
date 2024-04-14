@@ -867,6 +867,7 @@ export interface ApiCourseCourse extends Schema.CollectionType {
     >;
     title: Attribute.String &
       Attribute.Required &
+      Attribute.Unique &
       Attribute.DefaultTo<'\u8AB2\u7A0B\u540D\u7A31'>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -946,6 +947,10 @@ export interface ApiLessonLesson extends Schema.CollectionType {
         },
         number
       >;
+    name: Attribute.String &
+      Attribute.Required &
+      Attribute.Unique &
+      Attribute.DefaultTo<'\u9810\u8A2D\u7AE0\u7BC0\u55AE\u5143\u540D\u7A31'>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

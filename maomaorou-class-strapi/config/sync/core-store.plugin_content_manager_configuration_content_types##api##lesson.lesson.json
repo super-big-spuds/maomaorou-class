@@ -6,7 +6,7 @@
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "id",
+      "mainField": "name",
       "defaultSortBy": "id",
       "defaultSortOrder": "ASC"
     },
@@ -60,6 +60,20 @@
           "label": "content",
           "searchable": false,
           "sortable": false
+        }
+      },
+      "name": {
+        "edit": {
+          "label": "name",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "name",
+          "searchable": true,
+          "sortable": true
         }
       },
       "createdAt": {
@@ -122,18 +136,18 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "chapter",
-        "sequence",
-        "createdAt"
-      ],
       "edit": [
         [
           {
-            "name": "chapter",
+            "name": "name",
             "size": 6
           },
+          {
+            "name": "chapter",
+            "size": 6
+          }
+        ],
+        [
           {
             "name": "sequence",
             "size": 4
@@ -145,6 +159,12 @@
             "size": 12
           }
         ]
+      ],
+      "list": [
+        "id",
+        "chapter",
+        "sequence",
+        "createdAt"
       ]
     },
     "uid": "api::lesson.lesson"

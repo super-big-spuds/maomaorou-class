@@ -179,7 +179,8 @@
         "fields": [
           "chapter",
           "sequence",
-          "content"
+          "content",
+          "name"
         ]
       },
       "conditions": []
@@ -206,7 +207,8 @@
         "fields": [
           "chapter",
           "sequence",
-          "content"
+          "content",
+          "name"
         ]
       },
       "conditions": []
@@ -219,7 +221,8 @@
         "fields": [
           "chapter",
           "sequence",
-          "content"
+          "content",
+          "name"
         ]
       },
       "conditions": []
