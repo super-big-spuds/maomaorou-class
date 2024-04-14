@@ -1077,7 +1077,7 @@ export interface ApiPaymentPayment extends Schema.CollectionType {
     transactionService: Attribute.Enumeration<['newebpay']> &
       Attribute.Required &
       Attribute.DefaultTo<'newebpay'>;
-    transactionId: Attribute.String & Attribute.Required & Attribute.Unique;
+    transactionId: Attribute.String;
     status: Attribute.Enumeration<
       ['pending', 'success', 'failed', 'cancelled']
     > &

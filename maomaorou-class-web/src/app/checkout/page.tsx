@@ -3,8 +3,9 @@
 import { gql } from "@/__generated__";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { getPaymentUrl } from "@/lib/utils";
 import { useCart } from "@/provider/cart-provider";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import Image from "next/image";
 import { FormEventHandler } from "react";
 import { z } from "zod";
@@ -33,6 +34,23 @@ const GET_LATEST_PRICE_QUERY = gql(`
       }
     }
   }
+`);
+
+const REGISTER_MUTATION = gql(`
+mutation registerUser($userData: UsersPermissionsRegisterInput!) {
+  register(input: $userData) {
+    jwt
+  }
+}
+`);
+
+const SUBMIT_ORDER_MUTATION = gql(`
+mutation createOrderWithPayment($courseIds: [ID]) {
+  createOrderWithPayment(courseIds: $courseIds) {
+    paymentUrl
+    error
+  }
+}
 `);
 
 const schema = z.object({
@@ -71,6 +89,11 @@ export default function CheckoutPage() {
       courseIds: cartData.cart.map((item) => item.id),
     },
   });
+  const [sendRegisterUserMutation, { data: registerData }] =
+    useMutation(REGISTER_MUTATION);
+  const [sendSubmitOrderMutation, { data: paymentData }] = useMutation(
+    SUBMIT_ORDER_MUTATION
+  );
 
   const parseResult = schema.safeParse(latestCartData);
 
@@ -88,14 +111,51 @@ export default function CheckoutPage() {
 
   const { courses } = parseResult.data;
 
-  const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+  const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
 
     const data = Object.fromEntries(formData.entries()) as IFormData;
 
+    // Register a user
+    const registerResponse = await sendRegisterUserMutation({
+      variables: {
+        userData: {
+          username: data.name,
+          email: data.email,
+          password: data.password,
+        },
+      },
+    });
+
+    if (registerResponse.errors || !registerResponse.data?.register?.jwt) {
+      alert("Failed to register user");
+      return;
+    }
+
     // Send Create Order To Server.
+    const submitOrderResponse = await sendSubmitOrderMutation({
+      variables: {
+        courseIds: courses.data.map((course) => course.id),
+      },
+      context: {
+        headers: {
+          Authorization: `Bearer ${registerResponse.data?.register.jwt}`,
+        },
+      },
+    });
+    if (
+      submitOrderResponse.data?.createOrderWithPayment?.error ||
+      !submitOrderResponse.data?.createOrderWithPayment?.paymentUrl
+    ) {
+      alert(submitOrderResponse.data?.createOrderWithPayment?.error);
+      return;
+    }
+
+    window.location.href = getPaymentUrl(
+      submitOrderResponse.data.createOrderWithPayment.paymentUrl
+    );
   };
 
   return (
@@ -118,9 +178,8 @@ export default function CheckoutPage() {
       </ul>
 
       <Input required placeholder="Name" name="name" />
-      <Input required placeholder="Phone" name="phone" />
       <Input required placeholder="Email" name="email" />
-      <Input required placeholder="Password" name="password" />
+      <Input required placeholder="Password" name="password" min={6} />
 
       <Button type="submit">前往結帳</Button>
     </form>

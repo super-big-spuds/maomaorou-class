@@ -2,6 +2,17 @@
  * order router
  */
 
-import { factories } from '@strapi/strapi';
+import { factories } from "@strapi/strapi";
+import { customRouter } from "../../../lib/helper";
 
-export default factories.createCoreRouter('api::order.order');
+const defaultRoutes = factories.createCoreRouter("api::order.order");
+
+const customRoutes = [
+  {
+    method: "POST",
+    path: "/order/neweb-pay-notify-callback",
+    handler: "order.newebPayNotifyCallback",
+  },
+];
+
+export default customRouter(defaultRoutes, customRoutes);

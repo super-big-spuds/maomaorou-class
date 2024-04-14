@@ -28,8 +28,8 @@
     },
     "transactionId": {
       "type": "string",
-      "required": true,
-      "unique": true
+      "required": false,
+      "unique": false
     },
     "status": {
       "type": "enumeration",
