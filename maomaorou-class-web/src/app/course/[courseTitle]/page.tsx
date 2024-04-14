@@ -1,6 +1,8 @@
 import { gql } from "@/__generated__";
-import { Button } from "@/components/ui/button";
+import CourseAddToCartButton from "@/components/cart/course-add-to-cart-button";
 import { createApolloSSRClient } from "@/lib/apollo-client";
+import { redirect } from "next/navigation";
+import { z } from "zod";
 
 const QUERY = gql(`
 query GetCourseQueryData($title: String!) {
@@ -45,6 +47,51 @@ query GetCourseQueryData($title: String!) {
   }
 `);
 
+const schema = z.object({
+  courseByTitle: z.object({
+    data: z.object({
+      id: z.string(),
+      attributes: z.object({
+        title: z.string(),
+        goal: z.string(),
+        description: z.string(),
+        price: z.number(),
+        durationDay: z.number(),
+        chapters: z.object({
+          data: z.array(
+            z.object({
+              id: z.string(),
+              attributes: z.object({
+                name: z.string(),
+                sequence: z.number(),
+                lessons: z.object({
+                  data: z.array(
+                    z.object({
+                      id: z.string(),
+                      attributes: z.object({
+                        name: z.string(),
+                        sequence: z.number(),
+                      }),
+                    })
+                  ),
+                }),
+              }),
+            })
+          ),
+        }),
+        image: z.object({
+          data: z.object({
+            id: z.string(),
+            attributes: z.object({
+              url: z.string(),
+            }),
+          }),
+        }),
+      }),
+    }),
+  }),
+});
+
 export default async function CoursePage({
   params,
 }: {
@@ -52,43 +99,53 @@ export default async function CoursePage({
 }) {
   const courseTitle = decodeURI(params.courseTitle);
 
-  const { data } = await createApolloSSRClient().query({
+  const { data: rawData } = await createApolloSSRClient().query({
     query: QUERY,
     variables: {
       title: courseTitle,
     },
   });
 
+  const result = schema.safeParse(rawData);
+
+  if (!result.success) {
+    redirect("/not-found");
+  }
+  const { data } = result;
+
   return (
     <div>
-      <p>Course Title:{data.courseByTitle?.data?.attributes?.title}</p>
-      <p>{data.courseByTitle?.data?.attributes?.image.data?.attributes?.url}</p>
-      <p>Course Price:{data.courseByTitle?.data?.attributes?.price}</p>
+      <p>Course Title:{data.courseByTitle.data.attributes.title}</p>
+      <p>{data.courseByTitle.data.attributes.image.data.attributes.url}</p>
+      <p>Course Price:{data.courseByTitle.data.attributes.price}</p>
       <p>
-        Course Description:{data.courseByTitle?.data?.attributes?.description}
+        Course Description:
+        {data.courseByTitle.data.attributes.description}
       </p>
-      <p>Course Goal:{data.courseByTitle?.data?.attributes?.goal}</p>
+      <p>Course Goal:{data.courseByTitle.data.attributes.goal}</p>
 
       <ul>
-        {data.courseByTitle?.data?.attributes?.chapters?.data?.map(
-          (chapter) => (
-            <li key={chapter.id}>
-              <p>Chapter Name:{chapter.attributes?.name}</p>
-              <p>Chapter Sequence:{chapter.attributes?.sequence}</p>
-              <ul>
-                {chapter.attributes?.lessons?.data.map((lesson) => (
-                  <li key={lesson.id}>
-                    <p>Lesson Name:{lesson.attributes?.name}</p>
-                    <p>Lesson Sequence:{lesson.attributes?.sequence}</p>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          )
-        )}
+        {data.courseByTitle.data.attributes.chapters.data.map((chapter) => (
+          <li key={chapter.id}>
+            <p>Chapter Name:{chapter.attributes.name}</p>
+            <p>Chapter Sequence:{chapter.attributes.sequence}</p>
+            <ul>
+              {chapter.attributes.lessons.data.map((lesson) => (
+                <li key={lesson.id}>
+                  <p>Lesson Name:{lesson.attributes.name}</p>
+                  <p>Lesson Sequence:{lesson.attributes.sequence}</p>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
       </ul>
 
-      <Button>Add to Cart</Button>
+      <CourseAddToCartButton
+        courseId={data.courseByTitle.data.id}
+        title={data.courseByTitle.data.attributes.title}
+        price={data.courseByTitle.data.attributes.price}
+      />
     </div>
   );
 }

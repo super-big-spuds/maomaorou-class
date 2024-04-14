@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CircleUser, Menu } from "lucide-react";
+import { CircleUser, Menu, ShoppingCart } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "./sheet";
 import { Button } from "./button";
 import {
@@ -10,6 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./dropdown-menu";
+import CartButton from "../cart/header-cart-button";
 
 export default function Header() {
   return (
@@ -114,6 +115,7 @@ export default function Header() {
             <DropdownMenuItem>Logout</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        <CartButton />
       </div>
     </header>
   );
