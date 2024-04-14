@@ -15,13 +15,9 @@ import Link from "next/link";
 import useToken from "@/hook/useToken";
 
 export default function HeaderUserSection() {
-  const userData = useUser();
+  const { token } = useToken();
 
-  if (userData.isLoading) {
-    return <></>;
-  }
-
-  return <>{userData.userData !== null ? <UserProfile /> : <GuestProfile />}</>;
+  return <>{token !== null ? <UserProfile /> : <GuestProfile />}</>;
 }
 
 function UserProfile() {

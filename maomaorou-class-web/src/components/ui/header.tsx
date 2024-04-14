@@ -1,15 +1,7 @@
 import Link from "next/link";
-import { CircleUser, Menu, ShoppingCart } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "./sheet";
 import { Button } from "./button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "./dropdown-menu";
 import CartButton from "../cart/header-cart-button";
 import HeaderUserSection from "../user/header-user-section";
 
