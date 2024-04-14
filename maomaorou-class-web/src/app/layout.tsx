@@ -5,6 +5,7 @@ import { ApolloWrapper } from "@/provider/apollo-provider";
 import Header from "@/components/ui/header";
 import Footer from "@/components/ui/footer";
 import { CartProvider } from "@/provider/cart-provider";
+import { UserProvider } from "@/provider/user-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,11 +23,13 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} flex flex-col min-h-screen`}>
         <ApolloWrapper>
-          <CartProvider>
-            <Header />
-            <main className="grow">{children}</main>
-            <Footer />
-          </CartProvider>
+          <UserProvider>
+            <CartProvider>
+              <Header />
+              <main className="grow">{children}</main>
+              <Footer />
+            </CartProvider>
+          </UserProvider>
         </ApolloWrapper>
       </body>
     </html>

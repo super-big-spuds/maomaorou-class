@@ -3,6 +3,7 @@
 import { gql } from "@/__generated__";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import useToken from "@/hook/useToken";
 import { getPaymentUrl } from "@/lib/utils";
 import { useCart } from "@/provider/cart-provider";
 import { useMutation, useQuery } from "@apollo/client";
@@ -94,6 +95,7 @@ export default function CheckoutPage() {
   const [sendSubmitOrderMutation, { data: paymentData }] = useMutation(
     SUBMIT_ORDER_MUTATION
   );
+  const { setToken } = useToken();
 
   const parseResult = schema.safeParse(latestCartData);
 
@@ -133,6 +135,8 @@ export default function CheckoutPage() {
       alert("Failed to register user");
       return;
     }
+
+    setToken(registerResponse.data.register.jwt);
 
     // Send Create Order To Server.
     const submitOrderResponse = await sendSubmitOrderMutation({
