@@ -4,6 +4,9 @@ export default function useToken() {
   const tokenKey = "userToken";
 
   const getToken = () => {
+    if (typeof window === "undefined") {
+      return null;
+    }
     const token = localStorage.getItem(tokenKey);
     return token;
   };
