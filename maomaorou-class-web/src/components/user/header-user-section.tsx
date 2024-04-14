@@ -16,8 +16,17 @@ import useToken from "@/hook/useToken";
 
 export default function HeaderUserSection() {
   const { token } = useToken();
+  const userData = useUser();
 
-  return <>{token !== null ? <UserProfile /> : <GuestProfile />}</>;
+  return (
+    <>
+      {(userData.isLoading && token) || userData.userData !== null ? (
+        <UserProfile />
+      ) : (
+        <GuestProfile />
+      )}
+    </>
+  );
 }
 
 function UserProfile() {
@@ -55,8 +64,11 @@ function UserProfile() {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer">
-          <button onClick={userData.handleLogout}>登出</button>
+        <DropdownMenuItem
+          onClick={userData.handleLogout}
+          className="cursor-pointer"
+        >
+          <p>登出</p>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

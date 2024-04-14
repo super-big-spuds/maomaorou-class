@@ -42,7 +42,7 @@ export function useUser() {
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const { token, cleanToken } = useToken();
-  const { data, loading, error, refetch } = useQuery(GET_USER_PROFILE_QUERY, {
+  const { data, loading, error } = useQuery(GET_USER_PROFILE_QUERY, {
     skip: !token,
     context: {
       headers: {

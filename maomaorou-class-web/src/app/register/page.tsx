@@ -27,16 +27,18 @@ import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
-  email: z.string().email({
+  username: z.string().min(3),
+  email: z.string().min(6).email({
     message: "請輸入正確的電子信箱格式",
   }),
   password: z.string().min(6),
 });
 
-const LOGIN_MUTATION = gql(`
-mutation login($email: String!, $password: String!) {
-  login(input: {
-    identifier: $email,
+const REGISTER_MUTATION = gql(`
+mutation register($username: String!, $email: String!, $password: String!) {
+  register(input: {
+    username: $username,
+    email: $email,
     password: $password,
   }) {
     jwt
@@ -44,30 +46,33 @@ mutation login($email: String!, $password: String!) {
 } 
 `);
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      username: "",
       email: "",
       password: "",
     },
   });
-  const [sendLoginMutation, { error, loading }] = useMutation(LOGIN_MUTATION);
+  const [sendRegisterMutation, { error, loading }] =
+    useMutation(REGISTER_MUTATION);
   const { setToken } = useToken();
   const router = useRouter();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    sendLoginMutation({
+    sendRegisterMutation({
       variables: {
+        username: values.username,
         email: values.email,
         password: values.password,
       },
     })
       .then((response) => {
-        const token = response.data?.login.jwt;
+        const token = response.data?.register.jwt;
         if (typeof token === "string") {
           setToken(token);
-          router.push("/my-courses");
+          router.push("/");
         }
       })
       .catch((error) => {
@@ -83,7 +88,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="p-4 relative">
+    <div className="p-4">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           {loading && (
@@ -95,13 +100,26 @@ export default function LoginPage() {
             className={`${loading ? "animate-pulse" : ""} mx-auto max-w-sm`}
           >
             <CardHeader className="space-y-1">
-              <CardTitle className="text-2xl font-bold">Login</CardTitle>
+              <CardTitle className="text-2xl font-bold">Register</CardTitle>
               <CardDescription>
-                Enter your email and password to login to your account
+                Enter your email and password to register to your account
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Username</FormLabel>
+                      <FormControl>
+                        <Input placeholder="您的名字" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="email"
