@@ -112,17 +112,24 @@ export default async function CoursePage({
     redirect("/not-found");
   }
   const { data } = result;
+  console.log(data.courseByTitle.data);
 
   return (
-    <div>
-      <p>Course Title:{data.courseByTitle.data.attributes.title}</p>
-      <p>{data.courseByTitle.data.attributes.image.data.attributes.url}</p>
-      <p>Course Price:{data.courseByTitle.data.attributes.price}</p>
-      <p>
-        Course Description:
-        {data.courseByTitle.data.attributes.description}
+    <div className="flex flex-col px-10 py-5 gap-6">
+      <p className="text-3xl font-bold">
+        線上影音課程-{data.courseByTitle.data.attributes.title}
       </p>
-      <p>Course Goal:{data.courseByTitle.data.attributes.goal}</p>
+
+      <img
+        className="lg:w-1/3 md:w-1/2 mx-20 my-30  "
+        src={data.courseByTitle.data.attributes.image.data.attributes.url}
+        alt="課程介紹"
+        loading="lazy"
+      />
+      <p className=" text-2xl font-bold">關於此課程</p>
+      <p className=" pl-5">{data.courseByTitle.data.attributes.description}</p>
+      <p className=" text-2xl font-bold ">你將會學到什麼?</p>
+      <p className=" pl-5">{data.courseByTitle.data.attributes.goal}</p>
 
       <ul>
         {data.courseByTitle.data.attributes.chapters.data.map((chapter) => (
@@ -140,6 +147,7 @@ export default async function CoursePage({
           </li>
         ))}
       </ul>
+      <p>Course Price:{data.courseByTitle.data.attributes.price}</p>
 
       <CourseAddToCartButton
         courseId={data.courseByTitle.data.id}
