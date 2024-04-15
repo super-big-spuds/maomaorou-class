@@ -1100,6 +1100,47 @@ export interface ApiPaymentPayment extends Schema.CollectionType {
   };
 }
 
+export interface ApiUserCoursesStatusUserCoursesStatus
+  extends Schema.CollectionType {
+  collectionName: 'user_courses_statuses';
+  info: {
+    singularName: 'user-courses-status';
+    pluralName: 'user-courses-statuses';
+    displayName: 'UserCoursesStatus';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    user: Attribute.Relation<
+      'api::user-courses-status.user-courses-status',
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+    course: Attribute.Relation<
+      'api::user-courses-status.user-courses-status',
+      'oneToOne',
+      'api::course.course'
+    >;
+    expiredAt: Attribute.Date & Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::user-courses-status.user-courses-status',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::user-courses-status.user-courses-status',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -1125,6 +1166,7 @@ declare module '@strapi/types' {
       'api::order.order': ApiOrderOrder;
       'api::order-course.order-course': ApiOrderCourseOrderCourse;
       'api::payment.payment': ApiPaymentPayment;
+      'api::user-courses-status.user-courses-status': ApiUserCoursesStatusUserCoursesStatus;
     }
   }
 }

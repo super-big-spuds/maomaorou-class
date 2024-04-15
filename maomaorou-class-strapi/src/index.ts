@@ -149,6 +149,50 @@ export default {
         },
       },
     }));
+
+    extensionService.use(({ strapi }) => ({
+      typeDefs: `
+        type Query {
+          buyedCourses: [CourseEntityResponse]
+        }
+      `,
+      resolvers: {
+        Query: {
+          buyedCourses: {
+            resolve: async (parent, args, context) => {
+              const { toEntityResponse } = strapi.service(
+                "plugin::graphql.format"
+              ).returnTypes;
+
+              const user = context.state.user;
+
+              const userCourseStatus = await strapi.services[
+                "api::user-courses-status.user-courses-status"
+              ].find({
+                filters: {
+                  user: user.id,
+                },
+                populate: ["course"],
+              });
+
+              console.log(userCourseStatus);
+
+              const userBuyedCourses = userCourseStatus.results.map(
+                (userCourseStatus) => {
+                  return userCourseStatus.course;
+                }
+              );
+
+              const courseEntities = userBuyedCourses.map((course) => {
+                return toEntityResponse(course);
+              });
+
+              return courseEntities;
+            },
+          },
+        },
+      },
+    }));
   },
   /**
    * An asynchronous bootstrap function that runs before

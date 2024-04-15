@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "user_courses_statuses",
+  "info": {
+    "singularName": "user-courses-status",
+    "pluralName": "user-courses-statuses",
+    "displayName": "UserCoursesStatus",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "course": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::course.course"
+    },
+    "expiredAt": {
+      "required": true,
+      "type": "date"
+    }
+  }
+}
