@@ -33,45 +33,48 @@ function UserProfile() {
   const userData = useUser();
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="secondary" size="icon" className="rounded-full">
-          <CircleUser className="h-5 w-5" />
-          <span className="sr-only">Toggle user menu</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuLabel>我的帳號</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Link href="/my-orders">
-            <p>訂單檢視</p>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link href="/setting">
-            <p>帳號設定</p>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link href="/update-password">
-            <p>變更密碼</p>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link href="/missing-password">
-            <p>帳號設定</p>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={userData.handleLogout}
-          className="cursor-pointer"
-        >
-          <p>登出</p>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <Link href="/my-courses">我的課程</Link>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="secondary" size="icon" className="rounded-full">
+            <CircleUser className="h-5 w-5" />
+            <span className="sr-only">Toggle user menu</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>我的帳號</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>
+            <Link href="/my-orders">
+              <p>訂單檢視</p>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href="/setting">
+              <p>帳號設定</p>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href="/update-password">
+              <p>變更密碼</p>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href="/missing-password">
+              <p>帳號設定</p>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onClick={userData.handleLogout}
+            className="cursor-pointer"
+          >
+            <p>登出</p>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   );
 }
 
