@@ -4,8 +4,9 @@ import { gql } from "@/__generated__";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import useToken from "@/hook/useToken";
-import { getPaymentUrl } from "@/lib/utils";
+import { cn, getPaymentUrl } from "@/lib/utils";
 import { useCart } from "@/provider/cart-provider";
+import { useUser } from "@/provider/user-provider";
 import { useMutation, useQuery } from "@apollo/client";
 import Image from "next/image";
 import { FormEventHandler } from "react";
@@ -95,7 +96,9 @@ export default function CheckoutPage() {
   const [sendSubmitOrderMutation, { data: paymentData }] = useMutation(
     SUBMIT_ORDER_MUTATION
   );
-  const { setToken } = useToken();
+  const userContext = useUser();
+
+  const { token, setToken } = useToken();
 
   const parseResult = schema.safeParse(latestCartData);
 
@@ -121,22 +124,33 @@ export default function CheckoutPage() {
     const data = Object.fromEntries(formData.entries()) as IFormData;
 
     // Register a user
-    const registerResponse = await sendRegisterUserMutation({
-      variables: {
-        userData: {
-          username: data.name,
-          email: data.email,
-          password: data.password,
-        },
-      },
-    });
+    const getToken = async () => {
+      if (userContext.userData !== null && token !== null) {
+        return token;
+      } else {
+        const registerResponse = await sendRegisterUserMutation({
+          variables: {
+            userData: {
+              username: data.name,
+              email: data.email,
+              password: data.password,
+            },
+          },
+        });
+        if (registerResponse.errors || !registerResponse.data?.register?.jwt) {
+          return null;
+        }
+        setToken(registerResponse.data.register.jwt);
+        return registerResponse.data.register.jwt;
+      }
+    };
 
-    if (registerResponse.errors || !registerResponse.data?.register?.jwt) {
+    const createOrderToken = getToken();
+
+    if (createOrderToken === null) {
       alert("Failed to register user");
       return;
     }
-
-    setToken(registerResponse.data.register.jwt);
 
     // Send Create Order To Server.
     const submitOrderResponse = await sendSubmitOrderMutation({
@@ -145,7 +159,7 @@ export default function CheckoutPage() {
       },
       context: {
         headers: {
-          Authorization: `Bearer ${registerResponse.data?.register.jwt}`,
+          Authorization: `Bearer ${createOrderToken}`,
         },
       },
     });
@@ -181,9 +195,30 @@ export default function CheckoutPage() {
         ))}
       </ul>
 
-      <Input required placeholder="Name" name="name" />
-      <Input required placeholder="Email" name="email" />
-      <Input required placeholder="Password" name="password" min={6} />
+      {userContext.userData !== null && (
+        <p className="text-orange-600">以登入, 購買資訊將自動綁定到登入會員</p>
+      )}
+
+      {/* 已註冊時不用填寫會員資料 */}
+      <Input
+        required
+        placeholder="Name"
+        name="name"
+        disabled={userContext.userData !== null}
+      />
+      <Input
+        required
+        placeholder="Email"
+        name="email"
+        disabled={userContext.userData !== null}
+      />
+      <Input
+        required
+        placeholder="Password"
+        name="password"
+        min={6}
+        disabled={userContext.userData !== null}
+      />
 
       <Button type="submit">前往結帳</Button>
     </form>
