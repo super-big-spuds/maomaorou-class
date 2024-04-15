@@ -3,6 +3,12 @@ import CourseAddToCartButton from "@/components/cart/course-add-to-cart-button";
 import { createApolloSSRClient } from "@/lib/apollo-client";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const QUERY = gql(`
 query GetCourseQueryData($title: String!) {
@@ -112,48 +118,92 @@ export default async function CoursePage({
     redirect("/not-found");
   }
   const { data } = result;
-  console.log(data.courseByTitle.data);
+
+  // sort chapters by sequence
+  data.courseByTitle.data.attributes.chapters.data.sort(
+    (a, b) => a.attributes.sequence - b.attributes.sequence
+  );
+
+  // sort lessons by sequence
+  data.courseByTitle.data.attributes.chapters.data.forEach((chapter) => {
+    chapter.attributes.lessons.data.sort(
+      (a, b) => a.attributes.sequence - b.attributes.sequence
+    );
+  });
+  // price
 
   return (
-    <div className="flex flex-col px-10 py-5 gap-6">
-      <p className="text-3xl font-bold">
-        線上影音課程-{data.courseByTitle.data.attributes.title}
-      </p>
+    <div className="flex flex-wrap justify-center relative h-full">
+      <div className="flex flex-col px-10 py-5 gap-6 max-w-3xl">
+        <p className="text-3xl font-bold">
+          線上影音課程-{data.courseByTitle.data.attributes.title}
+        </p>
 
-      <img
-        className="lg:w-1/3 md:w-1/2 mx-20 my-30  "
-        src={data.courseByTitle.data.attributes.image.data.attributes.url}
-        alt="課程介紹"
-        loading="lazy"
-      />
-      <p className=" text-2xl font-bold">關於此課程</p>
-      <p className=" pl-5">{data.courseByTitle.data.attributes.description}</p>
-      <p className=" text-2xl font-bold ">你將會學到什麼?</p>
-      <p className=" pl-5">{data.courseByTitle.data.attributes.goal}</p>
+        <img
+          className="lg:w-1/3 md:w-1/2 mx-20 my-30  "
+          src={data.courseByTitle.data.attributes.image.data.attributes.url}
+          alt="課程介紹"
+          loading="lazy"
+        />
+        <p className=" text-2xl font-bold">關於此課程</p>
+        <p className=" pl-5">
+          {data.courseByTitle.data.attributes.description}
+        </p>
+        <p className=" text-2xl font-bold ">你將會學到什麼?</p>
+        <p className=" pl-5">{data.courseByTitle.data.attributes.goal}</p>
+        <p className=" text-2xl font-bold">課程大綱</p>
+        <Accordion type="multiple">
+          {data.courseByTitle.data.attributes.chapters.data.map((chapter) => (
+            <AccordionItem
+              value={chapter.id}
+              className="　border border-gray-300 rounded-xl mb-1 "
+              key={chapter.id}
+            >
+              <AccordionTrigger className=" border-3 border-gray-800 rounded-xl px-5  font-bold ">
+                課程 {chapter.attributes.sequence}：{chapter.attributes.name}
+              </AccordionTrigger>
+              <AccordionContent>
+                {chapter.attributes.lessons.data.length > 0 ? (
+                  chapter.attributes.lessons.data.map((lesson) => (
+                    <div key={lesson.id} className=" px-5 py-2.5 mx-2 ">
+                      <p>
+                        章節 {lesson.attributes.sequence}：
+                        {lesson.attributes.name}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <div className=" px-5 py-2.5 mx-2 ">無章節</div>
+                )}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </div>
 
-      <ul>
-        {data.courseByTitle.data.attributes.chapters.data.map((chapter) => (
-          <li key={chapter.id}>
-            <p>Chapter Name:{chapter.attributes.name}</p>
-            <p>Chapter Sequence:{chapter.attributes.sequence}</p>
-            <ul>
-              {chapter.attributes.lessons.data.map((lesson) => (
-                <li key={lesson.id}>
-                  <p>Lesson Name:{lesson.attributes.name}</p>
-                  <p>Lesson Sequence:{lesson.attributes.sequence}</p>
-                </li>
-              ))}
-            </ul>
-          </li>
-        ))}
-      </ul>
-      <p>Course Price:{data.courseByTitle.data.attributes.price}</p>
-
-      <CourseAddToCartButton
-        courseId={data.courseByTitle.data.id}
-        title={data.courseByTitle.data.attributes.title}
-        price={data.courseByTitle.data.attributes.price}
-      />
+      <div className="sticky top-20 flex flex-col  mt-5 w-full  lg:w-1/6 sm:w-1/2 h-full bg-neutral-200 p-3 items-center rounded shadow-2xl">
+        <div className=" bg-white rounded border p-2 w-4/5 lg:w-full flex flex-col gap-3 ">
+          <p className=" text-xl font-bold">課程價格</p>
+          <p className=" text-2xl ml-3">
+            NT{data.courseByTitle.data.attributes.price.toLocaleString()}
+          </p>
+          <CourseAddToCartButton
+            courseId={data.courseByTitle.data.id}
+            title={data.courseByTitle.data.attributes.title}
+            price={data.courseByTitle.data.attributes.price}
+          />
+          <p className=" text-gray-400 font-xs">最後更新{}</p>
+        </div>
+        <div className=" bg-slate-100 rounded border p-2 w-4/5 lg:w-full flex flex-col gap-3 ">
+          <p className=" text-xl font-bold">課程包含</p>
+          <ul className="ml-3">
+            <li>-教學影片</li>
+            <li>-教材</li>
+          </ul>
+          <p className=" text-xl font-bold">適合對象</p>
+          <p className="ml-3"> -幣圈老司機</p>
+        </div>
+      </div>
     </div>
   );
 }
