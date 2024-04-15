@@ -23,7 +23,7 @@ export default function CourseAddToCartButton(props: Props) {
         })
       }
     >
-      Add to Cart
+      加入購物車
     </Button>
   );
 }

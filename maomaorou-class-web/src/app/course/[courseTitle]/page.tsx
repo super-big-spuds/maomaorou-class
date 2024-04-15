@@ -181,7 +181,7 @@ export default async function CoursePage({
         </Accordion>
       </div>
 
-      <div className="sticky top-20 flex flex-col  mt-5 w-full  lg:w-1/6 sm:w-1/2 h-full bg-neutral-200 p-3 items-center rounded shadow-2xl">
+      <div className="sticky top-20 flex flex-col  mt-5 w-full  lg:w-1/6 sm:w-1/2 h-full bg-neutral-200 p-3 items-center rounded shadow-xl">
         <div className=" bg-white rounded border p-2 w-4/5 lg:w-full flex flex-col gap-3 ">
           <p className=" text-xl font-bold">課程價格</p>
           <p className=" text-2xl ml-3">
