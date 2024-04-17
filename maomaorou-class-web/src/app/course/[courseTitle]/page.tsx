@@ -140,7 +140,7 @@ export default async function CoursePage({
         </p>
 
         <img
-          className="lg:w-2/3 md:w-1/2 mx-20 my-30  "
+          className="lg:w-2/3 md:w-1/2 mx-20 my-30 min-w-56  "
           src={data.courseByTitle.data.attributes.image.data.attributes.url}
           alt="課程介紹"
           loading="lazy"
