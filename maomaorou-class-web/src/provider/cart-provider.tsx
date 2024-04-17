@@ -11,7 +11,7 @@ type CartItem = {
 const context = createContext({
   cart: [] as CartItem[],
   addToCart: (item: CartItem) => {},
-  removeFromCart: (item: CartItem) => {},
+  removeFromCart: (courseId: string) => {},
   clearCart: () => {},
 });
 
@@ -32,9 +32,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setCartData((prevCart) => [...prevCart, item]);
   };
 
-  const removeFromCart = (item: CartItem) => {
+  const removeFromCart = (courseId: string) => {
     setCartData((prevCart) =>
-      prevCart.filter((cartItem) => cartItem.id !== item.id)
+      prevCart.filter((cartItem) => cartItem.id !== courseId)
     );
   };
 

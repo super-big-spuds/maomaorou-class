@@ -177,50 +177,89 @@ export default function CheckoutPage() {
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <h1>Checkout Page</h1>
+    <div className=" w-full h-full ">
+      <form
+        onSubmit={onSubmit}
+        className=" flex flex-wrap  items-center justify-center w-full h-full gap-4"
+      >
+        <div className=" inline-flex flex-col w-1/2">
+          <h1>結帳</h1>
 
-      <p>購物車內容</p>
-      <ul>
-        {courses.data.map((course) => (
-          <li key={course.id}>
-            <Image
-              width={100}
-              height={100}
-              src={course.attributes.image.data.attributes.url}
-              alt={course.attributes.title}
-            />
-            <p>{course.attributes.title}</p>
-          </li>
-        ))}
-      </ul>
+          {userContext.userData !== null && (
+            <p className="text-orange-600">
+              以登入, 購買資訊將自動綁定到登入會員
+            </p>
+          )}
+          {/* 已註冊時不用填寫會員資料 */}
+          <p>帳單資訊</p>
+          <p>姓名</p>
+          <Input
+            required
+            placeholder="輸入本名"
+            name="name"
+            disabled={userContext.userData !== null}
+            className=" w-1/3"
+          />
+          <p>電子郵件(作為系統帳號)</p>
+          <Input
+            required
+            placeholder="example@gmail.com"
+            name="email"
+            disabled={userContext.userData !== null}
+          />
+          <p>密碼</p>
+          <Input
+            required
+            placeholder="密碼(至少6碼以上)"
+            name="password"
+            min={6}
+            disabled={userContext.userData !== null}
+          />
+        </div>
+        <div className=" inline-flex flex-col min-w-48 max-w-96 w-1/3">
+          <p>購物車內容</p>
+          <table>
+            <tr>
+              <th>圖片</th>
+              <th>課程名稱</th>
+              <th>價格</th>
+              <th>操作</th>
+            </tr>
+            {courses.data.map((course) => (
+              <tr key={course.id}>
+                <td>
+                  <Image
+                    width={100}
+                    height={100}
+                    src={course.attributes.image.data.attributes.url}
+                    alt={course.attributes.title}
+                  />
+                </td>
+                <td>{course.attributes.title}</td>
+                <td>{course.attributes.price}元</td>
+                <td>
+                  <Button
+                    onClick={() => cartData.removeFromCart(course.id)}
+                    type="button"
+                  >
+                    移除
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </table>
+          <p>
+            總金額：
+            {courses.data.reduce(
+              (acc, course) => acc + course.attributes.price,
+              0
+            )}
+            元
+          </p>
 
-      {userContext.userData !== null && (
-        <p className="text-orange-600">以登入, 購買資訊將自動綁定到登入會員</p>
-      )}
-
-      {/* 已註冊時不用填寫會員資料 */}
-      <Input
-        required
-        placeholder="Name"
-        name="name"
-        disabled={userContext.userData !== null}
-      />
-      <Input
-        required
-        placeholder="Email"
-        name="email"
-        disabled={userContext.userData !== null}
-      />
-      <Input
-        required
-        placeholder="Password"
-        name="password"
-        min={6}
-        disabled={userContext.userData !== null}
-      />
-
-      <Button type="submit">前往結帳</Button>
-    </form>
+          <Button type="submit">前往結帳</Button>
+        </div>
+      </form>
+    </div>
   );
 }
