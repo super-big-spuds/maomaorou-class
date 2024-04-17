@@ -41,7 +41,9 @@ export default function CartButton() {
               <div className="flex justify-between items-center">
                 <p>{item.title}</p>
                 <p>${item.price}</p>
-                <button onClick={() => cartData.removeFromCart(item)}>X</button>
+                <button onClick={() => cartData.removeFromCart(item.id)}>
+                  X
+                </button>
               </div>
             </DropdownMenuLabel>
           ))}

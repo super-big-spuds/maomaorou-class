@@ -29,6 +29,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cartData, setCartData] = useState([] as CartItem[]);
 
   const addToCart = (item: CartItem) => {
+    if (cartData.find((cartItem) => cartItem.id === item.id)) {
+      alert("這一個課程已經在購物車裡了");
+      return;
+    }
+
     setCartData((prevCart) => [...prevCart, item]);
   };
 
