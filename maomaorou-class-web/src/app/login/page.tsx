@@ -83,9 +83,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="p-4 relative">
+    <div className="p-4 relative h-[80vh] w-full bg-slate-100">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className=" mt-16">
           {loading && (
             <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 top-1/2">
               <Loader2 className="animate-spin" />
@@ -94,11 +94,9 @@ export default function LoginPage() {
           <Card
             className={`${loading ? "animate-pulse" : ""} mx-auto max-w-sm`}
           >
-            <CardHeader className="space-y-1">
-              <CardTitle className="text-2xl font-bold">Login</CardTitle>
-              <CardDescription>
-                Enter your email and password to login to your account
-              </CardDescription>
+            <CardHeader className="space-y-1 shadow-4xl">
+              <CardTitle className="text-2xl font-bold">登入</CardTitle>
+              <CardDescription>請輸入您的帳號資訊</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -107,7 +105,7 @@ export default function LoginPage() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>電子信箱</FormLabel>
                       <FormControl>
                         <Input placeholder="您的電子信箱" {...field} />
                       </FormControl>
@@ -120,7 +118,7 @@ export default function LoginPage() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>密碼</FormLabel>
                       <FormControl>
                         <Input placeholder="密碼" {...field} />
                       </FormControl>

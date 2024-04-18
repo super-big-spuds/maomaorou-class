@@ -88,22 +88,20 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="p-4">
+    <div className="p-4 h-[80vh] w-full bg-slate-100 ">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className=" mt-16">
           {loading && (
-            <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 top-1/2">
+            <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 top-1/2  ">
               <Loader2 className="animate-spin" />
             </div>
           )}
           <Card
-            className={`${loading ? "animate-pulse" : ""} mx-auto max-w-sm`}
+            className={`${loading ? "animate-pulse" : ""} mx-auto max-w-sm `}
           >
             <CardHeader className="space-y-1">
-              <CardTitle className="text-2xl font-bold">Register</CardTitle>
-              <CardDescription>
-                Enter your email and password to register to your account
-              </CardDescription>
+              <CardTitle className="text-2xl font-bold">註冊</CardTitle>
+              <CardDescription>請輸入您的帳號資訊</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -112,7 +110,7 @@ export default function RegisterPage() {
                   name="username"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Username</FormLabel>
+                      <FormLabel>使用者名稱</FormLabel>
                       <FormControl>
                         <Input placeholder="您的名字" {...field} />
                       </FormControl>
@@ -125,7 +123,7 @@ export default function RegisterPage() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>電子信箱</FormLabel>
                       <FormControl>
                         <Input placeholder="您的電子信箱" {...field} />
                       </FormControl>
@@ -138,7 +136,7 @@ export default function RegisterPage() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>密碼</FormLabel>
                       <FormControl>
                         <Input placeholder="密碼" {...field} />
                       </FormControl>
