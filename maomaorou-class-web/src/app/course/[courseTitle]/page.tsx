@@ -9,6 +9,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import Image from "next/image";
 
 const QUERY = gql(`
 query GetCourseQueryData($title: String!) {
@@ -21,6 +22,7 @@ query GetCourseQueryData($title: String!) {
           description
           price
           durationDay
+          updatedAt
           chapters {
           	data {
               id
@@ -63,6 +65,7 @@ const schema = z.object({
         description: z.string(),
         price: z.number(),
         durationDay: z.number(),
+        updatedAt: z.string().transform((v) => new Date(v)),
         chapters: z.object({
           data: z.array(
             z.object({
@@ -139,12 +142,15 @@ export default async function CoursePage({
           線上影音課程-{data.courseByTitle.data.attributes.title}
         </p>
 
-        <img
-          className="lg:w-2/3 md:w-1/2 mx-20 my-30 min-w-56  "
-          src={data.courseByTitle.data.attributes.image.data.attributes.url}
-          alt="課程介紹"
-          loading="lazy"
-        />
+        <div className="lg:w-2/3 md:w-1/2 mx-20 my-30 min-w-56 relative">
+          <Image
+            src={data.courseByTitle.data.attributes.image.data.attributes.url}
+            alt="課程介紹"
+            loading="lazy"
+            width={600}
+            height={600}
+          />
+        </div>
         <p className=" text-2xl font-bold">關於此課程</p>
         <p className=" pl-5">
           {data.courseByTitle.data.attributes.description}
@@ -183,25 +189,28 @@ export default async function CoursePage({
 
       <div className="sticky top-20 flex flex-col  mt-5 w-full  lg:w-1/6 sm:w-1/2 h-full bg-neutral-200 p-3 items-center rounded shadow-xl">
         <div className=" bg-white rounded border p-2 w-4/5 lg:w-full flex flex-col gap-3 ">
-          <p className=" text-xl font-bold">課程價格</p>
           <p className=" text-2xl ml-3">
-            NT{data.courseByTitle.data.attributes.price.toLocaleString()}
+            NT${data.courseByTitle.data.attributes.price.toLocaleString()}
           </p>
           <CourseAddToCartButton
             courseId={data.courseByTitle.data.id}
             title={data.courseByTitle.data.attributes.title}
             price={data.courseByTitle.data.attributes.price}
           />
-          <p className=" text-gray-400 font-xs">最後更新{}</p>
+          <p>課程有效期: {data.courseByTitle.data.attributes.durationDay}</p>
+          <p className=" text-gray-400 font-xs">
+            最後更新:
+            {data.courseByTitle.data.attributes.updatedAt
+              .toISOString()
+              .slice(0, 10)}
+          </p>
         </div>
         <div className=" bg-slate-100 rounded border p-2 w-4/5 lg:w-full flex flex-col gap-3 ">
-          <p className=" text-xl font-bold">課程包含</p>
+          <p className="text-xl font-bold">課程包含</p>
           <ul className="ml-3">
             <li>-教學影片</li>
             <li>-教材</li>
           </ul>
-          <p className=" text-xl font-bold">適合對象</p>
-          <p className="ml-3"> -幣圈老司機</p>
         </div>
       </div>
     </div>
