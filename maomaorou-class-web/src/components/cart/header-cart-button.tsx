@@ -26,7 +26,7 @@ export default function CartButton() {
           <ShoppingCart className="h-5 w-5" />
           <span className="sr-only">Cart</span>
           {cartData.cart.length !== 0 && (
-            <div className="absolute right-0 bottom-0 bg-orange-200 rounded-full w-6 h-6 flex justify-center  items-center">
+            <div className="absolute -right-4  bottom-1.5 bg-orange-200 rounded-full w-6 h-6 flex justify-center  items-center ">
               <p>{cartData.cart.length}</p>
             </div>
           )}
@@ -37,8 +37,8 @@ export default function CartButton() {
           <DropdownMenuLabel>購物車內容</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {cartData.cart.map((item) => (
-            <DropdownMenuLabel key={item.id}>
-              <div className="flex justify-between items-center">
+            <DropdownMenuLabel key={item.id} className=" bg-rose-100">
+              <div className="flex justify-between items-center border-b-2">
                 <p>{item.title}</p>
                 <p>${item.price}</p>
                 <button onClick={() => cartData.removeFromCart(item.id)}>
