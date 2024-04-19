@@ -25,6 +25,9 @@
       "action": "api::lesson.lesson.findOne"
     },
     {
+      "action": "api::term.term.find"
+    },
+    {
       "action": "plugin::users-permissions.auth.callback"
     },
     {

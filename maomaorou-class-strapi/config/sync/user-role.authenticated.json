@@ -4,6 +4,9 @@
   "type": "authenticated",
   "permissions": [
     {
+      "action": "api::term.term.find"
+    },
+    {
       "action": "plugin::users-permissions.auth.changePassword"
     },
     {

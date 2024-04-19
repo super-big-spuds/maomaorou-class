@@ -1,0 +1,96 @@
+.no-tailwind .no-tailwind h1 {
+  font-size: 2.25rem;
+  font-weight: 600;
+}
+
+.no-tailwind h2 {
+  font-size: 1.875rem;
+  font-weight: 500;
+}
+
+.no-tailwind h3 {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.no-tailwind h4 {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.no-tailwind strong {
+  font-weight: 800;
+}
+
+.no-tailwind em {
+  font-style: italic;
+}
+
+.no-tailwind u {
+  text-decoration: underline;
+}
+
+.no-tailwind s {
+  text-decoration: line-through;
+}
+
+.no-tailwind ul {
+  list-style-type: disc;
+  margin-block: 16px;
+  margin-inline: 0px;
+  padding-inline-start: 16px;
+}
+
+.no-tailwind li {
+  display: list-item;
+  text-align: -webkit-match-parent;
+  unicode-bidi: isolate;
+}
+
+.no-tailwind ol {
+  list-style-type: decimal;
+  margin-block: 16px;
+  margin-inline: 0px;
+  padding-inline-start: 16px;
+}
+
+.no-tailwind pre {
+  font-size: 0.875rem;
+  border-radius: 4px;
+  background-color: rgb(50, 50, 77);
+  max-width: 100%;
+  overflow: auto;
+  padding: 8px;
+}
+
+.no-tailwind pre > code {
+  color: rgb(131, 148, 150);
+}
+
+.no-tailwind a:-webkit-any- link {
+  color: -webkit-link;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.no-tailwind blockquote {
+  margin-top: 40px;
+  margin-bottom: 32px;
+  font-size: 0.875rem;
+  font-weight: 400;
+  border-left: 4px solid rgb(234, 234, 239);
+  font-style: italic;
+  padding: 8px 20px;
+}
+
+.no-tailwind p:has(> img) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.no-tailwind img {
+  width: 50%;
+  min-width: 200px;
+}

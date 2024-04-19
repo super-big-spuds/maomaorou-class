@@ -1100,6 +1100,31 @@ export interface ApiPaymentPayment extends Schema.CollectionType {
   };
 }
 
+export interface ApiTermTerm extends Schema.SingleType {
+  collectionName: 'terms';
+  info: {
+    singularName: 'term';
+    pluralName: 'terms';
+    displayName: '\u670D\u52D9\u689D\u6B3E';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    content: Attribute.RichText &
+      Attribute.Required &
+      Attribute.DefaultTo<'\u670D\u52D9\u689D\u6B3E\u5167\u5BB9'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::term.term', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::term.term', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
 export interface ApiUserCoursesStatusUserCoursesStatus
   extends Schema.CollectionType {
   collectionName: 'user_courses_statuses';
@@ -1166,6 +1191,7 @@ declare module '@strapi/types' {
       'api::order.order': ApiOrderOrder;
       'api::order-course.order-course': ApiOrderCourseOrderCourse;
       'api::payment.payment': ApiPaymentPayment;
+      'api::term.term': ApiTermTerm;
       'api::user-courses-status.user-courses-status': ApiUserCoursesStatusUserCoursesStatus;
     }
   }
