@@ -4,6 +4,8 @@ import { createContext, useContext, useEffect, useState } from "react";
 import useToken from "./../hook/useToken";
 import { gql } from "@/__generated__";
 import { useQuery } from "@apollo/client";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 type IUserData = null | {
   id: string;
@@ -18,7 +20,7 @@ const context = createContext({
   isLoading: true,
   error: undefined as IError,
   handleLogout: () => {},
-  handleRefetch: () => {},
+  handleRefetch: async () => {},
 });
 
 const GET_USER_PROFILE_QUERY = gql(`
@@ -42,6 +44,8 @@ export function useUser() {
 }
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const { toast } = useToast();
   const { token, cleanToken } = useToken();
   const { data, loading, error, refetch } = useQuery(GET_USER_PROFILE_QUERY, {
     skip: !token,
@@ -54,12 +58,17 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [userData, setUserData] = useState<IUserData>(null);
 
   const handleLogout = () => {
+    toast({
+      title: "登出成功",
+      description: "歡迎再度回來",
+    });
     cleanToken();
     setUserData(null);
+    router.push("/");
   };
 
-  const handleRefetch = () => {
-    refetch();
+  const handleRefetch = async () => {
+    await refetch();
   };
 
   useEffect(() => {

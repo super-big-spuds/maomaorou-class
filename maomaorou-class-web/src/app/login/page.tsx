@@ -25,6 +25,8 @@ import { useMutation } from "@apollo/client";
 import useToken from "@/hook/useToken";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { useUser } from "@/provider/user-provider";
+import { useToast } from "@/components/ui/use-toast";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -45,6 +47,7 @@ mutation login($email: String!, $password: String!) {
 `);
 
 export default function LoginPage() {
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -52,8 +55,26 @@ export default function LoginPage() {
       password: "",
     },
   });
-  const [sendLoginMutation, { error, loading }] = useMutation(LOGIN_MUTATION);
+  const [sendLoginMutation, { error, loading }] = useMutation(LOGIN_MUTATION, {
+    onCompleted: async (data) => {
+      form.reset();
+      const token = data.login.jwt;
+      if (typeof token === "string") {
+        setToken(token);
+        await userContext.handleRefetch();
+        router.push("/my-courses");
+        router.refresh();
+      }
+    },
+    onError: (error) => {
+      toast({
+        title: "登入失敗",
+        description: error.message,
+      });
+    },
+  });
   const { setToken } = useToken();
+  const userContext = useUser();
   const router = useRouter();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -62,17 +83,7 @@ export default function LoginPage() {
         email: values.email,
         password: values.password,
       },
-    })
-      .then((response) => {
-        const token = response.data?.login.jwt;
-        if (typeof token === "string") {
-          setToken(token);
-          router.push("/my-courses");
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    });
   }
 
   function submitMessageTransformer(message: string) {
@@ -122,7 +133,7 @@ export default function LoginPage() {
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input placeholder="密碼" {...field} />
+                        <Input placeholder="密碼" type="password" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

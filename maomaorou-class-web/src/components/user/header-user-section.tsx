@@ -20,7 +20,7 @@ export default function HeaderUserSection() {
 
   return (
     <>
-      {(userData.isLoading && token) || userData.userData !== null ? (
+      {(userData.isLoading && token !== "") || userData.userData !== null ? (
         <UserProfile />
       ) : (
         <GuestProfile />
