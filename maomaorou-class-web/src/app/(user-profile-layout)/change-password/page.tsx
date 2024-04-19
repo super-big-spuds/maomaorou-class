@@ -28,17 +28,18 @@ import { useToast } from "@/components/ui/use-toast";
 
 const formSchema = z
   .object({
-    password: z.string().min(6, "至少 6 個字元"),
-    confirmPassword: z.string(),
+    originalPassword: z.string(),
+    newPassword: z.string().min(6, "至少 6 個字元"),
+    confirmNewPassword: z.string(),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
     message: "密碼不一致",
-    path: ["confirmPassword"],
+    path: ["confirmNewPassword"],
   });
 
 const UPDATE_USER_PASSWORD_MUTATION = gql(`
-mutation updateUserPasswordData($userProfile: UpdateSelfUserProfileInput) {
-  UpdateSelfUserProfile(userProfile: $userProfile) {
+mutation updateUserPassword($data: UpdateSelfUserPasswordInput) {
+	UpdateSelfUserPassword(userNewPasswordInfo: $data) {
     data {
       id
     }
@@ -46,19 +47,15 @@ mutation updateUserPasswordData($userProfile: UpdateSelfUserProfileInput) {
 }
 `);
 
-type IFormMessage = {
-  status: "pending" | "success" | "error";
-  message: string;
-};
-
 export default function ChangePasswordPage() {
   const { toast } = useToast();
   const { token } = useToken();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      password: "",
-      confirmPassword: "",
+      originalPassword: "",
+      newPassword: "",
+      confirmNewPassword: "",
     },
   });
   const [
@@ -74,7 +71,7 @@ export default function ChangePasswordPage() {
     onError: (error) => {
       toast({
         title: "重設密碼發生錯誤",
-        description: error.message,
+        description: errorMessageTrasformer(error.message),
         variant: "destructive",
       });
     },
@@ -83,8 +80,9 @@ export default function ChangePasswordPage() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     sendUpdateUserProfileMutation({
       variables: {
-        userProfile: {
-          password: values.password,
+        data: {
+          originalPassword: values.originalPassword,
+          newPassword: values.newPassword,
         },
       },
       context: {
@@ -93,6 +91,13 @@ export default function ChangePasswordPage() {
         },
       },
     });
+  }
+
+  function errorMessageTrasformer(message: string) {
+    if (message === "Password not match") {
+      return "輸入的原先密碼不正確";
+    }
+    return message;
   }
 
   return (
@@ -119,7 +124,7 @@ export default function ChangePasswordPage() {
               <div className="space-y-4">
                 <FormField
                   control={form.control}
-                  name="password"
+                  name="originalPassword"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>原先密碼</FormLabel>
@@ -137,13 +142,31 @@ export default function ChangePasswordPage() {
                 />
                 <FormField
                   control={form.control}
-                  name="confirmPassword"
+                  name="newPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>確認密碼</FormLabel>
+                      <FormLabel>新密碼</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="確認密碼"
+                          placeholder="新密碼"
+                          disabled={isSendUpdateUserProfileLoading}
+                          type="password"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="confirmNewPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>確認新密碼</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="確認新密碼"
                           disabled={isSendUpdateUserProfileLoading}
                           type="password"
                           {...field}

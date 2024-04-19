@@ -1,5 +1,7 @@
 import { Strapi } from "@strapi/strapi";
 import { NewebPaymentService } from "./lib/newebpay";
+import { errors } from "@strapi/utils";
+const { ForbiddenError } = errors;
 
 export default {
   /**
@@ -264,11 +266,16 @@ export default {
           input UpdateSelfUserProfileInput {
             username: String
             email: String
-            password: String
+          }
+
+          input UpdateSelfUserPasswordInput {
+            originalPassword: String!
+            newPassword: String!
           }
 
           type Mutation {
             UpdateSelfUserProfile(userProfile: UpdateSelfUserProfileInput): UsersPermissionsUserEntityResponse
+            UpdateSelfUserPassword(userNewPasswordInfo: UpdateSelfUserPasswordInput): UsersPermissionsUserEntityResponse
           }
         `,
       resolvers: {
@@ -286,6 +293,43 @@ export default {
                 userId,
                 {
                   data: args.userProfile,
+                }
+              );
+
+              return toEntityResponse(newUser);
+            },
+          },
+          UpdateSelfUserPassword: {
+            resolve: async (parent, args, context) => {
+              const { toEntityResponse } = strapi.service(
+                "plugin::graphql.format"
+              ).returnTypes;
+
+              const userId = context.state.user.id;
+
+              const user = await strapi.entityService.findOne(
+                "plugin::users-permissions.user",
+                userId
+              );
+
+              const isUserPasswordMatch = await strapi.plugins[
+                "users-permissions"
+              ].services.user.validatePassword(
+                args.userNewPasswordInfo.originalPassword,
+                user.password
+              );
+
+              if (!isUserPasswordMatch) {
+                throw new ForbiddenError("Password not match");
+              }
+
+              const newUser = await strapi.entityService.update(
+                "plugin::users-permissions.user",
+                userId,
+                {
+                  data: {
+                    password: args.userNewPasswordInfo.newPassword,
+                  },
                 }
               );
 
