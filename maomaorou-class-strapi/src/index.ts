@@ -258,6 +258,41 @@ export default {
         },
       },
     }));
+
+    extensionService.use(({ strapi }) => ({
+      typeDefs: `
+          input UpdateSelfUserProfileInput {
+            username: String
+            email: String
+          }
+
+          type Mutation {
+            UpdateSelfUserProfile(userProfile: UpdateSelfUserProfileInput): UsersPermissionsUserEntityResponse
+          }
+        `,
+      resolvers: {
+        Mutation: {
+          UpdateSelfUserProfile: {
+            resolve: async (parent, args, context) => {
+              const { toEntityResponse } = strapi.service(
+                "plugin::graphql.format"
+              ).returnTypes;
+
+              const userId = context.state.user.id;
+
+              const newUser = await strapi.services[
+                "plugin::users-permissions.user"
+              ].update(userId, {
+                data: args.userProfile,
+              });
+              console.log(newUser);
+
+              return toEntityResponse(newUser);
+            },
+          },
+        },
+      },
+    }));
   },
   /**
    * An asynchronous bootstrap function that runs before

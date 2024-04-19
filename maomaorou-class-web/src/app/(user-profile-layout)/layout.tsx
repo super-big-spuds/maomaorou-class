@@ -30,7 +30,7 @@ export default function UserProfileLayout({
       <h1 className="text-2xl font-bold">{getTitle(pathname)}</h1>
       <div className="flex justify-center items-center md:items-start h-full gap-x-12 w-full max-w-3xl relative md:flex-row flex-col">
         {/* Link block */}
-        <div className="flex flex-row md:flex-col gap-4 sticky top-20">
+        <div className="flex flex-row md:flex-col gap-4 sticky top-20 whitespace-nowrap">
           <Link
             className={
               pathname === "/my-orders" ? "text-gray-600" : "text-gray-200"

@@ -5,14 +5,10 @@ import useToken from "@/hook/useToken";
 import { useQuery } from "@apollo/client";
 import { z } from "zod";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { usePathname } from "next/navigation";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -92,7 +88,7 @@ export default function MyOrdersPage() {
                     {order.data.attributes.totalPrice.toLocaleString()}
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button>查看</Button>
+                    <Link href={`/order/${order.data.id}`}>查看</Link>
                   </TableCell>
                 </TableRow>
               ))}
