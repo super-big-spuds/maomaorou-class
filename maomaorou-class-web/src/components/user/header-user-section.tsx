@@ -62,7 +62,7 @@ function UserProfile() {
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Link href="/missing-password">
-              <p>帳號設定</p>
+              <p>遺失密碼</p>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />

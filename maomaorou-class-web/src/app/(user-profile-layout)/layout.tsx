@@ -10,24 +10,8 @@ export default function UserProfileLayout({
 }) {
   const pathname = usePathname();
 
-  const getTitle = (pathname: string) => {
-    switch (pathname) {
-      case "/my-orders":
-        return "訂單檢視";
-      case "/account-setting":
-        return "帳號設定";
-      case "/change-password":
-        return "變更密碼";
-      case "/lost-password":
-        return "密碼遺失";
-      default:
-        return "";
-    }
-  };
-
   return (
     <div className="w-full flex justify-center items-center flex-col my-4 h-full">
-      <h1 className="text-2xl font-bold">{getTitle(pathname)}</h1>
       <div className="flex justify-center items-center md:items-start h-full gap-x-12 w-full max-w-3xl relative md:flex-row flex-col">
         {/* Link block */}
         <div className="flex flex-row md:flex-col gap-4 sticky top-20 whitespace-nowrap">
@@ -61,9 +45,11 @@ export default function UserProfileLayout({
           </Link>
           <Link
             className={
-              pathname === "/lost-password" ? "text-gray-600" : "text-gray-200"
+              pathname === "/missing-password"
+                ? "text-gray-600"
+                : "text-gray-200"
             }
-            href={"/lost-password"}
+            href={"/missing-password"}
           >
             密碼遺失
           </Link>

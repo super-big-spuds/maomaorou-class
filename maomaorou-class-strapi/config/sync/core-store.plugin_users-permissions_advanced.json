@@ -4,7 +4,7 @@
     "unique_email": true,
     "allow_register": true,
     "email_confirmation": false,
-    "email_reset_password": null,
+    "email_reset_password": "http://localhost:3000/missing-password/callback",
     "email_confirmation_redirection": "",
     "default_role": "authenticated"
   },
