@@ -18,6 +18,7 @@ const context = createContext({
   isLoading: true,
   error: undefined as IError,
   handleLogout: () => {},
+  handleRefetch: () => {},
 });
 
 const GET_USER_PROFILE_QUERY = gql(`
@@ -42,7 +43,7 @@ export function useUser() {
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const { token, cleanToken } = useToken();
-  const { data, loading, error } = useQuery(GET_USER_PROFILE_QUERY, {
+  const { data, loading, error, refetch } = useQuery(GET_USER_PROFILE_QUERY, {
     skip: !token,
     context: {
       headers: {
@@ -55,6 +56,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const handleLogout = () => {
     cleanToken();
     setUserData(null);
+  };
+
+  const handleRefetch = () => {
+    refetch();
   };
 
   useEffect(() => {
@@ -74,6 +79,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         isLoading: loading,
         error: error?.message,
         handleLogout,
+        handleRefetch,
       }}
     >
       {children}

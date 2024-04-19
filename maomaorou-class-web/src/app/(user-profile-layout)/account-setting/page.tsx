@@ -16,19 +16,38 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { gql } from "@/__generated__/gql";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useUser } from "@/provider/user-provider";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
+import { useMutation } from "@apollo/client";
+import useToken from "@/hook/useToken";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   username: z.string().min(3, "至少 3 個字元"),
   email: z.string().min(6, "至少 6 個字元"),
 });
 
+const UPDATE_PROFILE_MUTATION = gql(`
+mutation updateProfileData($userProfile: UpdateSelfUserProfileInput) {
+  UpdateSelfUserProfile(userProfile: $userProfile) {
+    data {
+      id
+      attributes {
+        username
+        email
+      }
+    }
+  }
+}
+`);
+
 export default function AccountSettingPage() {
+  const { token } = useToken();
   const userContext = useUser();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -37,8 +56,25 @@ export default function AccountSettingPage() {
       email: "",
     },
   });
+  const [
+    sendUpdateUserProfileMutation,
+    { loading: isSendUpdateUserProfileLoading },
+  ] = useMutation(UPDATE_PROFILE_MUTATION, {
+    onCompleted: userContext.handleRefetch,
+  });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {}
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    sendUpdateUserProfileMutation({
+      variables: {
+        userProfile: values,
+      },
+      context: {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    });
+  }
 
   useEffect(() => {
     if (!userContext.userData) return;
@@ -52,9 +88,16 @@ export default function AccountSettingPage() {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <Card
             className={`${
-              userContext.isLoading ? "animate-pulse" : ""
-            } mx-auto max-w-sm`}
+              userContext.isLoading || isSendUpdateUserProfileLoading
+                ? "animate-pulse"
+                : ""
+            } mx-auto max-w-sm relative`}
           >
+            {isSendUpdateUserProfileLoading && (
+              <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 top-1/2">
+                <Loader2 className="animate-spin" />
+              </div>
+            )}
             <CardHeader className="space-y-1">
               <CardTitle className="text-2xl font-bold">帳號設定</CardTitle>
             </CardHeader>
@@ -70,7 +113,11 @@ export default function AccountSettingPage() {
                         <area className="w-full h-10 animate-pulse bg-gray-200 block rounded" />
                       ) : (
                         <FormControl>
-                          <Input placeholder="您的使用者名稱" {...field} />
+                          <Input
+                            placeholder="您的使用者名稱"
+                            disabled={isSendUpdateUserProfileLoading}
+                            {...field}
+                          />
                         </FormControl>
                       )}
                       <FormMessage />
@@ -87,7 +134,11 @@ export default function AccountSettingPage() {
                         <area className="w-full h-10 animate-pulse bg-gray-200 block rounded" />
                       ) : (
                         <FormControl>
-                          <Input placeholder="您的電子信箱" {...field} />
+                          <Input
+                            placeholder="您的電子信箱"
+                            disabled={isSendUpdateUserProfileLoading}
+                            {...field}
+                          />
                         </FormControl>
                       )}
                       <FormMessage />

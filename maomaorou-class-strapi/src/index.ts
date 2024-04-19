@@ -280,12 +280,13 @@ export default {
 
               const userId = context.state.user.id;
 
-              const newUser = await strapi.services[
-                "plugin::users-permissions.user"
-              ].update(userId, {
-                data: args.userProfile,
-              });
-              console.log(newUser);
+              const newUser = await strapi.entityService.update(
+                "plugin::users-permissions.user",
+                userId,
+                {
+                  data: args.userProfile,
+                }
+              );
 
               return toEntityResponse(newUser);
             },
