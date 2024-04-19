@@ -264,6 +264,7 @@ export default {
           input UpdateSelfUserProfileInput {
             username: String
             email: String
+            password: String
           }
 
           type Mutation {
