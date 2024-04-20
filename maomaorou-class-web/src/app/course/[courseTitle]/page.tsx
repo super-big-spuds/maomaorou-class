@@ -10,6 +10,14 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import Image from "next/image";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 const QUERY = gql(`
 query GetCourseQueryData($title: String!) {
@@ -136,85 +144,106 @@ export default async function CoursePage({
   // price
 
   return (
-    <div className="flex flex-wrap justify-center relative h-full min-h-screen  bg-slate-100">
-      <div className="flex flex-col px-10 py-5 gap-6 max-w-3xl min-w-[25vw] border bg-white ">
-        <p className="text-3xl font-bold">
+    <div className="flex md:flex-row flex-col justify-center relative h-full min-h-screen m-4 gap-4">
+      <Card className="flex flex-col px-10 py-5 gap-6 max-w-3xl min-w-[25vw]">
+        <CardTitle>
           線上影音課程-{data.courseByTitle.data.attributes.title}
-        </p>
+        </CardTitle>
 
-        <div className="lg:w-2/3 md:w-1/2 mx-20 my-30 min-w-56 relative">
-          <Image
-            src={data.courseByTitle.data.attributes.image.data.attributes.url}
-            alt="課程介紹"
-            loading="lazy"
-            width={600}
-            height={600}
-          />
-        </div>
-        <p className=" text-2xl font-bold">關於此課程</p>
-        <p className=" pl-5">
-          {data.courseByTitle.data.attributes.description}
-        </p>
-        <p className=" text-2xl font-bold ">你將會學到什麼?</p>
-        <p className=" pl-5">{data.courseByTitle.data.attributes.goal}</p>
-        <p className=" text-2xl font-bold">課程大綱</p>
-        <Accordion type="multiple">
-          {data.courseByTitle.data.attributes.chapters.data.map((chapter) => (
-            <AccordionItem
-              value={chapter.id}
-              className="　border border-gray-300 rounded-xl mb-1 "
-              key={chapter.id}
-            >
-              <AccordionTrigger className=" border-3 border-gray-800 rounded-xl px-5  font-bold ">
-                課程 {chapter.attributes.sequence}：{chapter.attributes.name}
-              </AccordionTrigger>
-              <AccordionContent>
-                {chapter.attributes.lessons.data.length > 0 ? (
-                  chapter.attributes.lessons.data.map((lesson) => (
-                    <div key={lesson.id} className=" px-5 py-2.5 mx-2 ">
-                      <p>
-                        章節 {lesson.attributes.sequence}：
-                        {lesson.attributes.name}
-                      </p>
-                    </div>
-                  ))
-                ) : (
-                  <div className=" px-5 py-2.5 mx-2 ">無章節</div>
+        <CardContent className="p-0">
+          <div className="flex flex-col gap-y-8">
+            <div className="w-full flex justify-center items-center">
+              <Image
+                className="lg:w-2/3 md:w-1/2"
+                src={
+                  data.courseByTitle.data.attributes.image.data.attributes.url
+                }
+                alt="課程介紹"
+                loading="lazy"
+                width={600}
+                height={600}
+              />
+            </div>
+            <div>
+              <p className="text-xl font-bold">關於此課程</p>
+              <p>{data.courseByTitle.data.attributes.description}</p>
+            </div>
+            <div>
+              <p className="text-xl font-bold">你將會學到什麼?</p>
+              <p>{data.courseByTitle.data.attributes.goal}</p>
+            </div>
+            <div>
+              <p className="text-xl font-bold">課程大綱</p>
+              <Accordion type="multiple">
+                {data.courseByTitle.data.attributes.chapters.data.map(
+                  (chapter) => (
+                    <AccordionItem
+                      value={chapter.id}
+                      className="border border-gray-300 rounded-xl mb-1"
+                      key={chapter.id}
+                    >
+                      <AccordionTrigger className="border-3 border-gray-800 rounded-xl px-5  font-bold">
+                        課程 {chapter.attributes.sequence}：
+                        {chapter.attributes.name}
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        {chapter.attributes.lessons.data.length > 0 ? (
+                          chapter.attributes.lessons.data.map((lesson) => (
+                            <div key={lesson.id} className="px-5 py-2.5 mx-2">
+                              <p>
+                                章節 {lesson.attributes.sequence}：
+                                {lesson.attributes.name}
+                              </p>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="px-5 py-2.5 mx-2">無章節</div>
+                        )}
+                      </AccordionContent>
+                    </AccordionItem>
+                  )
                 )}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </div>
+              </Accordion>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-      <div className="sticky top-20 flex flex-col  mt-5 w-full  lg:w-1/6 sm:w-1/2 h-full bg-neutral-200 p-3 items-center rounded shadow-xl">
-        <div className="bg-white rounded border p-2 w-4/5 lg:w-full flex flex-col gap-3">
-          <p className=" text-xl font-bold">課程價格</p>
-          <p className=" text-2xl ml-3">
-            NT${data.courseByTitle.data.attributes.price.toLocaleString()}
-          </p>
-          <CourseAddToCartButton
-            courseId={data.courseByTitle.data.id}
-            title={data.courseByTitle.data.attributes.title}
-            price={data.courseByTitle.data.attributes.price}
-          />
-          <p>課程有效期: {data.courseByTitle.data.attributes.durationDay}</p>
-          <p className=" text-gray-400 font-xs">
+      <Card className="sticky top-20 flex flex-col md:w-fit w-full h-full gap-3 p-4">
+        <CardTitle>課程價格</CardTitle>
+        <CardDescription>
+          NT${data.courseByTitle.data.attributes.price.toLocaleString()}
+        </CardDescription>
+        <Separator />
+        <CardContent className="p-0 flex flex-col gap-y-2">
+          <div>
+            <p className="text-lg font-semibold">課程有效期</p>
+            <p>{data.courseByTitle.data.attributes.durationDay}天</p>
+          </div>
+          <div>
+            <p className="text-lg font-semibold">課程包含</p>
+            <ul>
+              <li>- 教學影片</li>
+              <li>- 教材</li>
+            </ul>
+          </div>
+        </CardContent>
+        <Separator />
+        <CardFooter className="flex flex-col p-0 items-start gap-y-2">
+          <p className="text-gray-400 font-xs">
             最後更新:
             {data.courseByTitle.data.attributes.updatedAt
               .toISOString()
               .slice(0, 10)}
           </p>
-        </div>
-
-        <div className="bg-slate-100 rounded border p-2 w-4/5 lg:w-full flex flex-col gap-3">
-          <p className="text-xl font-bold">課程包含</p>
-          <ul className="ml-3">
-            <li>-教學影片</li>
-            <li>-教材</li>
-          </ul>
-        </div>
-      </div>
+          <CourseAddToCartButton
+            className="w-full"
+            courseId={data.courseByTitle.data.id}
+            title={data.courseByTitle.data.attributes.title}
+            price={data.courseByTitle.data.attributes.price}
+          />
+        </CardFooter>
+      </Card>
     </div>
   );
 }

@@ -2,19 +2,23 @@
 
 import { Button } from "../ui/button";
 import { useCart } from "./../../provider/cart-provider";
-import CartButton from "./header-cart-button";
 
 type Props = {
   courseId: string;
   title: string;
   price: number;
+  className?: string;
 };
 
-export default function CourseAddToCartButton(props: Props) {
+export default function CourseAddToCartButton({
+  className = "",
+  ...props
+}: Props) {
   const useCartData = useCart();
 
   return (
     <Button
+      className={className}
       onClick={() =>
         useCartData.addToCart({
           id: props.courseId,
