@@ -28,6 +28,9 @@
       "action": "api::lesson.lesson.findOne"
     },
     {
+      "action": "api::order.order.newebPayNotifyCallback"
+    },
+    {
       "action": "api::term.term.find"
     },
     {
