@@ -4,6 +4,9 @@
   "type": "authenticated",
   "permissions": [
     {
+      "action": "api::about-us.about-us.find"
+    },
+    {
       "action": "api::term.term.find"
     },
     {

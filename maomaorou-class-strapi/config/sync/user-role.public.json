@@ -4,6 +4,9 @@
   "type": "public",
   "permissions": [
     {
+      "action": "api::about-us.about-us.find"
+    },
+    {
       "action": "api::chapter.chapter.find"
     },
     {
