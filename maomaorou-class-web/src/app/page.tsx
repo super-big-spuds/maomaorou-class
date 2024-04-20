@@ -2,6 +2,12 @@ import Image from "next/image";
 import { gql } from "@/__generated__/gql";
 import { createApolloSSRClient } from "@/lib/apollo-client";
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "貓貓肉課程",
+  description: "貓貓肉課程介紹",
+};
 
 const QUERY = gql(`
   query GetMainPageQueryData {
