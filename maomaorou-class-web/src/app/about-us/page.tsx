@@ -2,6 +2,11 @@ import { gql } from "@/__generated__/gql";
 import StrapiMdxToHtmlConverter from "@/components/mdx-converter/strapi-mdx-to-html-converter";
 import { createApolloSSRClient } from "@/lib/apollo-client";
 import { z } from "zod";
+import type { Metadata } from "next";
+export const metadata: Metadata = {
+  title: "關於我們",
+  description: "貓貓肉課關於我們",
+};
 
 const QUERY = gql(`
   query getAboutus {

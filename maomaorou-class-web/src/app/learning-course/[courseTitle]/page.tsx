@@ -4,6 +4,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "學習課程",
+  description: "貓貓肉課程介紹",
+};
 const data = {
   courseByTitle: {
     data: {

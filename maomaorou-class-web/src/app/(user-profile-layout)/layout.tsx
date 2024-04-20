@@ -2,6 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "個人資料",
+  description: "貓貓肉個人資料",
+};
 
 export default function UserProfileLayout({
   children,

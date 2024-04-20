@@ -19,6 +19,12 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
+import { Metadata } from "next";
+export const metadata: Metadata = {
+  title: "課程",
+  description: "貓貓肉課程介紹",
+};
+
 const QUERY = gql(`
 query GetCourseQueryData($title: String!) {
     courseByTitle(title: $title) {
