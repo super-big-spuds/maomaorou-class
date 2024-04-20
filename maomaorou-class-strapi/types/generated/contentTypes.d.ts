@@ -948,6 +948,28 @@ export interface ApiDecorationSettingDecorationSetting
   };
 }
 
+export interface ApiFaqFaq extends Schema.CollectionType {
+  collectionName: 'faqs';
+  info: {
+    singularName: 'faq';
+    pluralName: 'faqs';
+    displayName: '\u5E38\u898B\u554F\u984C';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    question: Attribute.String & Attribute.Required & Attribute.Unique;
+    answer: Attribute.String & Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::faq.faq', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::faq.faq', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
 export interface ApiLessonLesson extends Schema.CollectionType {
   collectionName: 'lessons';
   info: {
@@ -1218,6 +1240,7 @@ declare module '@strapi/types' {
       'api::chapter.chapter': ApiChapterChapter;
       'api::course.course': ApiCourseCourse;
       'api::decoration-setting.decoration-setting': ApiDecorationSettingDecorationSetting;
+      'api::faq.faq': ApiFaqFaq;
       'api::lesson.lesson': ApiLessonLesson;
       'api::order.order': ApiOrderOrder;
       'api::order-course.order-course': ApiOrderCourseOrderCourse;

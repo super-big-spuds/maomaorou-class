@@ -204,7 +204,9 @@ export default function CheckoutPage() {
                 placeholder="輸入本名"
                 name="name"
                 disabled={userContext.userData !== null}
-                className=" w-full"
+                className={cn("w-full", {
+                  "bg-gray-200": userContext.userData !== null,
+                })}
               />
             </div>
             <div>
@@ -214,7 +216,9 @@ export default function CheckoutPage() {
                 placeholder="example@gmail.com"
                 name="email"
                 disabled={userContext.userData !== null}
-                className=" w-full"
+                className={cn("w-full", {
+                  "bg-gray-200": userContext.userData !== null,
+                })}
               />
             </div>
             <div>
@@ -225,15 +229,17 @@ export default function CheckoutPage() {
                 name="password"
                 min={6}
                 disabled={userContext.userData !== null}
-                className=" w-full"
+                className={cn("w-full", {
+                  "bg-gray-200": userContext.userData !== null,
+                })}
               />
             </div>
           </CardContent>
           <Separator className="my-6" />
           <CardTitle>購物車內容</CardTitle>
           <CardContent className="flex flex-col gap-4 p-0 my-4">
-            {cartData.cart.length < 0 ? (
-              <p>購物車是空的</p>
+            {cartData.cart.length === 0 ? (
+              <p className="text-center">購物車是空的</p>
             ) : !parseResult.success ? (
               <div>系統發生錯誤, 請通知管理員</div>
             ) : (
@@ -290,7 +296,11 @@ export default function CheckoutPage() {
           </CardContent>
           <Separator className="mb-4" />
           <CardFooter className="flex-col">
-            <Button type="submit" className="text-lg font-semibold w-full">
+            <Button
+              type="submit"
+              className="text-lg font-semibold w-full"
+              disabled={cartData.cart.length === 0 || loading}
+            >
               下單購買
             </Button>
             <p className=" text-gray-400 text-center">

@@ -1,7 +1,7 @@
 import { Strapi } from "@strapi/strapi";
 import { NewebPaymentService } from "./lib/newebpay";
 import { errors } from "@strapi/utils";
-const { ForbiddenError } = errors;
+const { ForbiddenError, NotFoundError } = errors;
 
 export default {
   /**
@@ -198,6 +198,7 @@ export default {
       typeDefs: `
         type Query {
           myOrders: [OrderEntityResponse]
+          myOrder(orderId: ID!): OrderEntityResponse
         }
       `,
       resolvers: {
@@ -219,6 +220,26 @@ export default {
               );
 
               return response;
+            },
+          },
+          myOrder: {
+            resolve: async (parent, args, context) => {
+              const { toEntityResponse } = strapi.service(
+                "plugin::graphql.format"
+              ).returnTypes;
+
+              const user = context.state.user;
+              const orderId = args.orderId;
+
+              const data = await strapi.services["api::order.order"].find({
+                filters: { user: user.id, id: orderId },
+              });
+
+              if (data.results.length === 0) {
+                throw new NotFoundError("Order not found");
+              }
+
+              return toEntityResponse(data.results[0]);
             },
           },
         },

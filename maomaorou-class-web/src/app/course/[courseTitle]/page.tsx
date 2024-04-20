@@ -150,8 +150,8 @@ export default async function CoursePage({
   // price
 
   return (
-    <div className="flex md:flex-row flex-col justify-center relative h-full min-h-screen m-4 gap-4">
-      <Card className="flex flex-col px-10 py-5 gap-6 max-w-3xl min-w-[25vw]">
+    <div className="flex md:flex-row flex-col justify-center relative h-full min-h-screen m-4 gap-4 w-full">
+      <Card className="flex flex-col px-10 py-5 gap-6 max-w-3xl w-full">
         <CardTitle>
           線上影音課程-{data.courseByTitle.data.attributes.title}
         </CardTitle>

@@ -4,12 +4,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Metadata } from "next";
+import { Card } from "@/components/ui/card";
 
-export const metadata: Metadata = {
-  title: "學習課程",
-  description: "貓貓肉課程介紹",
-};
 const data = {
   courseByTitle: {
     data: {
@@ -34,6 +30,10 @@ const data = {
                       attributes: {
                         name: "第一節",
                         sequence: 1,
+                        content: {
+                          isVideo: true,
+                          url: "https://www.youtube.com/embed/1",
+                        },
                       },
                     },
                     {
@@ -41,6 +41,10 @@ const data = {
                       attributes: {
                         name: "第二節",
                         sequence: 2,
+                        content: {
+                          isVideo: false,
+                          content: "這是一個文字內容",
+                        },
                       },
                     },
                   ],
@@ -59,6 +63,10 @@ const data = {
                       attributes: {
                         name: "第一節",
                         sequence: 1,
+                        content: {
+                          isVideo: false,
+                          content: "這是一個文字內容",
+                        },
                       },
                     },
                   ],
@@ -81,12 +89,12 @@ const data = {
 };
 export default function LearningCoursePage() {
   return (
-    <div className="flex flex-wrap justify-center relative h-full items-center w-full bg-slate-100  ">
-      <div className="flex flex-col px-10 py-5 gap-6 w-full max-w-3xl bg-white ">
+    <div className="flex justify-center h-full items-center w-full m-4">
+      <Card className="flex flex-col px-10 py-5 gap-6 w-full max-w-3xl">
         <p className="text-3xl font-semibold mx-auto">課程名稱</p>
         <img
           src="https://via.placeholder.com/150"
-          className=" w-1/2 h-1/2 mx-auto"
+          className=" min-w-[200px] w-1/2 h-1/2 mx-auto"
         />
 
         <p className=" text-2xl font-bold">關於此課程</p>
@@ -115,12 +123,14 @@ export default function LearningCoursePage() {
                         章節 {lesson.attributes.sequence}：
                         {lesson.attributes.name}1
                       </p>
-                      <iframe
-                        src="https://www.youtube.com/embed/1"
-                        className=" mx-auto"
-                      />
-                      <p className=" mt-2">課程概述</p>
-                      <p>{"TODO 放入內容"}</p>
+                      {lesson.attributes.content.isVideo ? (
+                        <iframe
+                          src="https://www.youtube.com/embed/1"
+                          className=" mx-auto"
+                        />
+                      ) : (
+                        <p>課程內容</p>
+                      )}
                     </div>
                   ))
                 ) : (
@@ -130,7 +140,7 @@ export default function LearningCoursePage() {
             </AccordionItem>
           ))}
         </Accordion>
-      </div>
+      </Card>
     </div>
   );
 }
