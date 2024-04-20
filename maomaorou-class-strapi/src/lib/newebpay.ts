@@ -54,8 +54,8 @@ export class NewebPaymentService {
   readonly newebHashKey = process.env.NEWEB_HASH_KEY;
   readonly newebHashIv = process.env.NEWEB_HASH_IV;
 
-  readonly frontendURL = process.env.FRONTEND_URL;
-  readonly backendURL = process.env.BACKEND_URL;
+  readonly frontendURL = process.env.DOMAIN_URL;
+  readonly backendURL = process.env.DOMAIN_URL_BK;
 
   constructor() {}
 
