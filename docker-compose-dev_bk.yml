@@ -1,4 +1,4 @@
-version: '2.4'
+version: '3.8'
 services:
   strapi:
     build:
@@ -17,7 +17,7 @@ services:
     
     networks:
       maomaorou_net:
-    command: bash -c "yarn start "
+    command: bash -c "yarn develop "
       
 networks:
   maomaorou_net:

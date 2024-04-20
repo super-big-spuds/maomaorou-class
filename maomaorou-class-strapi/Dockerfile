@@ -10,4 +10,5 @@ COPY ./ ./
 
 RUN yarn install
 
-EXPOSE 1337
+
+EXPOSE 1338
