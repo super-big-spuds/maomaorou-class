@@ -7,6 +7,8 @@ EXPOSE 3100
 FROM base as builder
 WORKDIR /app
 COPY . .
+RUN npm install
+RUN npm run compile
 RUN npm run build
 
 
@@ -30,6 +32,7 @@ CMD npm start
 
 FROM base as dev
 ENV NODE_ENV=development
-RUN npm install 
-CMD npm run compile &
+COPY . .
+RUN npm install
+RUN npm run compile
 CMD npm run dev

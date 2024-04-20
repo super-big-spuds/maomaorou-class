@@ -51,7 +51,7 @@ function UserProfile() {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Link href="/setting">
+            <Link href="/account-setting">
               <p>帳號設定</p>
             </Link>
           </DropdownMenuItem>

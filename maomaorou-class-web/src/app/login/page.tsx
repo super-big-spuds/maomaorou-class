@@ -56,12 +56,12 @@ export default function LoginPage() {
     },
   });
   const [sendLoginMutation, { error, loading }] = useMutation(LOGIN_MUTATION, {
-    onCompleted: async (data) => {
+    onCompleted: (data) => {
       form.reset();
       const token = data.login.jwt;
       if (typeof token === "string") {
         setToken(token);
-        await userContext.handleRefetch();
+        userContext.handleRefetch();
         router.push("/my-courses");
         router.refresh();
       }
