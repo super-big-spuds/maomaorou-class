@@ -22,6 +22,12 @@
       "action": "api::decoration-setting.decoration-setting.find"
     },
     {
+      "action": "api::faq.faq.find"
+    },
+    {
+      "action": "api::faq.faq.findOne"
+    },
+    {
       "action": "api::lesson.lesson.find"
     },
     {

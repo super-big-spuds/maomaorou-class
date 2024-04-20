@@ -10,6 +10,12 @@
       "action": "api::course.course.find"
     },
     {
+      "action": "api::faq.faq.find"
+    },
+    {
+      "action": "api::faq.faq.findOne"
+    },
+    {
       "action": "api::order-course.order-course.find"
     },
     {
