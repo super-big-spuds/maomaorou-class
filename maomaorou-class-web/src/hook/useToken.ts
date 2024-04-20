@@ -1,27 +1,30 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 export default function useToken() {
   const tokenKey = "userToken";
 
-  const getToken = () => {
-    if (typeof window === "undefined") {
-      return null;
-    }
-    const token = localStorage.getItem(tokenKey);
-    return token;
-  };
+  const [token, setTokenFn] = useState("");
 
   const setToken = (token: string) => {
     localStorage.setItem(tokenKey, token);
+    setTokenFn(token);
   };
 
   // Logout
   const cleanToken = () => {
     localStorage.removeItem(tokenKey);
+    setTokenFn("");
   };
 
+  useEffect(() => {
+    const localToken = localStorage.getItem(tokenKey);
+    setTokenFn(localToken === null ? "" : localToken);
+  }, []);
+
   return {
-    token: getToken(),
+    token,
     setToken,
     cleanToken,
   };

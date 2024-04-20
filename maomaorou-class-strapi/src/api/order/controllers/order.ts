@@ -27,7 +27,12 @@ export default factories.createCoreController(
 
       const payment = await strapi.services["api::payment.payment"].find({
         filters: { id: decodedInfo.Result.MerchantOrderNo },
-        populate: "order",
+        populate: [
+          "order",
+          "order.order_courses",
+          "order.order_courses.course",
+          "order.user",
+        ],
       });
 
       if (payment === null) {
@@ -45,6 +50,48 @@ export default factories.createCoreController(
           status: "success",
         },
       });
+
+      await Promise.all(
+        payment.order.order_courses.map(async (orderCourse) => {
+          const userCourseStatus = await strapi.services[
+            "api::user-course-status.user-course-status"
+          ].find({
+            filters: {
+              user: payment.order.user.id,
+              course: orderCourse.course.id,
+            },
+          });
+
+          const perDay = 1000 * 60 * 60 * 24;
+
+          if (userCourseStatus.length === 0) {
+            // 如果沒有購買過這門課
+            await strapi.services[
+              "api::user-course-status.user-course-status"
+            ].create({
+              data: {
+                user: payment.order.user.id,
+                course: orderCourse.course.id,
+                expiredAt: new Date(
+                  new Date().getTime() + orderCourse.course.durationDay * perDay
+                ),
+              },
+            });
+          } else {
+            // 如果有購買過這門課
+            await strapi.services[
+              "api::user-course-status.user-course-status"
+            ].update(userCourseStatus[0].id, {
+              data: {
+                expiredAt: new Date(
+                  userCourseStatus[0].expiredAt.getTime() +
+                    orderCourse.course.durationDay * perDay
+                ),
+              },
+            });
+          }
+        })
+      );
     },
   })
 );

@@ -45,6 +45,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const clearCart = () => {
     setCartData([]);
+    localStorage.removeItem("cart");
   };
 
   useEffect(() => {
@@ -57,8 +58,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    // Save cart to local storage
-    localStorage.setItem("cart", JSON.stringify(cartData));
+    if (cartData.length > 0) {
+      // Save cart to local storage
+      localStorage.setItem("cart", JSON.stringify(cartData));
+    }
   }, [cartData]);
 
   return (

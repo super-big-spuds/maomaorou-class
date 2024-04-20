@@ -1,5 +1,7 @@
 import { Strapi } from "@strapi/strapi";
 import { NewebPaymentService } from "./lib/newebpay";
+import { errors } from "@strapi/utils";
+const { ForbiddenError } = errors;
 
 export default {
   /**
@@ -175,8 +177,6 @@ export default {
                 populate: ["course"],
               });
 
-              console.log(userCourseStatus);
-
               const userBuyedCourses = userCourseStatus.results.map(
                 (userCourseStatus) => {
                   return userCourseStatus.course;
@@ -188,6 +188,152 @@ export default {
               });
 
               return courseEntities;
+            },
+          },
+        },
+      },
+    }));
+
+    extensionService.use(({ strapi }) => ({
+      typeDefs: `
+        type Query {
+          myOrders: [OrderEntityResponse]
+        }
+      `,
+      resolvers: {
+        Query: {
+          myOrders: {
+            resolve: async (parent, args, context) => {
+              const { toEntityResponse } = strapi.service(
+                "plugin::graphql.format"
+              ).returnTypes;
+
+              const user = context.state.user;
+
+              const data = await strapi.services["api::order.order"].find({
+                filters: { user: user.id },
+              });
+
+              const response = data.results.map((order) =>
+                toEntityResponse(order)
+              );
+
+              return response;
+            },
+          },
+        },
+      },
+    }));
+
+    extensionService.use(({ strapi }) => ({
+      typeDefs: `
+        type Order {
+          totalPrice: Int
+        }
+      `,
+      resolvers: {
+        Order: {
+          totalPrice: {
+            resolve: async (parent, args, context) => {
+              const { toEntityResponse } = strapi.service(
+                "plugin::graphql.format"
+              ).returnTypes;
+
+              const orderId = parent.id;
+
+              const orderCourses = await strapi.services[
+                "api::order-course.order-course"
+              ].find({
+                filters: { order: orderId },
+              });
+
+              const totalPrice = orderCourses.results.reduce(
+                (acc, orderCourse) => {
+                  return acc + orderCourse.price;
+                },
+                0
+              );
+
+              return totalPrice;
+            },
+          },
+        },
+      },
+    }));
+
+    extensionService.use(({ strapi }) => ({
+      typeDefs: `
+          input UpdateSelfUserProfileInput {
+            username: String
+            email: String
+          }
+
+          input UpdateSelfUserPasswordInput {
+            originalPassword: String!
+            newPassword: String!
+          }
+
+          type Mutation {
+            UpdateSelfUserProfile(userProfile: UpdateSelfUserProfileInput): UsersPermissionsUserEntityResponse
+            UpdateSelfUserPassword(userNewPasswordInfo: UpdateSelfUserPasswordInput): UsersPermissionsUserEntityResponse
+          }
+        `,
+      resolvers: {
+        Mutation: {
+          UpdateSelfUserProfile: {
+            resolve: async (parent, args, context) => {
+              const { toEntityResponse } = strapi.service(
+                "plugin::graphql.format"
+              ).returnTypes;
+
+              const userId = context.state.user.id;
+
+              const newUser = await strapi.entityService.update(
+                "plugin::users-permissions.user",
+                userId,
+                {
+                  data: args.userProfile,
+                }
+              );
+
+              return toEntityResponse(newUser);
+            },
+          },
+          UpdateSelfUserPassword: {
+            resolve: async (parent, args, context) => {
+              const { toEntityResponse } = strapi.service(
+                "plugin::graphql.format"
+              ).returnTypes;
+
+              const userId = context.state.user.id;
+
+              const user = await strapi.entityService.findOne(
+                "plugin::users-permissions.user",
+                userId
+              );
+
+              const isUserPasswordMatch = await strapi.plugins[
+                "users-permissions"
+              ].services.user.validatePassword(
+                args.userNewPasswordInfo.originalPassword,
+                user.password
+              );
+
+              if (!isUserPasswordMatch) {
+                throw new ForbiddenError("Password not match");
+              }
+
+              const newUser = await strapi.entityService.update(
+                "plugin::users-permissions.user",
+                userId,
+                {
+                  data: {
+                    password: args.userNewPasswordInfo.newPassword,
+                  },
+                }
+              );
+
+              return toEntityResponse(newUser);
             },
           },
         },
