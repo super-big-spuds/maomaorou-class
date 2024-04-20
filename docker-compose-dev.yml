@@ -9,37 +9,10 @@ services:
         - ./maomaorou-class-web:/app
         - /app/node_modules
         - /app/.next
-    ports:
-      - "3000:3000"
     env_file:
       - ./maomaorou-class-web/.env.local
-    environment:
-      - BACKEND_URL=http://strapi:1337
-      - NEXT_PUBLIC_BACKEND_URL=http://127.0.0.1:1337
-    depends_on:
-      - strapi
-    networks:
-      maomaorou_net:
-
-  strapi:
-    build:
-      context: ./maomaorou-class-strapi
-      target: dev
-      dockerfile: Dockerfile
-    volumes:
-      - ./maomaorou-class-strapi:/app
-      - /app/node_modules
-      - /app/dist
-      - /app/.strapi
-    env_file:
-      - ./maomaorou-class-strapi/.env
     ports:
-      - "1337:1337"
-    depends_on:
-      - database
-    networks:
-      maomaorou_net:
-    command: bash -c "yarn develop --watch-admin"
-      
-networks:
-  maomaorou_net:
+      - "3100:3100" 
+
+  
+  

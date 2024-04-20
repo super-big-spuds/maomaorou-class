@@ -32,7 +32,7 @@ export default ({ env }) => [
     config: {
       enabled: true,
       headers: ["*"],
-      origin: [process.env.FRONTEND_URL, process.env.BACKEND_URL],
+      origin: [process.env.FRONTEND_URL, process.env.BACKEND_URL, process.env.DOMAIN_URL,process.env.DOMAIN_URL_BK],
     },
   },
   "strapi::poweredBy",

@@ -2,7 +2,7 @@ FROM node:18.17.0-alpine as base
 RUN apk add --no-cache g++ make py3-pip libc6-compat
 WORKDIR /app
 COPY package*.json ./
-EXPOSE 3000
+EXPOSE 3100
 
 FROM base as builder
 WORKDIR /app
@@ -31,5 +31,5 @@ CMD npm start
 FROM base as dev
 ENV NODE_ENV=development
 RUN npm install 
-COPY . .
+CMD npm run compile &
 CMD npm run dev
