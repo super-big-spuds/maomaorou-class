@@ -6,10 +6,11 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import { useCart } from "@/provider/cart-provider";
 import Link from "next/link";
 import { Badge } from "../ui/badge";
+import { cn } from "@/lib/utils";
 
 export default function CartButton() {
   const cartData = useCart();
@@ -69,9 +70,10 @@ export default function CartButton() {
             ${cartData.cart.reduce((acc, cur) => acc + cur.price, 0)}
           </div>
         </div>
-        <Button className="w-full">
-          <Link href="/checkout">前往結帳</Link>
-        </Button>
+
+        <Link className={cn(buttonVariants(), "w-full")} href="/checkout">
+          前往結帳
+        </Link>
       </DropdownMenuContent>
     </DropdownMenu>
   );

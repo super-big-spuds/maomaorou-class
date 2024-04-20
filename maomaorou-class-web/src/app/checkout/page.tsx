@@ -8,10 +8,29 @@ import { cn, getPaymentUrl } from "@/lib/utils";
 import { useCart } from "@/provider/cart-provider";
 import { useUser } from "@/provider/user-provider";
 import { useMutation, useQuery } from "@apollo/client";
-import Image from "next/image";
 import { FormEventHandler } from "react";
 import { z } from "zod";
-import { CircleX } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import Image from "next/image";
+import { X } from "lucide-react";
 
 const GET_LATEST_PRICE_QUERY = gql(`
   query GetCoursesQueryData($courseIds: [ID]) {
@@ -92,33 +111,19 @@ export default function CheckoutPage() {
       courseIds: cartData.cart.map((item) => item.id),
     },
   });
-  const [sendRegisterUserMutation, { data: registerData }] =
-    useMutation(REGISTER_MUTATION);
-  const [sendSubmitOrderMutation, { data: paymentData }] = useMutation(
-    SUBMIT_ORDER_MUTATION
-  );
+  const [sendRegisterUserMutation] = useMutation(REGISTER_MUTATION);
+  const [sendSubmitOrderMutation] = useMutation(SUBMIT_ORDER_MUTATION);
   const userContext = useUser();
-
   const { token, setToken } = useToken();
-
   const parseResult = schema.safeParse(latestCartData);
-
-  if (!cartData.cart.length) {
-    return <div>Cart is empty</div>;
-  }
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!parseResult.success) {
-    return <div>Failed to load data</div>;
-  }
-
-  const { courses } = parseResult.data;
 
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
+
+    if (!parseResult.success) {
+      alert("載入購物車資料失敗, 請重新整理頁面後再試一次");
+      return;
+    }
 
     const formData = new FormData(e.currentTarget);
 
@@ -156,7 +161,7 @@ export default function CheckoutPage() {
     // Send Create Order To Server.
     const submitOrderResponse = await sendSubmitOrderMutation({
       variables: {
-        courseIds: courses.data.map((course) => course.id),
+        courseIds: parseResult.data.courses.data.map((course) => course.id),
       },
       context: {
         headers: {
@@ -178,126 +183,125 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className=" w-full h-full ">
+    <div className="w-full h-full ">
       <form
         onSubmit={onSubmit}
-        className=" flex flex-wrap  items-center justify-center w-full h-full gap-4 mt-12"
+        className="flex md:flex-row flex-col items-center justify-center w-full h-full gap-4 m-4"
       >
-        <div className=" inline-flex flex-col w-1/2 gap-4 min-w-96">
-          <h1 className=" font-semibold text-4xl">結帳</h1>
-          <div className=" ml-5 inline-flex flex-col gap-4 min-w-96">
-            {userContext.userData !== null && (
-              <p className="text-orange-600">
-                以登入, 購買資訊將自動綁定到登入會員
-              </p>
-            )}
+        <Card className="flex flex-col w-full max-w-3xl justify-center p-4">
+          <CardTitle>結帳</CardTitle>
+          {userContext.userData !== null && (
+            <CardDescription className="mt-1">
+              已登入, 購買資訊將自動綁定到登入會員
+            </CardDescription>
+          )}
+          <CardContent className="flex flex-col gap-4 p-0 my-4">
             {/* 已註冊時不用填寫會員資料 */}
-            <p className=" font-semibold text-2xl mt-10">帳單資訊</p>
-            <p>姓名</p>
-            <Input
-              required
-              placeholder="輸入本名"
-              name="name"
-              disabled={userContext.userData !== null}
-              className=" w-1/3"
-            />
-            <p>電子郵件(作為系統帳號)</p>
-            <Input
-              required
-              placeholder="example@gmail.com"
-              name="email"
-              disabled={userContext.userData !== null}
-            />
-            <p>密碼</p>
-            <Input
-              required
-              placeholder="密碼(至少6碼以上)"
-              name="password"
-              min={6}
-              disabled={userContext.userData !== null}
-            />
-          </div>
-        </div>
-        <div className=" inline-flex flex-col min-w-96 max-w-lg w-2/3 justify-center gap-4 my-2">
-          <p>購物車內容</p>
-          <table className=" table-auto border p-2 rounded">
-            <thead>
-              <tr className=" border">
-                <th>操作</th>
-                <th>商品預覽</th>
-                <th>課程名稱</th>
-                <th>小計</th>
-              </tr>
-            </thead>
-            <tbody>
-              {courses.data.map((course) => (
-                <tr key={course.id} className=" border p-5 m-5">
-                  <td className=" align-middle text-center">
-                    <button
-                      onClick={() => cartData.removeFromCart(course.id)}
-                      type="button"
-                    >
-                      <CircleX className="h-5 w-5" />
-                    </button>
-                  </td>
-                  <td className=" align-middle pl-10 ">
-                    <Image
-                      width={100}
-                      height={100}
-                      src={course.attributes.image.data.attributes.url}
-                      alt={course.attributes.title}
-                    />
-                  </td>
-                  <td className=" align-middle text-center">
-                    {course.attributes.title}
-                  </td>
-                  <td className=" align-middle text-center">
-                    {course.attributes.price}元
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <p>
-            總金額：
-            {courses.data.reduce(
-              (acc, course) => acc + course.attributes.price,
-              0
+            <div>
+              <p>姓名</p>
+              <Input
+                required
+                placeholder="輸入本名"
+                name="name"
+                disabled={userContext.userData !== null}
+                className=" w-full"
+              />
+            </div>
+            <div>
+              <p>電子郵件(作為系統帳號)</p>
+              <Input
+                required
+                placeholder="example@gmail.com"
+                name="email"
+                disabled={userContext.userData !== null}
+                className=" w-full"
+              />
+            </div>
+            <div>
+              <p>密碼</p>
+              <Input
+                required
+                placeholder="密碼(至少6碼以上)"
+                name="password"
+                min={6}
+                disabled={userContext.userData !== null}
+                className=" w-full"
+              />
+            </div>
+          </CardContent>
+          <Separator className="my-6" />
+          <CardTitle>購物車內容</CardTitle>
+          <CardContent className="flex flex-col gap-4 p-0 my-4">
+            {cartData.cart.length < 0 ? (
+              <p>購物車是空的</p>
+            ) : !parseResult.success ? (
+              <div>系統發生錯誤, 請通知管理員</div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>操作</TableHead>
+                    <TableHead>商品預覽</TableHead>
+                    <TableHead>課程名稱</TableHead>
+                    <TableHead className="text-right">價格</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {/* TODO: do skeleton her */}
+                  {parseResult.data.courses.data.map((course) => (
+                    <TableRow key={course.id}>
+                      <TableCell>
+                        <button
+                          onClick={() => cartData.removeFromCart(course.id)}
+                        >
+                          <X className="text-gray-100" />
+                        </button>
+                      </TableCell>
+                      <TableCell>
+                        <Image
+                          width={100}
+                          height={100}
+                          src={course.attributes.image.data.attributes.url}
+                          alt={course.attributes.title}
+                        />
+                      </TableCell>
+                      <TableCell>{course.attributes.title}</TableCell>
+                      <TableCell className="text-right">
+                        NT$ {course.attributes.price.toLocaleString()}元
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+                <TableFooter>
+                  <TableRow>
+                    <TableCell colSpan={3}>總金額</TableCell>
+                    <TableCell className="text-right">
+                      NT$
+                      {parseResult.data.courses.data.reduce(
+                        (acc, course) => acc + course.attributes.price,
+                        0
+                      )}
+                      元
+                    </TableCell>
+                  </TableRow>
+                </TableFooter>
+              </Table>
             )}
-            元
-          </p>
-          {/* TODO 藍星金流CART*/}
-          <div>
-            <input type="radio" name="newstoemail" id="" />
-            &nbsp;
-            <label htmlFor="newstoemail" className=" text-lg font-semibold">
-              藍新金流
-            </label>
-          </div>
-          <div>
-            <input type="checkbox" name="newstoemail" id="" />
-            &nbsp;
-            <label htmlFor="newstoemail" className=" text-lg font-semibold">
-              我想收到包含折扣碼、優惠活動等電子報
-            </label>
-          </div>
-          <div>
-            <input type="checkbox" name="rules" id="" />
-            &nbsp;
-            <label htmlFor="rules" className=" text-lg font-semibold">
-              我已閱讀並同意網站的服務條款與條件
-            </label>
-          </div>
-          <Button
-            type="submit"
-            className=" bg-orange-500 text-lg font-semibold w-1/2 mt-1 sm:w-1/3 "
-          >
-            下單購買
-          </Button>
-          <p className=" text-gray-400">
-            您的個人資訊將會被用於處理您的訂單，以及支持您在整個網站上的體驗，以及其他在我們的隱私政策中描述的用途。
-          </p>
-        </div>
+          </CardContent>
+          <Separator className="mb-4" />
+          <CardFooter className="flex-col">
+            <Button type="submit" className="text-lg font-semibold w-full">
+              下單購買
+            </Button>
+            <p className=" text-gray-400 text-center">
+              您的個人資訊將會被用於處理您的訂單，以及支持您在整個網站上的體驗，以及其他在我們的
+              <Link className="text-blue-500 hover:underline" href="/terms">
+                使用條款
+              </Link>
+              中描述的用途。
+            </p>
+          </CardFooter>
+        </Card>
       </form>
     </div>
   );
