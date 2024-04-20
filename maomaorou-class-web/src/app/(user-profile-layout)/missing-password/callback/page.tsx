@@ -25,6 +25,7 @@ import { useMutation } from "@apollo/client";
 import useToken from "@/hook/useToken";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { useParams } from "next/navigation";
 
 const formSchema = z
   .object({
@@ -49,7 +50,7 @@ mutation resetPasswordWithCode($password: String!, $passwordConfirmation: String
 export default function MissingPasswordPage() {
   const { toast } = useToast();
   const { token } = useToken();
-  const code = new URLSearchParams(window.location.search).get("code");
+  const { code } = useParams<{ code: string }>();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
