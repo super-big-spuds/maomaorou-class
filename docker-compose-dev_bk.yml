@@ -1,0 +1,23 @@
+version: '2.4'
+services:
+  strapi:
+    build:
+      context: ./maomaorou-class-strapi
+      target: dev
+      dockerfile: Dockerfile
+    volumes:
+      - ./maomaorou-class-strapi:/app
+      - /app/node_modules
+      - /app/dist
+      - /app/.strapi
+    env_file:
+      - ./maomaorou-class-strapi/.env
+    ports:
+      - "1338:1338"
+    
+    networks:
+      maomaorou_net:
+    command: bash -c "yarn start "
+      
+networks:
+  maomaorou_net:
