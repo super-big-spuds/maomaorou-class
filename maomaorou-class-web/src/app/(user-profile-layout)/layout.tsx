@@ -1,5 +1,6 @@
 "use client";
 
+import { Card } from "@/components/ui/card";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -14,7 +15,7 @@ export default function UserProfileLayout({
     <div className="w-full flex justify-center items-center flex-col my-4 h-full">
       <div className="flex justify-center items-center md:items-start h-full gap-x-12 w-full max-w-3xl relative md:flex-row flex-col">
         {/* Link block */}
-        <div className="flex flex-row md:flex-col gap-4 sticky top-20 whitespace-nowrap">
+        <Card className="flex flex-row md:flex-col gap-4 sticky top-20 whitespace-nowrap p-4">
           <Link
             className={
               pathname === "/my-orders" ? "text-gray-600" : "text-gray-200"
@@ -53,7 +54,7 @@ export default function UserProfileLayout({
           >
             密碼遺失
           </Link>
-        </div>
+        </Card>
 
         {/* OrderList block */}
         {children}
