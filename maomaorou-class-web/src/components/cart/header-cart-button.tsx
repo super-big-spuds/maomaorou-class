@@ -1,16 +1,15 @@
 "use client";
 
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, X } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { useCart } from "@/provider/cart-provider";
 import Link from "next/link";
+import { Badge } from "../ui/badge";
 
 export default function CartButton() {
   const cartData = useCart();
@@ -32,27 +31,48 @@ export default function CartButton() {
           )}
         </Button>
       </DropdownMenuTrigger>
-      {cartData.cart.length !== 0 && (
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>購物車內容</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {cartData.cart.map((item) => (
-            <DropdownMenuLabel key={item.id} className=" bg-rose-100">
-              <div className="flex justify-between items-center border-b-2">
-                <p>{item.title}</p>
-                <p>${item.price}</p>
-                <button onClick={() => cartData.removeFromCart(item.id)}>
-                  X
-                </button>
+
+      <DropdownMenuContent className="w-[400px] p-4 space-y-4">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-semibold">購物車</h3>
+          <Badge className="bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-200">
+            {cartData.cart.length} 項物品
+          </Badge>
+        </div>
+
+        {cartData.cart.length === 0 && (
+          <div className="text-center text-gray-500 dark:text-gray-400">
+            購物車是空的
+          </div>
+        )}
+
+        {cartData.cart.map((item) => (
+          <div key={item.id} className="space-y-4">
+            <div className="grid grid-cols-[auto_1fr_auto] items-center gap-4">
+              <button onClick={() => cartData.removeFromCart(item.id)}>
+                <X className="text-gray-100" />
+              </button>
+              <div className="space-y-1">
+                <h4 className="font-medium">{item.title}</h4>
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  課程有效至: {item.expiredAt.toLocaleDateString()}
+                </div>
               </div>
-            </DropdownMenuLabel>
-          ))}
-          <DropdownMenuSeparator />
-          <DropdownMenuLabel>
-            <Link href="/checkout">前往結帳</Link>
-          </DropdownMenuLabel>
-        </DropdownMenuContent>
-      )}
+              <div className="text-right font-medium">NT${item.price}</div>
+            </div>
+          </div>
+        ))}
+
+        <div className="flex justify-between items-center border-t pt-4">
+          <div className="text-gray-500 dark:text-gray-400">總金額</div>
+          <div className="font-medium">
+            ${cartData.cart.reduce((acc, cur) => acc + cur.price, 0)}
+          </div>
+        </div>
+        <Button className="w-full">
+          <Link href="/checkout">前往結帳</Link>
+        </Button>
+      </DropdownMenuContent>
     </DropdownMenu>
   );
 }

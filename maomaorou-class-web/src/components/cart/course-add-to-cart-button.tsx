@@ -7,6 +7,7 @@ type Props = {
   courseId: string;
   title: string;
   price: number;
+  durationDay: number;
   className?: string;
 };
 
@@ -16,6 +17,11 @@ export default function CourseAddToCartButton({
 }: Props) {
   const useCartData = useCart();
 
+  const getExpiredAt = (durationDay: number) => {
+    const now = new Date();
+    return new Date(now.setDate(now.getDate() + durationDay));
+  };
+
   return (
     <Button
       className={className}
@@ -24,6 +30,7 @@ export default function CourseAddToCartButton({
           id: props.courseId,
           title: props.title,
           price: props.price,
+          expiredAt: getExpiredAt(props.durationDay),
         })
       }
     >

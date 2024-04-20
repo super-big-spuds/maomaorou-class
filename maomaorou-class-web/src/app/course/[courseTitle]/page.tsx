@@ -241,6 +241,7 @@ export default async function CoursePage({
             courseId={data.courseByTitle.data.id}
             title={data.courseByTitle.data.attributes.title}
             price={data.courseByTitle.data.attributes.price}
+            durationDay={data.courseByTitle.data.attributes.durationDay}
           />
         </CardFooter>
       </Card>

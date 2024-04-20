@@ -1,11 +1,13 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
+import { z } from "zod";
 
 type CartItem = {
   id: string;
   title: string;
   price: number;
+  expiredAt: Date;
 };
 
 const context = createContext({
@@ -53,7 +55,26 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const cart = localStorage.getItem("cart");
 
     if (cart) {
-      setCartData(JSON.parse(cart));
+      const rawCartData = JSON.parse(cart);
+
+      const schema = z.array(
+        z.object({
+          id: z.string(),
+          title: z.string(),
+          price: z.number(),
+          expiredAt: z.string().transform((v) => new Date(v)),
+        })
+      );
+
+      const parseResult = schema.safeParse(rawCartData);
+
+      if (!parseResult.success) {
+        console.error(parseResult.error);
+        clearCart();
+        return;
+      } else {
+        setCartData(parseResult.data);
+      }
     }
   }, []);
 
