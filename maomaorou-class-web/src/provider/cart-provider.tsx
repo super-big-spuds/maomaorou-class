@@ -11,7 +11,7 @@ type CartItem = {
 const context = createContext({
   cart: [] as CartItem[],
   addToCart: (item: CartItem) => {},
-  removeFromCart: (item: CartItem) => {},
+  removeFromCart: (courseId: string) => {},
   clearCart: () => {},
 });
 
@@ -29,12 +29,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cartData, setCartData] = useState([] as CartItem[]);
 
   const addToCart = (item: CartItem) => {
+    if (cartData.find((cartItem) => cartItem.id === item.id)) {
+      alert("這一個課程已經在購物車裡了");
+      return;
+    }
+
     setCartData((prevCart) => [...prevCart, item]);
   };
 
-  const removeFromCart = (item: CartItem) => {
+  const removeFromCart = (courseId: string) => {
     setCartData((prevCart) =>
-      prevCart.filter((cartItem) => cartItem.id !== item.id)
+      prevCart.filter((cartItem) => cartItem.id !== courseId)
     );
   };
 
