@@ -22,9 +22,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useMutation } from "@apollo/client";
-import useToken from "@/hook/useToken";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { useUser } from "@/provider/user-provider";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -42,7 +42,7 @@ mutation sendForgetPasswordEmail($email: String!) {
 
 export default function MissingPasswordPage() {
   const { toast } = useToast();
-  const { token } = useToken();
+  const { token } = useUser();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

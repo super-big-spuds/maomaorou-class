@@ -15,7 +15,7 @@ import { useQuery } from "@apollo/client";
 import { z } from "zod";
 import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
-import useToken from "@/hook/useToken";
+import { useUser } from "@/provider/user-provider";
 
 const QUERY = gql(`
   query GetOrderData($orderId: ID!) {
@@ -98,7 +98,7 @@ export default function OrderViewPage({
 }: {
   params: { orderId: string };
 }) {
-  const { token } = useToken();
+  const { token } = useUser();
   const { data, loading } = useQuery(QUERY, {
     skip: !token,
     variables: {

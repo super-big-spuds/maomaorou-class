@@ -22,9 +22,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { gql } from "@/__generated__";
 import { useMutation } from "@apollo/client";
-import useToken from "@/hook/useToken";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { useUser } from "@/provider/user-provider";
 
 const formSchema = z.object({
   username: z.string().min(3),
@@ -57,7 +57,7 @@ export default function RegisterPage() {
   });
   const [sendRegisterMutation, { error, loading }] =
     useMutation(REGISTER_MUTATION);
-  const { setToken } = useToken();
+  const { handleLogin } = useUser();
   const router = useRouter();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -68,10 +68,10 @@ export default function RegisterPage() {
         password: values.password,
       },
     })
-      .then((response) => {
+      .then(async (response) => {
         const token = response.data?.register.jwt;
         if (typeof token === "string") {
-          setToken(token);
+          handleLogin(token);
           router.push("/");
         }
       })

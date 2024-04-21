@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -24,7 +18,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 import { useMutation } from "@apollo/client";
-import useToken from "@/hook/useToken";
 import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
@@ -47,7 +40,6 @@ mutation updateProfileData($userProfile: UpdateSelfUserProfileInput) {
 `);
 
 export default function AccountSettingPage() {
-  const { token } = useToken();
   const userContext = useUser();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -70,7 +62,7 @@ export default function AccountSettingPage() {
       },
       context: {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${userContext.token}`,
         },
       },
     });

@@ -22,7 +22,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { gql } from "@/__generated__";
 import { useMutation } from "@apollo/client";
-import useToken from "@/hook/useToken";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { useUser } from "@/provider/user-provider";
@@ -56,14 +55,12 @@ export default function LoginPage() {
     },
   });
   const [sendLoginMutation, { error, loading }] = useMutation(LOGIN_MUTATION, {
-    onCompleted: (data) => {
+    onCompleted: async (data) => {
       form.reset();
       const token = data.login.jwt;
       if (typeof token === "string") {
-        setToken(token);
-        userContext.handleRefetch();
+        userContext.handleLogin(token);
         router.push("/my-courses");
-        router.refresh();
       }
     },
     onError: (error) => {
@@ -73,7 +70,6 @@ export default function LoginPage() {
       });
     },
   });
-  const { setToken } = useToken();
   const userContext = useUser();
   const router = useRouter();
 

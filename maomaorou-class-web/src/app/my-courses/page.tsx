@@ -3,10 +3,10 @@
 import Image from "next/image";
 import { gql } from "@/__generated__/gql";
 import Link from "next/link";
-import useToken from "@/hook/useToken";
 import { useQuery } from "@apollo/client";
 import { z } from "zod";
 import { useEffect, useState } from "react";
+import { useUser } from "@/provider/user-provider";
 
 const QUERY = gql(`
 query getBuyedCourses {
@@ -51,7 +51,7 @@ const schema = z.object({
 });
 
 export default function MyCoursesPage() {
-  const { token } = useToken();
+  const { token } = useUser();
   const { data, loading } = useQuery(QUERY, {
     skip: !token,
     context: {

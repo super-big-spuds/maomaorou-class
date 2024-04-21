@@ -3,7 +3,6 @@
 import { gql } from "@/__generated__";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import useToken from "@/hook/useToken";
 import { cn, getPaymentUrl } from "@/lib/utils";
 import { useCart } from "@/provider/cart-provider";
 import { useUser } from "@/provider/user-provider";
@@ -114,7 +113,7 @@ export default function CheckoutPage() {
   const [sendRegisterUserMutation] = useMutation(REGISTER_MUTATION);
   const [sendSubmitOrderMutation] = useMutation(SUBMIT_ORDER_MUTATION);
   const userContext = useUser();
-  const { token, setToken } = useToken();
+  const { token, handleLogin } = useUser();
   const parseResult = schema.safeParse(latestCartData);
 
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
@@ -146,7 +145,7 @@ export default function CheckoutPage() {
         if (registerResponse.errors || !registerResponse.data?.register?.jwt) {
           return null;
         }
-        setToken(registerResponse.data.register.jwt);
+        handleLogin(registerResponse.data.register.jwt);
         return registerResponse.data.register.jwt;
       }
     };

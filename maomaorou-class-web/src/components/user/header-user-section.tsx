@@ -12,20 +12,12 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import Link from "next/link";
-import useToken from "@/hook/useToken";
 
 export default function HeaderUserSection() {
-  const { token } = useToken();
-  const userData = useUser();
+  const userContext = useUser();
 
   return (
-    <>
-      {(userData.isLoading && token !== "") || userData.userData !== null ? (
-        <UserProfile />
-      ) : (
-        <GuestProfile />
-      )}
-    </>
+    <>{userContext.userData !== null ? <UserProfile /> : <GuestProfile />}</>
   );
 }
 
