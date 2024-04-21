@@ -21,7 +21,7 @@ export default function RootLayout({
           <UserProvider>
             <CartProvider>
               <Header />
-              <main className="grow bg-gray-50">{children}</main>
+              <main className="grow bg-gray-50 p-4">{children}</main>
               <Toaster />
               <Footer />
             </CartProvider>

@@ -44,16 +44,6 @@ export default function UserProfileLayout({
           >
             變更密碼
           </Link>
-          <Link
-            className={
-              pathname === "/missing-password"
-                ? "text-gray-600"
-                : "text-gray-200"
-            }
-            href={"/missing-password"}
-          >
-            密碼遺失
-          </Link>
         </Card>
 
         {/* OrderList block */}
