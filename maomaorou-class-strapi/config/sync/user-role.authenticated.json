@@ -10,19 +10,22 @@
       "action": "api::course.course.find"
     },
     {
-      "action": "api::faq.faq.find"
-    },
-    {
-      "action": "api::faq.faq.findOne"
-    },
-    {
       "action": "api::order-course.order-course.find"
     },
     {
       "action": "api::order.order.findOne"
     },
     {
+      "action": "api::order.order.newebPayNotifyCallback"
+    },
+    {
+      "action": "api::payment.payment.find"
+    },
+    {
       "action": "api::term.term.find"
+    },
+    {
+      "action": "api::user-courses-status.user-courses-status.find"
     },
     {
       "action": "plugin::users-permissions.auth.changePassword"

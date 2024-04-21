@@ -150,7 +150,7 @@ export default function CheckoutPage() {
       }
     };
 
-    const createOrderToken = getToken();
+    const createOrderToken = await getToken();
 
     if (createOrderToken === null) {
       alert("Failed to register user");

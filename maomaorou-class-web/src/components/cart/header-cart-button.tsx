@@ -26,7 +26,7 @@ export default function CartButton() {
           <ShoppingCart className="h-5 w-5" />
           <span className="sr-only">Cart</span>
           {cartData.cart.length !== 0 && (
-            <div className="absolute -right-4  bottom-1.5 bg-orange-200 rounded-full w-6 h-6 flex justify-center  items-center ">
+            <div className="absolute -right-1 -top-2 bg-orange-200 rounded-full w-6 h-6 flex justify-center  items-center ">
               <p>{cartData.cart.length}</p>
             </div>
           )}
