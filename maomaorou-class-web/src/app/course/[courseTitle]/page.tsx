@@ -147,10 +147,9 @@ export default async function CoursePage({
       (a, b) => a.attributes.sequence - b.attributes.sequence
     );
   });
-  // price
 
   return (
-    <div className="flex md:flex-row flex-col justify-center relative h-full min-h-screen m-4 gap-4 w-full">
+    <div className="flex md:flex-row flex-col justify-center relative h-full gap-4 w-full">
       <Card className="flex flex-col px-10 py-5 gap-6 max-w-3xl w-full">
         <CardTitle>
           線上影音課程-{data.courseByTitle.data.attributes.title}
@@ -181,6 +180,10 @@ export default async function CoursePage({
             <div>
               <p className="text-xl font-bold">課程大綱</p>
               <Accordion type="multiple">
+                {data.courseByTitle.data.attributes.chapters.data.length ===
+                  0 && (
+                  <p className="text-center text-gray-200">該課程還沒有章節</p>
+                )}
                 {data.courseByTitle.data.attributes.chapters.data.map(
                   (chapter) => (
                     <AccordionItem
