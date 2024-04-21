@@ -43,18 +43,6 @@ query GetLearningCourseData($title: String!) {
                       sequence
                       content {
                       	__typename
-                        ... on ComponentLessonContentVideoContent {
-                          video {
-                            data {
-                              attributes {
-                                url
-                              }
-                            }
-                          }
-                        }
-                        ... on ComponentLessonContentTextContent {
-                          richText
-                        }
                       }
                     }
                   }
@@ -107,19 +95,11 @@ const schema = z.object({
                               __typename: z.literal(
                                 "ComponentLessonContentVideoContent"
                               ),
-                              video: z.object({
-                                data: z.object({
-                                  attributes: z.object({
-                                    url: z.string(),
-                                  }),
-                                }),
-                              }),
                             }),
                             z.object({
                               __typename: z.literal(
                                 "ComponentLessonContentTextContent"
                               ),
-                              richText: z.string(),
                             }),
                           ])
                         ),
@@ -166,7 +146,7 @@ export default function LearningCoursePage({
   const parsedData = schema.safeParse(data);
 
   return (
-    <div className="flex justify-center h-full items-center w-full m-4">
+    <div className="flex justify-center h-full items-center w-full m-2 sm:m-4">
       {loading ? (
         <Card className="flex flex-col px-10 py-5 gap-6 w-full max-w-3xl">
           <div className="flex flex-col space-y-3">

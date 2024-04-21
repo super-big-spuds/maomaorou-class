@@ -379,7 +379,7 @@ export default {
 
               const lesson = await strapi.services["api::lesson.lesson"].find({
                 filters: {
-                  id: args.id
+                  id: args.id,
                 },
                 populate: ["chapter", "chapter.course"],
               });
@@ -407,6 +407,38 @@ export default {
               }
 
               return toEntityResponse(lesson.results[0]);
+            },
+          },
+        },
+      },
+    }));
+
+    extensionService.use(({ strapi }) => ({
+      typeDefs: `
+        type Course {
+          withUserStatus: UserCoursesStatusEntityResponse
+        }
+      `,
+      resolvers: {
+        Course: {
+          withUserStatus: {
+            resolve: async (parent, args, context) => {
+              const { toEntityResponse } = strapi.service(
+                "plugin::graphql.format"
+              ).returnTypes;
+
+              const user = context.state.user;
+
+              const userCourseStatus = await strapi.services[
+                "api::user-courses-status.user-courses-status"
+              ].find({
+                filters: {
+                  user: user.id,
+                  course: parent.id,
+                },
+              });
+
+              return toEntityResponse(userCourseStatus.results[0]);
             },
           },
         },
