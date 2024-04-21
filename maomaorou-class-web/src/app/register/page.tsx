@@ -138,7 +138,7 @@ export default function RegisterPage() {
                     <FormItem>
                       <FormLabel>密碼</FormLabel>
                       <FormControl>
-                        <Input placeholder="密碼" {...field} />
+                        <Input placeholder="密碼" type="password" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
