@@ -12,7 +12,9 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUser } from "@/provider/user-provider";
 import { useQuery } from "@apollo/client";
+import { Text, Video } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { z } from "zod";
 
 const QUERY = gql(`
@@ -195,50 +197,38 @@ export default function LearningCoursePage({
             height={200}
           />
 
-          <Accordion type="multiple">
+          <Accordion className="flex flex-col gap-y-2" type="multiple">
             {parsedData.data.courseByTitle.data.attributes.chapters.data.map(
               (chapter) => (
                 <AccordionItem
                   value={chapter.id}
-                  className="　border border-gray-300 rounded-xl mb-1 "
+                  className="border border-gray-300 rounded-xl py-2 px-4"
                   key={chapter.id}
                 >
-                  <AccordionTrigger className=" border-3 border-gray-800 rounded-xl px-5  font-bold ">
-                    課程 {chapter.attributes.sequence}：
+                  <AccordionTrigger className="border-3 border-gray-800 rounded-xl font-bold text-lg hover:underline-none">
                     {chapter.attributes.name}
                   </AccordionTrigger>
                   <AccordionContent>
                     {chapter.attributes.lessons.data.length > 0 ? (
                       chapter.attributes.lessons.data.map((lesson) => (
-                        <div
+                        <Link
                           key={lesson.id}
-                          className=" px-5 py-2.5 mx-2 border  "
+                          href={`/learning-lesson/${lesson.id}`}
+                          className="border p-2 flex justify-between items-center transition-all hover:bg-gray-50"
                         >
-                          <p>
-                            章節 {lesson.attributes.sequence}：
-                            {lesson.attributes.name}
-                          </p>
+                          <p>{lesson.attributes.name}</p>
                           {lesson.attributes.content[0].__typename ===
                           "ComponentLessonContentVideoContent" ? (
-                            <video controls className=" mx-auto">
-                              <source
-                                src={
-                                  lesson.attributes.content[0].video.data
-                                    .attributes.url
-                                }
-                                type="video/mp4"
-                              />
-                              您的瀏覽器不支援線上撥放影片
-                            </video>
+                            <Video className="text-gray-200" />
                           ) : (
-                            <StrapiMdxToHtmlConverter
-                              mdx={lesson.attributes.content[0].richText}
-                            />
+                            <Text className="text-gray-200" />
                           )}
-                        </div>
+                        </Link>
                       ))
                     ) : (
-                      <div className=" px-5 py-2.5 mx-2 ">無章節</div>
+                      <div className="text-center text-gray-200">
+                        該章節暫無內容
+                      </div>
                     )}
                   </AccordionContent>
                 </AccordionItem>

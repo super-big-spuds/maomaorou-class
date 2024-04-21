@@ -74,3 +74,15 @@
     @apply bg-background text-foreground;
   }
 }
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+}
+
+body {
+  min-height: 100vh;
+}

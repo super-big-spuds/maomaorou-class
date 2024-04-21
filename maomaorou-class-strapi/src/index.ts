@@ -360,6 +360,58 @@ export default {
         },
       },
     }));
+
+    extensionService.use(({ strapi }) => ({
+      typeDefs: `
+        type Query {
+          myLesson(id: ID!): LessonEntityResponse
+        }
+      `,
+      resolvers: {
+        Query: {
+          myLesson: {
+            resolve: async (parent, args, context) => {
+              const { toEntityResponse } = strapi.service(
+                "plugin::graphql.format"
+              ).returnTypes;
+
+              const user = context.state.user;
+
+              const lesson = await strapi.services["api::lesson.lesson"].find({
+                filters: {
+                  id: args.id
+                },
+                populate: ["chapter", "chapter.course"],
+              });
+
+              if (lesson.results.length === 0) {
+                throw new NotFoundError("未找到該小節");
+              }
+
+              //Check auth
+              const userCourseStatus = await strapi.services[
+                "api::user-courses-status.user-courses-status"
+              ].find({
+                filters: {
+                  user: user.id,
+                  course: lesson.results[0].chapter.course.id,
+                },
+              });
+
+              if (userCourseStatus.results.length === 0) {
+                throw new ForbiddenError("使用者未購買此課程");
+              }
+
+              if (userCourseStatus.results[0].expiredAt < new Date()) {
+                throw new ForbiddenError("使用者課程已過期");
+              }
+
+              return toEntityResponse(lesson.results[0]);
+            },
+          },
+        },
+      },
+    }));
   },
   /**
    * An asynchronous bootstrap function that runs before

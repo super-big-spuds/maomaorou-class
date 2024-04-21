@@ -8,7 +8,7 @@ export interface LessonContentTextContent extends Schema.Component {
     description: '';
   };
   attributes: {
-    richText: Attribute.Blocks & Attribute.Required;
+    richText: Attribute.RichText & Attribute.Required;
   };
 }
 
