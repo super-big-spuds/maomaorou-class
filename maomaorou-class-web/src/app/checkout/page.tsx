@@ -239,6 +239,10 @@ export default function CheckoutPage() {
           <CardContent className="flex flex-col gap-4 p-0 my-4">
             {cartData.cart.length === 0 ? (
               <p className="text-center">購物車是空的</p>
+            ) : loading ? (
+              <div>
+                <Skeleton className='w-full h-24' />
+              </div>
             ) : !parseResult.success ? (
               <div>系統發生錯誤, 請通知管理員</div>
             ) : (
