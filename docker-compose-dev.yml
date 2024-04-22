@@ -3,7 +3,7 @@ services:
   web:
     build:
       context: ./maomaorou-class-web
-      target: dev
+      target: production
       dockerfile: Dockerfile
     volumes:
         - ./maomaorou-class-web:/app
@@ -12,7 +12,9 @@ services:
     env_file:
       - ./maomaorou-class-web/.env.local
     ports:
-      - "3100:3100" 
+      - "3100:3100"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   
   
