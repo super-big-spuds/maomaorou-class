@@ -83,7 +83,7 @@ export default function AccountSettingPage() {
               userContext.isLoading || isSendUpdateUserProfileLoading
                 ? "animate-pulse"
                 : ""
-            } mx-auto max-w-sm relative`}
+            }relative`}
           >
             {isSendUpdateUserProfileLoading && (
               <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 top-1/2">

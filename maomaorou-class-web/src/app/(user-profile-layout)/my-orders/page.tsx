@@ -63,9 +63,9 @@ export default function MyOrdersPage() {
   const parseResult = schema.safeParse(data);
 
   return (
-    <Card className="grow p-4">
-      <CardTitle>我的訂單</CardTitle>
-      <Separator className="my-2" />
+    <Card className="grow p-4 w-full">
+      <CardTitle className="text-center">訂單檢視</CardTitle>
+      <Separator className="my-4" />
       <CardContent>
         <Table>
           <TableHeader>

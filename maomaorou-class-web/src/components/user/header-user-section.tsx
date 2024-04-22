@@ -52,11 +52,6 @@ function UserProfile() {
               <p>變更密碼</p>
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link href="/missing-password">
-              <p>遺失密碼</p>
-            </Link>
-          </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={userData.handleLogout}
