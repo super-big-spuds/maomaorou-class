@@ -48,7 +48,7 @@ function UserProfile() {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Link href="/update-password">
+            <Link href="/change-password">
               <p>變更密碼</p>
             </Link>
           </DropdownMenuItem>
