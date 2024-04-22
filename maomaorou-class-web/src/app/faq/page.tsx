@@ -53,7 +53,7 @@ export default async function FaqPage() {
     <section className="w-full py-12 md:py-24 lg:py-32">
       <div className="container px-4 md:px-6">
         <div className="mx-auto max-w-3xl space-y-8">
-          <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+          <h1 className="text-2xl font-bold tracking-tighter sm:text-3xl md:text-4xl">
             常見問題
           </h1>
           <div className="space-y-4">
