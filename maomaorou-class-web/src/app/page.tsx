@@ -52,7 +52,7 @@ export default async function Home() {
 
   return (
     <div className="flex justify-center w-full">
-      <Card className="flex flex-col items-center justify-between p-4 max-w-3xl">
+      <Card className="flex flex-col items-center justify-between p-4 max-w-4xl">
         <CardTitle>貓貓肉數位交易學習網</CardTitle>
 
         {/* Banner */}
