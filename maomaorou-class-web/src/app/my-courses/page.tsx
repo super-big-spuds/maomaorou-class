@@ -129,9 +129,11 @@ export default function MyCoursesPage() {
       <div className="flex flex-col items-center justify-between max-w-3xl w-full gap-y-4">
         <Card className="w-full p-4">
           <CardTitle className="mb-4">精選文章</CardTitle>
-          <CardContent className="p-0">
+          <CardContent className="p-0 flex flex-col gap-y-2">
             {!parsedResult.success ? (
-              <div>Loading</div>
+              <div>
+                <Skeleton className="w-full h-6" />
+              </div>
             ) : (
               staredLessons.map((lesson) => (
                 <Link
