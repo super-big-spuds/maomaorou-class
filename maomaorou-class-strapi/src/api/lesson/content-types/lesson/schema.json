@@ -37,6 +37,11 @@
       "required": true,
       "unique": true,
       "default": "預設章節單元名稱"
+    },
+    "isStar": {
+      "type": "boolean",
+      "default": false,
+      "required": true
     }
   }
 }

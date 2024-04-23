@@ -436,6 +436,7 @@ export default {
       typeDefs: `
         type Course {
           withUserStatus: UserCoursesStatusEntityResponse
+          staredLessons: [LessonEntityResponse]
         }
       `,
       resolvers: {
@@ -460,6 +461,48 @@ export default {
               return toEntityResponse(userCourseStatus.results[0]);
             },
           },
+          staredLessons: {
+            resolve: async (parent, args, context) => {
+              const { toEntityResponse } = strapi.service(
+                "plugin::graphql.format"
+              ).returnTypes;
+
+              const user = context.state.user;
+
+              const userCourseStatus = await strapi.services[
+                "api::user-courses-status.user-courses-status"
+              ].find({
+                filters: {
+                  user: user.id,
+                  course: parent.id,
+                },
+              });
+
+              if (userCourseStatus.results.length === 0) {
+                throw new ForbiddenError("使用者未購買此課程");
+              }
+
+              const lessons = await strapi.services["api::lesson.lesson"].find({
+                filters: {
+                  chapter: {
+                    course: parent.id,
+                  },
+                  isStar: true,
+                },
+              });
+
+              const lessonEntities = lessons.results.map((lesson) => {
+                return toEntityResponse(lesson);
+              });
+
+              return lessonEntities;
+            },
+          },
+        },
+      },
+      resolversConfig: {
+        "Course.staredLessons": {
+          auth: false,
         },
       },
     }));

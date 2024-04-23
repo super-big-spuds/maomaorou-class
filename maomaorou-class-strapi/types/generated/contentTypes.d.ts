@@ -1003,6 +1003,7 @@ export interface ApiLessonLesson extends Schema.CollectionType {
       Attribute.Required &
       Attribute.Unique &
       Attribute.DefaultTo<'\u9810\u8A2D\u7AE0\u7BC0\u55AE\u5143\u540D\u7A31'>;
+    isStar: Attribute.Boolean & Attribute.Required & Attribute.DefaultTo<false>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
