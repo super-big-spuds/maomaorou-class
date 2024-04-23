@@ -183,35 +183,37 @@ export default async function Home() {
         {/* News */}
         <Card className="flex flex-col items-center justify-between px-6 pb-6">
           <CardTitle className="text-2xl md:text-3xl my-4">最新消息</CardTitle>
-          <CardContent className="flex flex-wrap flex-row gap-4 justify-start items-start">
+          <CardContent className="grid md:grid-cols-2 grid-cols-1 gap-4">
             {sortedArticles &&
               sortedArticles.map((article) => (
-                <article
+                <Link
                   key={article.id}
-                  className="bg-white rounded-lg shadow-sm overflow-hidden dark:bg-gray-950 relative hover:-translate-y-[5px] opacity-75 hover:opacity-100 transition-all duration-700"
+                  href={`/article/${article.attributes.title}`}
                 >
-                  <Image
-                    alt={article.attributes.title}
-                    className="w-full h-52 object-cover"
-                    height={225}
-                    src={article.attributes.image.data.attributes.url}
-                    style={{
-                      aspectRatio: "400/225",
-                      objectFit: "cover",
-                    }}
-                    width={400}
-                  />
-                  <div className="p-4">
-                    <h3 className="text-lg font-semibold mb-2">
-                      <Link className="hover:underline" href="#">
-                        {article.attributes.title}
-                      </Link>
-                    </h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      發文日期: {getTimeString(article.attributes.createdAt)}
-                    </p>
-                  </div>
-                </article>
+                  <article className="bg-white rounded-lg shadow-sm overflow-hidden dark:bg-gray-950 relative border hover:-translate-y-[5px] opacity-75 hover:opacity-100 transition-all duration-700">
+                    <Image
+                      alt={article.attributes.title}
+                      className="w-full h-52 object-cover"
+                      height={225}
+                      src={article.attributes.image.data.attributes.url}
+                      style={{
+                        aspectRatio: "400/225",
+                        objectFit: "cover",
+                      }}
+                      width={400}
+                    />
+                    <div className="p-4">
+                      <h3 className="text-lg font-semibold mb-2">
+                        <Link className="hover:underline" href="#">
+                          {article.attributes.title}
+                        </Link>
+                      </h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        發文日期: {getTimeString(article.attributes.createdAt)}
+                      </p>
+                    </div>
+                  </article>
+                </Link>
               ))}
           </CardContent>
         </Card>

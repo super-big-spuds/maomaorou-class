@@ -17,6 +17,7 @@ export default {
       typeDefs: `
         type Query {
           courseByTitle(title: String!): CourseEntityResponse
+          newByTitle(title: String!): NewEntityResponse
         }
       `,
       resolvers: {
@@ -36,10 +37,28 @@ export default {
               return response;
             },
           },
+          newByTitle: {
+            resolve: async (parent, args, context) => {
+              const { toEntityResponse } = strapi.service(
+                "plugin::graphql.format"
+              ).returnTypes;
+
+              const data = await strapi.services["api::new.new"].find({
+                filters: { title: args.title },
+              });
+
+              const response = toEntityResponse(data.results[0]);
+
+              return response;
+            },
+          },
         },
       },
       resolversConfig: {
         "Query.courseByTitle": {
+          auth: false,
+        },
+        "Query.newByTitle": {
           auth: false,
         },
       },
