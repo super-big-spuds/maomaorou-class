@@ -10,8 +10,8 @@ import { z } from "zod";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "常見問題",
-  description: "常見問題介紹",
+  title: "常見問題 - 貓貓肉線上課程網站",
+  description: "貓貓肉線上課程網站常見問題介紹",
 };
 
 const QUERY = gql(`

@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 import { Card, CardTitle } from "@/components/ui/card";
 
 export const metadata: Metadata = {
-  title: "貓貓肉課程",
+  title: "首頁 - 貓貓肉線上課程網站",
   description: "貓貓肉課程介紹",
 };
 

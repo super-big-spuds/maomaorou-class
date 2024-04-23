@@ -21,8 +21,8 @@ import { Separator } from "@/components/ui/separator";
 
 import { Metadata } from "next";
 export const metadata: Metadata = {
-  title: "課程",
-  description: "貓貓肉課程介紹",
+  title: "課程簡介 - 貓貓肉線上課程網站",
+  description: "貓貓肉線上課程網站貓貓肉課程簡介",
 };
 
 const QUERY = gql(`

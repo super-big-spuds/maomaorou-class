@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "學習課程",
-  description: "貓貓肉課程介紹",
+  title: "學習課程 - 貓貓肉線上課程網站",
+  description: "貓貓肉線上課程網站學習課程",
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

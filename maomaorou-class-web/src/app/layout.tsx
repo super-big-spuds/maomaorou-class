@@ -6,8 +6,14 @@ import Footer from "@/components/ui/footer";
 import { CartProvider } from "@/provider/cart-provider";
 import { UserProvider } from "@/provider/user-provider";
 import { Toaster } from "@/components/ui/toaster";
+import { Metadata } from "next";
 
 const inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "貓貓肉線上課程網站",
+  description: "貓貓肉線上課程網站",
+};
 
 export default function RootLayout({
   children,
