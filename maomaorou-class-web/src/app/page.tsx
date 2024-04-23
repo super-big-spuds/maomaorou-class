@@ -52,8 +52,10 @@ export default async function Home() {
 
   return (
     <div className="flex justify-center w-full">
-      <Card className="flex flex-col items-center justify-between p-4 max-w-4xl">
-        <CardTitle>貓貓肉數位交易學習網</CardTitle>
+      <Card className="flex flex-col items-center justify-between px-6 pb-6 max-w-4xl">
+        <CardTitle className="text-2xl md:text-3xl mt-4">
+          貓貓肉數位交易學習網
+        </CardTitle>
 
         {/* Banner */}
         <Image
@@ -69,8 +71,7 @@ export default async function Home() {
 
         {/* Courses */}
         <div className="flex justify-center w-full flex-col">
-          <h2 className="text-2xl font-bold text-center">課程介紹</h2>
-          <div className="flex gap-4 md:flex-row flex-col relative z-10 md:px-10 sm:px-6 pt-2 justify-center items-center">
+          <div className="flex gap-4 md:flex-row flex-col relative z-10 pt-2 justify-center items-center">
             {data?.courses?.data.map((course) => (
               <Link
                 key={course.id}

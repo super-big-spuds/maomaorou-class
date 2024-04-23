@@ -21,7 +21,7 @@ export default async function Home() {
 
         {/* Courses */}
         <div className="flex justify-center w-full flex-col">
-          <div className="flex gap-4 md:flex-row flex-col relative z-10 md:px-10 sm:px-6 pt-2 justify-center items-center">
+          <div className="flex gap-4 md:flex-row flex-col relative z-10 pt-2 justify-center items-center">
             <Skeleton className="w-1/3 aspect-square" />
             <Skeleton className="w-1/3 aspect-square" />
             <Skeleton className="w-1/3 aspect-square" />
