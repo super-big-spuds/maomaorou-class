@@ -136,6 +136,7 @@ export default {
                           price: course.price,
                         })),
                         paymentId: payment.id,
+                        orderId: order.id
                       })
                       .then((result) => {
                         resolve({
@@ -514,5 +515,5 @@ export default {
    * This gives you an opportunity to set up your data model,
    * run jobs, or perform some special logic.
    */
-  bootstrap(/*{ strapi }*/) {},
+  bootstrap(/*{ strapi }*/) { },
 };

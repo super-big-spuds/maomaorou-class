@@ -16,20 +16,16 @@ type INewebPayReturnCallbackBody = {
 export default factories.createCoreController(
   "api::order.order",
   ({ strapi }) => ({
-    async newebPayNotifyCallback({ body, params, query }) {
+    async newebPayNotifyCallback(ctx) {
       const newebPaymentService = new NewebPaymentService();
-      const newBody = body as INewebPayReturnCallbackBody;
-
-      console.log("body", newBody);
-      console.log("query", query);
-      console.log("params", params);
+      const newBody = ctx.request.body as INewebPayReturnCallbackBody;
 
       const decodedInfo = newebPaymentService.confirmOrderPayment(
         newBody.TradeInfo,
         newBody.TradeSha
       );
 
-      const payment = await strapi.services["api::payment.payment"].find({
+      const payments = await strapi.services["api::payment.payment"].find({
         filters: { id: decodedInfo.Result.MerchantOrderNo },
         populate: [
           "order",
@@ -39,9 +35,11 @@ export default factories.createCoreController(
         ],
       });
 
-      if (payment === null) {
+      if (payments === null || payments.results.length < 1) {
         return;
       }
+
+      const payment = payments.results[0]
 
       await strapi.services["api::order.order"].update(payment.order.id, {
         data: {
@@ -57,8 +55,8 @@ export default factories.createCoreController(
 
       await Promise.all(
         payment.order.order_courses.map(async (orderCourse) => {
-          const userCourseStatus = await strapi.services[
-            "api::user-course-status.user-course-status"
+          const userCourseStatuses = await strapi.services[
+            "api::user-courses-status.user-courses-status"
           ].find({
             filters: {
               user: payment.order.user.id,
@@ -66,12 +64,14 @@ export default factories.createCoreController(
             },
           });
 
+          const userCourseStatus = userCourseStatuses.results
+
           const perDay = 1000 * 60 * 60 * 24;
 
           if (userCourseStatus.length === 0) {
             // 如果沒有購買過這門課
             await strapi.services[
-              "api::user-course-status.user-course-status"
+              "api::user-courses-status.user-courses-status"
             ].create({
               data: {
                 user: payment.order.user.id,
@@ -84,18 +84,22 @@ export default factories.createCoreController(
           } else {
             // 如果有購買過這門課
             await strapi.services[
-              "api::user-course-status.user-course-status"
+              "api::user-courses-status.user-courses-status"
             ].update(userCourseStatus[0].id, {
               data: {
                 expiredAt: new Date(
-                  userCourseStatus[0].expiredAt.getTime() +
-                    orderCourse.course.durationDay * perDay
+                  new Date(userCourseStatus[0].expiredAt).getTime() +
+                  orderCourse.course.durationDay * perDay
                 ),
               },
             });
           }
         })
       );
+
+      ctx.send({
+        message: 'The Payment successs!'
+      }, 200);
     },
   })
 );
