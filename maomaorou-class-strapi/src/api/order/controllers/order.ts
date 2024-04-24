@@ -16,9 +16,13 @@ type INewebPayReturnCallbackBody = {
 export default factories.createCoreController(
   "api::order.order",
   ({ strapi }) => ({
-    async newebPayNotifyCallback({ body }) {
+    async newebPayNotifyCallback({ body, params, query }) {
       const newebPaymentService = new NewebPaymentService();
       const newBody = body as INewebPayReturnCallbackBody;
+
+      console.log("body", newBody);
+      console.log("query", query);
+      console.log("params", params);
 
       const decodedInfo = newebPaymentService.confirmOrderPayment(
         newBody.TradeInfo,

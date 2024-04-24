@@ -2,27 +2,39 @@
 
 import { useEffect } from "react";
 
+type SearchParams = {
+  redirectParam: string;
+  MerchantID: string;
+  TradeInfo: string;
+  TradeSha: string;
+  Version: string;
+};
+
+type KeyOfSearchParams = keyof SearchParams;
+
 export default function RedirectToNewebPaymentPage({
   searchParams,
 }: {
-  searchParams: {
-    redirectParam: string;
-  };
+  searchParams: SearchParams;
 }) {
   // Redirect to Neweb Payment
-  const redirectParam = searchParams.redirectParam;
-
   useEffect(() => {
     try {
-      const parameters = redirectParam.split("&");
-      const endpoint = `${parameters[0]}/MPG/mpg_gateway`;
+      const redirectParam = searchParams.redirectParam;
+      const endpoint = `${redirectParam}/MPG/mpg_gateway`;
       const form = window.document.createElement("form");
       form.method = "POST";
       form.action = endpoint;
-      form.target = "_blank";
 
-      parameters.slice(1, parameters.length).forEach((parameter) => {
-        const [key, value] = parameter.split("=");
+      const parameterKeys: KeyOfSearchParams[] = [
+        "MerchantID",
+        "TradeInfo",
+        "TradeSha",
+        "Version",
+      ];
+
+      parameterKeys.forEach((key) => {
+        const value = searchParams[key];
         const input = document.createElement("input");
         input.type = "hidden";
         input.name = key;
@@ -36,7 +48,7 @@ export default function RedirectToNewebPaymentPage({
       // Push back
       window.history.back();
     }
-  }, [window, redirectParam]);
+  }, [searchParams]);
 
-  return <div>Redirecting to Neweb Payment...</div>;
+  return <div>正在為您跳轉到藍新付款...</div>;
 }
