@@ -270,7 +270,8 @@
           "chapter",
           "sequence",
           "content",
-          "name"
+          "name",
+          "isStar"
         ]
       },
       "conditions": []
@@ -298,7 +299,8 @@
           "chapter",
           "sequence",
           "content",
-          "name"
+          "name",
+          "isStar"
         ]
       },
       "conditions": []
@@ -312,7 +314,61 @@
           "chapter",
           "sequence",
           "content",
-          "name"
+          "name",
+          "isStar"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.create",
+      "actionParameters": {},
+      "subject": "api::new.new",
+      "properties": {
+        "fields": [
+          "title",
+          "content",
+          "image"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.delete",
+      "actionParameters": {},
+      "subject": "api::new.new",
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.publish",
+      "actionParameters": {},
+      "subject": "api::new.new",
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::new.new",
+      "properties": {
+        "fields": [
+          "title",
+          "content",
+          "image"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.update",
+      "actionParameters": {},
+      "subject": "api::new.new",
+      "properties": {
+        "fields": [
+          "title",
+          "content",
+          "image"
         ]
       },
       "conditions": []

@@ -34,6 +34,12 @@
       "action": "api::lesson.lesson.findOne"
     },
     {
+      "action": "api::new.new.find"
+    },
+    {
+      "action": "api::new.new.findOne"
+    },
+    {
       "action": "api::order.order.newebPayNotifyCallback"
     },
     {

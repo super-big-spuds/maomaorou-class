@@ -1,13 +1,13 @@
 {
-  "key": "plugin_content_manager_configuration_content_types::api::lesson.lesson",
+  "key": "plugin_content_manager_configuration_content_types::api::new.new",
   "value": {
     "settings": {
       "bulkable": true,
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "name",
-      "defaultSortBy": "id",
+      "mainField": "title",
+      "defaultSortBy": "title",
       "defaultSortOrder": "ASC"
     },
     "metadatas": {
@@ -19,31 +19,16 @@
           "sortable": true
         }
       },
-      "chapter": {
+      "title": {
         "edit": {
-          "label": "chapter",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true,
-          "mainField": "name"
-        },
-        "list": {
-          "label": "chapter",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "sequence": {
-        "edit": {
-          "label": "sequence",
+          "label": "title",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "sequence",
+          "label": "title",
           "searchable": true,
           "sortable": true
         }
@@ -62,32 +47,18 @@
           "sortable": false
         }
       },
-      "name": {
+      "image": {
         "edit": {
-          "label": "name",
+          "label": "image",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "name",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "isStar": {
-        "edit": {
-          "label": "isStar",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "isStar",
-          "searchable": true,
-          "sortable": true
+          "label": "image",
+          "searchable": false,
+          "sortable": false
         }
       },
       "createdAt": {
@@ -152,27 +123,15 @@
     "layouts": {
       "list": [
         "id",
-        "chapter",
-        "sequence",
+        "title",
+        "image",
         "createdAt"
       ],
       "edit": [
         [
           {
-            "name": "name",
+            "name": "title",
             "size": 6
-          }
-        ],
-        [
-          {
-            "name": "chapter",
-            "size": 6
-          }
-        ],
-        [
-          {
-            "name": "sequence",
-            "size": 4
           }
         ],
         [
@@ -183,13 +142,13 @@
         ],
         [
           {
-            "name": "isStar",
-            "size": 4
+            "name": "image",
+            "size": 6
           }
         ]
       ]
     },
-    "uid": "api::lesson.lesson"
+    "uid": "api::new.new"
   },
   "type": "object",
   "environment": null,
