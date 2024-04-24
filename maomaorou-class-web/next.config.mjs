@@ -9,6 +9,12 @@ const nextConfig = {
       },
     ],
   },
+  experimental: {
+    serverActions: {
+      allowedOrigins: ["ccore.newebpay.com", "core.newebpay.com", 'maomaoro.com', 'localhost'],
+      allowedForwardedHosts: ['localhost', 'maomaoro.com', 'core.newebpay.com', 'ccore.newebpay.com'],
+    }
+  }
 };
 
 export default nextConfig;
