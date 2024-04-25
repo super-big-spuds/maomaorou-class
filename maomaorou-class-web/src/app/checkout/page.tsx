@@ -28,8 +28,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useToast } from "@/components/ui/use-toast";
 import Image from "next/image";
-import { X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 
 const GET_LATEST_PRICE_QUERY = gql(`
   query GetCoursesQueryData($courseIds: [ID]) {
@@ -105,16 +106,24 @@ type IFormData = {
 
 export default function CheckoutPage() {
   const cartData = useCart();
-  const { data: latestCartData, loading } = useQuery(GET_LATEST_PRICE_QUERY, {
-    variables: {
-      courseIds: cartData.cart.map((item) => item.id),
-    },
-  });
-  const [sendRegisterUserMutation] = useMutation(REGISTER_MUTATION);
-  const [sendSubmitOrderMutation] = useMutation(SUBMIT_ORDER_MUTATION);
+  const { toast } = useToast();
+  const { data: latestCartData, loading: getPriceLoading } = useQuery(
+    GET_LATEST_PRICE_QUERY,
+    {
+      variables: {
+        courseIds: cartData.cart.map((item) => item.id),
+      },
+    }
+  );
+  const [sendRegisterUserMutation, { loading: registerLoading }] =
+    useMutation(REGISTER_MUTATION);
+  const [sendSubmitOrderMutation, { loading: submitOrderLoading }] =
+    useMutation(SUBMIT_ORDER_MUTATION);
   const userContext = useUser();
   const { token, handleLogin } = useUser();
   const parseResult = schema.safeParse(latestCartData);
+
+  const loading = registerLoading || submitOrderLoading || getPriceLoading;
 
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -123,6 +132,10 @@ export default function CheckoutPage() {
       alert("載入購物車資料失敗, 請重新整理頁面後再試一次");
       return;
     }
+    toast({
+      title: "已送出訂單",
+      description: "即將為您跳轉至付款頁面, 請稍後...",
+    });
 
     const formData = new FormData(e.currentTarget);
 
@@ -182,11 +195,21 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="w-full h-full ">
+    <div className="w-full h-full relative">
       <form
         onSubmit={onSubmit}
-        className="flex md:flex-row flex-col items-center justify-center w-full h-full gap-4 m-4"
+        className={cn(
+          "flex md:flex-row flex-col items-center justify-center w-full h-full gap-4 m-4",
+          {
+            "animate-pulse": loading,
+          }
+        )}
       >
+        {loading && (
+          <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 top-1/2  ">
+            <Loader2 className="animate-spin" />
+          </div>
+        )}
         <Card className="flex flex-col w-full max-w-3xl justify-center p-4">
           <CardTitle>結帳</CardTitle>
           {userContext.userData !== null && (
@@ -239,9 +262,9 @@ export default function CheckoutPage() {
           <CardContent className="flex flex-col gap-4 p-0 my-4">
             {cartData.cart.length === 0 ? (
               <p className="text-center">購物車是空的</p>
-            ) : loading ? (
+            ) : getPriceLoading ? (
               <div>
-                <Skeleton className='w-full h-24' />
+                <Skeleton className="w-full h-24" />
               </div>
             ) : !parseResult.success ? (
               <div>系統發生錯誤, 請通知管理員</div>
