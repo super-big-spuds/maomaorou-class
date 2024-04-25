@@ -118,6 +118,21 @@
           "sortable": true
         }
       },
+      "category": {
+        "edit": {
+          "label": "category",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "id"
+        },
+        "list": {
+          "label": "category",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -218,6 +233,10 @@
         [
           {
             "name": "title",
+            "size": 6
+          },
+          {
+            "name": "category",
             "size": 6
           }
         ]

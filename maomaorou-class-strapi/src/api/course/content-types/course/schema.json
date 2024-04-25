@@ -51,6 +51,12 @@
       "required": true,
       "default": "課程名稱",
       "unique": true
+    },
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::category.category",
+      "inversedBy": "courses"
     }
   }
 }

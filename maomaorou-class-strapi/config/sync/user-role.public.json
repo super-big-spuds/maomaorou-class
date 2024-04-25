@@ -7,6 +7,12 @@
       "action": "api::about-us.about-us.find"
     },
     {
+      "action": "api::category.category.find"
+    },
+    {
+      "action": "api::category.category.findOne"
+    },
+    {
       "action": "api::chapter.chapter.find"
     },
     {

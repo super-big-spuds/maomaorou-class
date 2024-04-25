@@ -18,6 +18,11 @@ query GetMainPageQueryData {
       id
       attributes {
         title
+        category {
+					data {
+          	id
+          }
+        }
         image {
           data {
             id
@@ -70,6 +75,13 @@ const schema = z.object({
         id: z.string(),
         attributes: z.object({
           title: z.string(),
+          category: z.object({
+            data: z.nullable(
+              z.object({
+                id: z.string(),
+              })
+            ),
+          }),
           image: z.object({
             data: z.object({
               id: z.string(),
@@ -117,12 +129,37 @@ const schema = z.object({
   }),
 });
 
+type Course = z.infer<typeof schema>["courses"]["data"][0];
+
 export default async function Home() {
   const { data } = await createApolloSSRClient().query({
     query: QUERY,
   });
 
   const parsedData = schema.parse(data);
+
+  const unDuplicateCourseWithCategory = parsedData.courses.data.reduce(
+    (acc, course) => {
+      const categoryOfThisCourse = course.attributes.category.data;
+      if (categoryOfThisCourse === null) {
+        return [...acc, course];
+      }
+
+      const isCategoryAlreadyInList = acc.find((c) => {
+        if (c.attributes.category.data === null) return false;
+        {
+          return c.attributes.category.data.id === categoryOfThisCourse.id;
+        }
+      });
+
+      if (!isCategoryAlreadyInList) {
+        return [...acc, course];
+      }
+
+      return acc;
+    },
+    [] as Course[]
+  );
 
   const sortedArticles = [...parsedData.news.data].sort((a, b) => {
     return (
@@ -162,10 +199,14 @@ export default async function Home() {
           {/* Courses */}
           <div className="flex justify-center w-full flex-col">
             <div className="flex gap-4 md:flex-row flex-col relative z-10 pt-2 justify-center items-center">
-              {parsedData.courses.data.map((course) => (
+              {unDuplicateCourseWithCategory.map((course) => (
                 <Link
                   key={course.id}
-                  href={`/course/${course.attributes.title}`}
+                  href={
+                    course.attributes.category.data !== null
+                      ? `/category/${course.attributes.category.data.id}`
+                      : `/course/${course.attributes.title}`
+                  }
                   className="w-fit aspect-[1/1] hover:-translate-y-[5px] opacity-75 hover:opacity-100 transition-all duration-700"
                 >
                   <Image
