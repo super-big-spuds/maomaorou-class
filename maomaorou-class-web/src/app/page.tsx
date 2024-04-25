@@ -18,6 +18,7 @@ query GetMainPageQueryData {
       id
       attributes {
         title
+        sequence
         category {
 					data {
           	id
@@ -75,6 +76,7 @@ const schema = z.object({
         id: z.string(),
         attributes: z.object({
           title: z.string(),
+          sequence: z.number(),
           category: z.object({
             data: z.nullable(
               z.object({
@@ -159,6 +161,11 @@ export default async function Home() {
       return acc;
     },
     [] as Course[]
+  );
+
+  // sort with sequence
+  unDuplicateCourseWithCategory.sort(
+    (a, b) => a.attributes.sequence - b.attributes.sequence
   );
 
   const sortedArticles = [...parsedData.news.data].sort((a, b) => {

@@ -57,6 +57,13 @@
       "relation": "manyToOne",
       "target": "api::category.category",
       "inversedBy": "courses"
+    },
+    "sequence": {
+      "type": "integer",
+      "required": true,
+      "default": 0,
+      "min": 0,
+      "unique": true
     }
   }
 }

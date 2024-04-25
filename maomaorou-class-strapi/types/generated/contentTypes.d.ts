@@ -939,6 +939,16 @@ export interface ApiCourseCourse extends Schema.CollectionType {
       'manyToOne',
       'api::category.category'
     >;
+    sequence: Attribute.Integer &
+      Attribute.Required &
+      Attribute.Unique &
+      Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      > &
+      Attribute.DefaultTo<0>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

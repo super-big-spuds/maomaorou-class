@@ -133,6 +133,20 @@
           "sortable": true
         }
       },
+      "sequence": {
+        "edit": {
+          "label": "sequence",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "sequence",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -238,6 +252,12 @@
           {
             "name": "category",
             "size": 6
+          }
+        ],
+        [
+          {
+            "name": "sequence",
+            "size": 4
           }
         ]
       ]

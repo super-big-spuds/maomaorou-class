@@ -166,7 +166,8 @@
           "durationDay",
           "chapters",
           "title",
-          "category"
+          "category",
+          "sequence"
         ]
       },
       "conditions": []
@@ -198,7 +199,8 @@
           "durationDay",
           "chapters",
           "title",
-          "category"
+          "category",
+          "sequence"
         ]
       },
       "conditions": []
@@ -216,7 +218,8 @@
           "durationDay",
           "chapters",
           "title",
-          "category"
+          "category",
+          "sequence"
         ]
       },
       "conditions": []
