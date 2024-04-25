@@ -136,7 +136,7 @@ export default {
                           price: course.price,
                         })),
                         paymentId: payment.id,
-                        orderId: order.id
+                        orderId: order.id,
                       })
                       .then((result) => {
                         resolve({
@@ -448,7 +448,11 @@ export default {
                 "plugin::graphql.format"
               ).returnTypes;
 
-              const user = context.state.user;
+              const user = context?.state?.user;
+
+              if (user === null) {
+                throw new ForbiddenError("使用者未登入");
+              }
 
               const userCourseStatus = await strapi.services[
                 "api::user-courses-status.user-courses-status"
@@ -505,6 +509,9 @@ export default {
         "Course.staredLessons": {
           auth: false,
         },
+        "Course.withUserStatus": {
+          auth: false,
+        },
       },
     }));
   },
@@ -515,5 +522,5 @@ export default {
    * This gives you an opportunity to set up your data model,
    * run jobs, or perform some special logic.
    */
-  bootstrap(/*{ strapi }*/) { },
+  bootstrap(/*{ strapi }*/) {},
 };

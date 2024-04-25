@@ -31,6 +31,7 @@ export default function CourseAddToCartButton({
           title: props.title,
           price: props.price,
           expiredAt: getExpiredAt(props.durationDay),
+          durationDay: props.durationDay,
         })
       }
     >

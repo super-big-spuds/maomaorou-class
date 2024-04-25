@@ -20,6 +20,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 
 import { Metadata } from "next";
+import UserCourseStatusText from "@/components/user/user-course-status-text";
 export const metadata: Metadata = {
   title: "課程簡介 - 貓貓肉線上課程網站",
   description: "貓貓肉線上課程網站貓貓肉課程簡介",
@@ -252,6 +253,7 @@ export default async function CoursePage({
             price={data.courseByTitle.data.attributes.price}
             durationDay={data.courseByTitle.data.attributes.durationDay}
           />
+          <UserCourseStatusText courseId={data.courseByTitle.data.id} />
         </CardFooter>
       </Card>
     </div>

@@ -31,6 +31,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import Image from "next/image";
 import { Loader2, X } from "lucide-react";
+import useCartWithUserCourseStatus from "@/hook/useCartWithUserCourseStatus";
 
 const GET_LATEST_PRICE_QUERY = gql(`
   query GetCoursesQueryData($courseIds: [ID]) {
@@ -105,6 +106,7 @@ type IFormData = {
 };
 
 export default function CheckoutPage() {
+  const cartDataWithUserCourseStatus = useCartWithUserCourseStatus();
   const cartData = useCart();
   const { toast } = useToast();
   const { data: latestCartData, loading: getPriceLoading } = useQuery(
@@ -275,11 +277,11 @@ export default function CheckoutPage() {
                     <TableHead>操作</TableHead>
                     <TableHead>商品預覽</TableHead>
                     <TableHead>課程名稱</TableHead>
+                    <TableHead>課程有效至</TableHead>
                     <TableHead className="text-right">價格</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {/* TODO: do skeleton her */}
                   {parseResult.data.courses.data.map((course) => (
                     <TableRow key={course.id}>
                       <TableCell>
@@ -298,6 +300,11 @@ export default function CheckoutPage() {
                         />
                       </TableCell>
                       <TableCell>{course.attributes.title}</TableCell>
+                      <TableCell>
+                        {cartDataWithUserCourseStatus
+                          .find((courseStatus) => courseStatus.id === course.id)
+                          ?.expiredAt.toLocaleDateString()}
+                      </TableCell>
                       <TableCell className="text-right">
                         NT$ {course.attributes.price.toLocaleString()}元
                       </TableCell>
@@ -306,7 +313,7 @@ export default function CheckoutPage() {
                 </TableBody>
                 <TableFooter>
                   <TableRow>
-                    <TableCell colSpan={3}>總金額</TableCell>
+                    <TableCell colSpan={4}>總金額</TableCell>
                     <TableCell className="text-right">
                       NT$
                       {parseResult.data.courses.data.reduce(

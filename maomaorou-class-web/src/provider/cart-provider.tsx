@@ -8,6 +8,7 @@ type CartItem = {
   title: string;
   price: number;
   expiredAt: Date;
+  durationDay: number;
 };
 
 const context = createContext({
@@ -63,6 +64,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           title: z.string(),
           price: z.number(),
           expiredAt: z.string().transform((v) => new Date(v)),
+          durationDay: z.number(),
         })
       );
 
@@ -87,7 +89,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <context.Provider
-      value={{ cart: cartData, addToCart, removeFromCart, clearCart }}
+      value={{
+        cart: cartData,
+        addToCart,
+        removeFromCart,
+        clearCart,
+      }}
     >
       {children}
     </context.Provider>

@@ -11,9 +11,11 @@ import { useCart } from "@/provider/cart-provider";
 import Link from "next/link";
 import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
+import useCartWithUserCourseStatus from "@/hook/useCartWithUserCourseStatus";
 
 export default function CartButton() {
-  const cartData = useCart();
+  const cartDataWithUserCourseStatus = useCartWithUserCourseStatus();
+  const cartContext = useCart();
 
   return (
     <DropdownMenu>
@@ -25,9 +27,9 @@ export default function CartButton() {
         >
           <ShoppingCart className="h-5 w-5" />
           <span className="sr-only">Cart</span>
-          {cartData.cart.length !== 0 && (
+          {cartDataWithUserCourseStatus.length !== 0 && (
             <div className="absolute -right-1 -top-2 bg-orange-200 rounded-full w-6 h-6 flex justify-center  items-center ">
-              <p>{cartData.cart.length}</p>
+              <p>{cartDataWithUserCourseStatus.length}</p>
             </div>
           )}
         </Button>
@@ -37,20 +39,20 @@ export default function CartButton() {
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-semibold">購物車</h3>
           <Badge className="bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-200">
-            {cartData.cart.length} 項物品
+            {cartDataWithUserCourseStatus.length} 項物品
           </Badge>
         </div>
 
-        {cartData.cart.length === 0 && (
+        {cartDataWithUserCourseStatus.length === 0 && (
           <div className="text-center text-gray-500 dark:text-gray-400">
             購物車是空的
           </div>
         )}
 
-        {cartData.cart.map((item) => (
+        {cartDataWithUserCourseStatus.map((item) => (
           <div key={item.id} className="space-y-4">
             <div className="grid grid-cols-[auto_1fr_auto] items-center gap-4">
-              <button onClick={() => cartData.removeFromCart(item.id)}>
+              <button onClick={() => cartContext.removeFromCart(item.id)}>
                 <X className="text-gray-100" />
               </button>
               <div className="space-y-1">
@@ -67,7 +69,11 @@ export default function CartButton() {
         <div className="flex justify-between items-center border-t pt-4">
           <div className="text-gray-500 dark:text-gray-400">總金額</div>
           <div className="font-medium">
-            ${cartData.cart.reduce((acc, cur) => acc + cur.price, 0)}
+            $
+            {cartDataWithUserCourseStatus.reduce(
+              (acc, cur) => acc + cur.price,
+              0
+            )}
           </div>
         </div>
 
