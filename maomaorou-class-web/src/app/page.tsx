@@ -186,26 +186,24 @@ export default async function Home() {
   return (
     <div className="flex justify-center w-full ">
       <div className="max-w-4xl flex flex-col gap-y-4">
-        <Card className="flex flex-col items-center justify-between px-6 pb-6">
-          <CardTitle className="text-2xl md:text-3xl mt-4">
-            貓貓肉數位交易學習網
-          </CardTitle>
+        {/* Banner */}
+        <Image
+          className="aspect-[3/1] w-full min-h-[200px] my-2"
+          src={
+            parsedData.decorationSetting.data.attributes
+              .landingPageBackgroundImage.data.attributes.url
+          }
+          alt="MaoMaoRou Background Image"
+          width={500}
+          height={500}
+        />
 
-          {/* Banner */}
-          <Image
-            className="aspect-[4/1] w-full min-h-[200px] my-2"
-            src={
-              parsedData.decorationSetting.data.attributes
-                .landingPageBackgroundImage.data.attributes.url
-            }
-            alt="MaoMaoRou Background Image"
-            width={500}
-            height={500}
-          />
+        <Card className="flex flex-col items-center justify-between px-6 pb-6">
+          <CardTitle className="text-2xl md:text-3xl mt-4">課程列表</CardTitle>
 
           {/* Courses */}
-          <div className="flex justify-center w-full flex-col">
-            <div className="flex gap-4 md:flex-row flex-col relative z-10 pt-2 justify-center items-center">
+          <div className="flex justify-center items-center zw-full flex-col">
+            <div className="grid gap-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 text-center relative z-10 pt-2 w-fit">
               {unDuplicateCourseWithCategory.map((course) => (
                 <Link
                   key={course.id}
