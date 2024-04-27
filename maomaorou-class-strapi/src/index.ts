@@ -558,6 +558,69 @@ export default {
         },
       },
     }));
+
+    extensionService.use(({ strapi }) => ({
+      typeDefs: `
+          type Mutation {
+            AddZeroPriceCourseToMyCourse(courseId: ID): UserCoursesStatusEntityResponse
+          }
+        `,
+      resolvers: {
+        Mutation: {
+          AddZeroPriceCourseToMyCourse: {
+            resolve: async (parent, args, context) => {
+              const { toEntityResponse } = strapi.service(
+                "plugin::graphql.format"
+              ).returnTypes;
+
+              const userId = context.state.user.id;
+              const courseResult = await strapi.services[
+                "api::course.course"
+              ].find({
+                filters: { id: args.courseId },
+              });
+
+              if (courseResult.results.length === 0) {
+                throw new NotFoundError("找不到該課程");
+              }
+
+              const course = courseResult.results[0];
+
+              if (course.firstPrice !== 0) {
+                throw new ForbiddenError("該課程不是免費課程");
+              }
+
+              const userCourseStatus = await strapi.services[
+                "api::user-courses-status.user-courses-status"
+              ].find({
+                filters: {
+                  user: userId,
+                  course: args.courseId,
+                },
+              });
+
+              if (userCourseStatus.results.length > 0) {
+                throw new ForbiddenError("使用者已擁有此課程");
+              }
+
+              const newUserCourseStatus = await strapi.services[
+                "api::user-courses-status.user-courses-status"
+              ].create({
+                data: {
+                  user: userId,
+                  course: args.courseId,
+                  expiredAt: new Date(
+                    new Date().getTime() + (course.firstDurationDay * 1000 * 60 * 60 * 24)
+                  ),
+                },
+              });
+
+              return toEntityResponse(newUserCourseStatus);
+            },
+          },
+        },
+      },
+    }));
   },
   /**
    * An asynchronous bootstrap function that runs before

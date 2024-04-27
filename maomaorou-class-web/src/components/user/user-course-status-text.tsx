@@ -13,6 +13,7 @@ interface SpanProps extends React.HTMLAttributes<HTMLSpanElement> {
 
 export default function UserCourseStatusText({
   courseId,
+  className,
   ...props
 }: SpanProps) {
   const userContext = useUser();
@@ -36,7 +37,7 @@ export default function UserCourseStatusText({
 
   if (!expiredAt) {
     return (
-      <p className={cn("text-gray-400", props.className)} {...props}>
+      <p className={cn("text-gray-400", className)} {...props}>
         您尚未購買過該課程
       </p>
     );
@@ -48,7 +49,7 @@ export default function UserCourseStatusText({
   }月${expiredAtDate.getDate()}日`;
 
   return (
-    <p className={cn("text-gray-400", props.className)} {...props}>
+    <p className={cn("text-gray-400", className)} {...props}>
       原訂閱將至{yyyymmdd}過期
     </p>
   );

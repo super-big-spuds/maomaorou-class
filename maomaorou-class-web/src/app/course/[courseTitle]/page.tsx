@@ -20,6 +20,7 @@ import { Separator } from "@/components/ui/separator";
 
 import { Metadata } from "next";
 import UserCourseStatusText from "@/components/user/user-course-status-text";
+import AddZeroPriceCourseButton from "@/components/user/add-zero-price-course-button";
 export const metadata: Metadata = {
   title: "課程簡介 - 貓貓肉線上課程網站",
   description: "貓貓肉線上課程網站貓貓肉課程簡介",
@@ -221,12 +222,12 @@ export default async function CoursePage({
         <CardTitle>課程價格</CardTitle>
         <CardDescription>
           <p>
-            首次購買：{" "}
-            {data.courseByTitle.data.attributes.firstPrice.toLocaleString()}天
+            首次購買:
+            {data.courseByTitle.data.attributes.firstPrice.toLocaleString()}元
           </p>
           <p>
-            續訂：{" "}
-            {data.courseByTitle.data.attributes.renewPrice.toLocaleString()}天
+            續訂:
+            {data.courseByTitle.data.attributes.renewPrice.toLocaleString()}元
           </p>
         </CardDescription>
         <Separator />
@@ -245,10 +246,12 @@ export default async function CoursePage({
           </div>
           <div>
             <p className="text-lg font-semibold">課程包含</p>
-            <ul>
-              <li>- 教學影片</li>
-              <li>- 教材</li>
-            </ul>
+            <CardDescription>
+              <ul>
+                <li>- 教學影片</li>
+                <li>- 教材</li>
+              </ul>
+            </CardDescription>
           </div>
         </CardContent>
         <Separator />
@@ -259,12 +262,23 @@ export default async function CoursePage({
               .toISOString()
               .slice(0, 10)}
           </p>
-          <CourseAddToCartButton
-            className="w-full"
+          {data.courseByTitle.data.attributes.firstPrice === 0 ? (
+            <AddZeroPriceCourseButton
+              className="w-full"
+              courseId={data.courseByTitle.data.id}
+              courseTitle={data.courseByTitle.data.attributes.title}
+            />
+          ) : (
+            <CourseAddToCartButton
+              className="w-full"
+              courseId={data.courseByTitle.data.id}
+              title={data.courseByTitle.data.attributes.title}
+            />
+          )}
+          <UserCourseStatusText
+            className="text-center w-full"
             courseId={data.courseByTitle.data.id}
-            title={data.courseByTitle.data.attributes.title}
           />
-          <UserCourseStatusText courseId={data.courseByTitle.data.id} />
         </CardFooter>
       </Card>
     </div>

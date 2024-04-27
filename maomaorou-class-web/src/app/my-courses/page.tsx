@@ -6,7 +6,12 @@ import Link from "next/link";
 import { useQuery } from "@apollo/client";
 import { z } from "zod";
 import { useUser } from "@/provider/user-provider";
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -127,13 +132,17 @@ export default function MyCoursesPage() {
   return (
     <div className="flex justify-center w-full">
       <div className="flex flex-col items-center justify-between max-w-3xl w-full gap-y-4">
-        <Card className="w-full p-4">
-          <CardTitle className="mb-4">精選文章</CardTitle>
+        <Card className="flex flex-col items-center justify-between p-4 w-full">
+          <CardTitle>精選文章</CardTitle>
           <CardContent className="p-0 flex flex-col gap-y-2">
             {!parsedResult.success ? (
               <div>
                 <Skeleton className="w-full h-6" />
               </div>
+            ) : staredLessons.length === 0 ? (
+              <CardDescription className="text-center">
+                您擁有的課程尚未有精選文章
+              </CardDescription>
             ) : (
               staredLessons.map((lesson) => (
                 <Link
@@ -157,71 +166,76 @@ export default function MyCoursesPage() {
         <Card className="flex flex-col items-center justify-between p-4 w-full">
           <CardTitle>我的課程</CardTitle>
 
-          <Table className="w-full">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[100px]">封面</TableHead>
-                <TableHead>課程名稱</TableHead>
-                <TableHead>課程有效至</TableHead>
-                <TableHead className="text-right">行動</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {loading || data === undefined ? (
-                <>
-                  <TableRow>
-                    <TableCell colSpan={4}>
-                      <Skeleton className="h-6" />
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell colSpan={4}>
-                      <Skeleton className="h-6" />
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell colSpan={4}>
-                      <Skeleton className="h-6" />
-                    </TableCell>
-                  </TableRow>
-                </>
-              ) : !parsedResult.success ? (
+          {parsedResult.success &&
+          parsedResult.data.buyedCourses.length === 0 ? (
+            <CardDescription>您尚未擁有任何課程</CardDescription>
+          ) : (
+            <Table className="w-full">
+              <TableHeader>
                 <TableRow>
-                  <TableCell>
-                    <p>取得課程內容時發生錯誤, 請通知管理員</p>
-                  </TableCell>
+                  <TableHead className="w-[100px]">封面</TableHead>
+                  <TableHead>課程名稱</TableHead>
+                  <TableHead>課程有效至</TableHead>
+                  <TableHead className="text-right">行動</TableHead>
                 </TableRow>
-              ) : (
-                parsedResult.data.buyedCourses.map((course) => (
-                  <TableRow key={course.data.id}>
+              </TableHeader>
+              <TableBody>
+                {loading || data === undefined ? (
+                  <>
+                    <TableRow>
+                      <TableCell colSpan={4}>
+                        <Skeleton className="h-6" />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell colSpan={4}>
+                        <Skeleton className="h-6" />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell colSpan={4}>
+                        <Skeleton className="h-6" />
+                      </TableCell>
+                    </TableRow>
+                  </>
+                ) : !parsedResult.success ? (
+                  <TableRow>
                     <TableCell>
-                      <Image
-                        src={course.data.attributes.image.data.attributes.url}
-                        alt={course.data.attributes.title}
-                        width={100}
-                        height={100}
-                      />
-                    </TableCell>
-                    <TableCell>{course.data.attributes.title}</TableCell>
-                    <TableCell>
-                      {
-                        course.data.attributes.withUserStatus.data.attributes
-                          .expiredAt
-                      }
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Link
-                        className={cn(buttonVariants())}
-                        href={`/learning-course/${course.data.attributes.title}`}
-                      >
-                        前往課程
-                      </Link>
+                      <p>取得課程內容時發生錯誤, 請通知管理員</p>
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+                ) : (
+                  parsedResult.data.buyedCourses.map((course) => (
+                    <TableRow key={course.data.id}>
+                      <TableCell>
+                        <Image
+                          src={course.data.attributes.image.data.attributes.url}
+                          alt={course.data.attributes.title}
+                          width={100}
+                          height={100}
+                        />
+                      </TableCell>
+                      <TableCell>{course.data.attributes.title}</TableCell>
+                      <TableCell>
+                        {
+                          course.data.attributes.withUserStatus.data.attributes
+                            .expiredAt
+                        }
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Link
+                          className={cn(buttonVariants())}
+                          href={`/learning-course/${course.data.attributes.title}`}
+                        >
+                          前往課程
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          )}
         </Card>
       </div>
     </div>
