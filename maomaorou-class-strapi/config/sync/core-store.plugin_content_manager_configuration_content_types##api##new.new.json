@@ -142,8 +142,9 @@
         ]
       ],
       "list": [
-        "image",
+        "id",
         "title",
+        "image",
         "createdAt"
       ]
     },

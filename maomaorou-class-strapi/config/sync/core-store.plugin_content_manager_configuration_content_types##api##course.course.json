@@ -7,7 +7,7 @@
       "searchable": true,
       "pageSize": 10,
       "mainField": "title",
-      "defaultSortBy": "title",
+      "defaultSortBy": "id",
       "defaultSortOrder": "ASC"
     },
     "metadatas": {
@@ -245,27 +245,17 @@
         [
           {
             "name": "image",
-            "size": 6
+            "size": 12
           }
         ],
         [
-          {
-            "name": "goal",
-            "size": 6
-          },
           {
             "name": "description",
             "size": 6
-          }
-        ],
-        [
-          {
-            "name": "renewPrice",
-            "size": 4
           },
           {
-            "name": "renewDurationDay",
-            "size": 4
+            "name": "goal",
+            "size": 6
           }
         ],
         [
@@ -275,6 +265,16 @@
           },
           {
             "name": "firstDurationDay",
+            "size": 4
+          }
+        ],
+        [
+          {
+            "name": "renewPrice",
+            "size": 4
+          },
+          {
+            "name": "renewDurationDay",
             "size": 4
           }
         ],
@@ -298,7 +298,6 @@
       "list": [
         "id",
         "image",
-        "title",
         "description",
         "goal"
       ]

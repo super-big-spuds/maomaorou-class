@@ -1,7 +1,7 @@
 {
-  "name": "Editor",
-  "code": "editor-lv86np85",
-  "description": "已新增 April 20th, 2024",
+  "name": "Admin",
+  "code": "admin-lvhx0lx0",
+  "description": "已新增 April 27th, 2024",
   "permissions": [
     {
       "action": "plugin::content-manager.explorer.create",
@@ -166,6 +166,7 @@
           "renewDurationDay",
           "chapters",
           "title",
+          "category",
           "sequence",
           "firstPrice",
           "firstDurationDay"
@@ -193,6 +194,7 @@
           "renewDurationDay",
           "chapters",
           "title",
+          "category",
           "sequence",
           "firstPrice",
           "firstDurationDay"
@@ -213,6 +215,7 @@
           "renewDurationDay",
           "chapters",
           "title",
+          "category",
           "sequence",
           "firstPrice",
           "firstDurationDay"
@@ -504,6 +507,26 @@
           "user",
           "course",
           "expiredAt"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "plugin::users-permissions.user",
+      "properties": {
+        "fields": [
+          "username",
+          "email",
+          "provider",
+          "password",
+          "resetPasswordToken",
+          "confirmationToken",
+          "confirmed",
+          "blocked",
+          "role",
+          "orders"
         ]
       },
       "conditions": []
@@ -516,42 +539,21 @@
       "conditions": []
     },
     {
-      "action": "plugin::upload.assets.copy-link",
+      "action": "plugin::users-permissions.roles.create",
       "actionParameters": {},
       "subject": null,
       "properties": {},
       "conditions": []
     },
     {
-      "action": "plugin::upload.assets.create",
+      "action": "plugin::users-permissions.roles.read",
       "actionParameters": {},
       "subject": null,
       "properties": {},
       "conditions": []
     },
     {
-      "action": "plugin::upload.assets.download",
-      "actionParameters": {},
-      "subject": null,
-      "properties": {},
-      "conditions": []
-    },
-    {
-      "action": "plugin::upload.assets.update",
-      "actionParameters": {},
-      "subject": null,
-      "properties": {},
-      "conditions": []
-    },
-    {
-      "action": "plugin::upload.configure-view",
-      "actionParameters": {},
-      "subject": null,
-      "properties": {},
-      "conditions": []
-    },
-    {
-      "action": "plugin::upload.read",
+      "action": "plugin::users-permissions.roles.update",
       "actionParameters": {},
       "subject": null,
       "properties": {},

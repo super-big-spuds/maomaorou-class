@@ -7,7 +7,7 @@
       "searchable": true,
       "pageSize": 10,
       "mainField": "name",
-      "defaultSortBy": "name",
+      "defaultSortBy": "id",
       "defaultSortOrder": "ASC"
     },
     "metadatas": {
@@ -163,12 +163,12 @@
         ],
         [
           {
-            "name": "sequence",
-            "size": 4
-          },
-          {
             "name": "chapter",
             "size": 6
+          },
+          {
+            "name": "sequence",
+            "size": 4
           }
         ],
         [
@@ -182,7 +182,7 @@
         "id",
         "chapter",
         "sequence",
-        "name"
+        "createdAt"
       ]
     },
     "uid": "api::lesson.lesson"

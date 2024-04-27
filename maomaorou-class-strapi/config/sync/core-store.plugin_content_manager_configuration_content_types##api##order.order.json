@@ -141,8 +141,8 @@
       "list": [
         "id",
         "status",
-        "user",
-        "order_courses"
+        "createdAt",
+        "updatedAt"
       ],
       "edit": [
         [
