@@ -4,7 +4,7 @@ services:
   strapi:
     build:
       context: ./maomaorou-class-strapi
-      target: dev
+      target: prod
       dockerfile: Dockerfile
     volumes:
       - ./maomaorou-class-strapi:/app
@@ -14,6 +14,5 @@ services:
     env_file:
       - ./maomaorou-class-strapi/.env
     ports:
-      - "1338:1338" 
-    command: bash -c "yarn develop "
+      - "1338:1338"
       
