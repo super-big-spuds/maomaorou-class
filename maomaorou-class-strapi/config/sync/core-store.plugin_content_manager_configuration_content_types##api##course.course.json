@@ -298,6 +298,7 @@
       "list": [
         "id",
         "image",
+        "title",
         "description",
         "goal"
       ]

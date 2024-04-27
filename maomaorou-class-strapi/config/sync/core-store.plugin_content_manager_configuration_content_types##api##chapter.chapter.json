@@ -137,18 +137,8 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "name",
-        "course",
-        "sequence"
-      ],
       "edit": [
         [
-          {
-            "name": "name",
-            "size": 6
-          },
           {
             "name": "course",
             "size": 6
@@ -156,14 +146,26 @@
         ],
         [
           {
+            "name": "name",
+            "size": 6
+          },
+          {
             "name": "sequence",
             "size": 4
-          },
+          }
+        ],
+        [
           {
             "name": "lessons",
             "size": 6
           }
         ]
+      ],
+      "list": [
+        "id",
+        "name",
+        "course",
+        "sequence"
       ]
     },
     "uid": "api::chapter.chapter"

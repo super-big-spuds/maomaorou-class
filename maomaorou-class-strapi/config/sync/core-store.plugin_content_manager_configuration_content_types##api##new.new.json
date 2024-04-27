@@ -121,12 +121,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "title",
-        "image",
-        "createdAt"
-      ],
       "edit": [
         [
           {
@@ -136,16 +130,21 @@
         ],
         [
           {
-            "name": "content",
-            "size": 12
+            "name": "image",
+            "size": 6
           }
         ],
         [
           {
-            "name": "image",
-            "size": 6
+            "name": "content",
+            "size": 12
           }
         ]
+      ],
+      "list": [
+        "image",
+        "title",
+        "createdAt"
       ]
     },
     "uid": "api::new.new"
