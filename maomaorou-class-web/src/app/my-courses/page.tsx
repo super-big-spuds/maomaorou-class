@@ -129,6 +129,12 @@ export default function MyCoursesPage() {
         (course) => course.data.attributes.staredLessons
       );
 
+  const isCourseExpired = (expiredAt: string) => {
+    const expiredDate = new Date(expiredAt);
+    const currentDate = new Date();
+    return currentDate > expiredDate;
+  };
+
   return (
     <div className="flex justify-center w-full">
       <div className="flex flex-col items-center justify-between max-w-3xl w-full gap-y-4">
@@ -217,18 +223,39 @@ export default function MyCoursesPage() {
                       </TableCell>
                       <TableCell>{course.data.attributes.title}</TableCell>
                       <TableCell>
-                        {
-                          course.data.attributes.withUserStatus.data.attributes
-                            .expiredAt
-                        }
+                        <p
+                          className={cn({
+                            "text-red-500": isCourseExpired(
+                              course.data.attributes.withUserStatus.data
+                                .attributes.expiredAt
+                            ),
+                          })}
+                        >
+                          {
+                            course.data.attributes.withUserStatus.data
+                              .attributes.expiredAt
+                          }
+                        </p>
                       </TableCell>
                       <TableCell className="text-right">
-                        <Link
-                          className={cn(buttonVariants())}
-                          href={`/learning-course/${course.data.attributes.title}`}
-                        >
-                          前往課程
-                        </Link>
+                        {isCourseExpired(
+                          course.data.attributes.withUserStatus.data.attributes
+                            .expiredAt
+                        ) ? (
+                          <Link
+                            className={cn(buttonVariants())}
+                            href={`/course/${course.data.attributes.title}`}
+                          >
+                            前往續訂
+                          </Link>
+                        ) : (
+                          <Link
+                            className={cn(buttonVariants())}
+                            href={`/learning-course/${course.data.attributes.title}`}
+                          >
+                            前往課程
+                          </Link>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))

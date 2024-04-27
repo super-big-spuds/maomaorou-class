@@ -91,12 +91,22 @@ export default function useCartWithUserCourseStatus() {
       );
     })?.attributes.withUserStatus.data?.attributes.expiredAt;
 
-    const expiredDateAfterBuyed = originalExpiredAt
-      ? new Date(
-          new Date(originalExpiredAt).getTime() +
-            cartItem.durationDay * 24 * 60 * 60 * 1000
-        )
-      : cartItem.expiredAt;
+    // 如果沒有購買過，或者原本的過期日比現在還早，就用新的過期日
+    if (
+      originalExpiredAt === undefined ||
+      new Date(originalExpiredAt) < new Date()
+    ) {
+      return {
+        ...cartItem,
+        isFirst: originalExpiredAt === undefined,
+        expiredAt: cartItem.expiredAt,
+      };
+    }
+
+    const expiredDateAfterBuyed = new Date(
+      new Date(originalExpiredAt).getTime() +
+        cartItem.durationDay * 24 * 60 * 60 * 1000
+    );
 
     return {
       ...cartItem,

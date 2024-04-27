@@ -441,7 +441,7 @@
           "course",
           "order",
           "price",
-          "expiredAt"
+          "durationDay"
         ]
       },
       "conditions": []
@@ -462,7 +462,7 @@
           "course",
           "order",
           "price",
-          "expiredAt"
+          "durationDay"
         ]
       },
       "conditions": []
@@ -476,7 +476,7 @@
           "course",
           "order",
           "price",
-          "expiredAt"
+          "durationDay"
         ]
       },
       "conditions": []

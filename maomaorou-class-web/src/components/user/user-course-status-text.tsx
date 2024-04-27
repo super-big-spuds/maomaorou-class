@@ -50,7 +50,7 @@ export default function UserCourseStatusText({
 
   return (
     <p className={cn("text-gray-400", className)} {...props}>
-      原訂閱將至{yyyymmdd}過期
+      原訂閱於{yyyymmdd}過期
     </p>
   );
 }

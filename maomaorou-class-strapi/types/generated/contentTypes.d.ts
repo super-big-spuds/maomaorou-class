@@ -1179,7 +1179,7 @@ export interface ApiOrderCourseOrderCourse extends Schema.CollectionType {
       'api::order.order'
     >;
     price: Attribute.Integer & Attribute.Required;
-    expiredAt: Attribute.Date & Attribute.Required;
+    durationDay: Attribute.Integer & Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<

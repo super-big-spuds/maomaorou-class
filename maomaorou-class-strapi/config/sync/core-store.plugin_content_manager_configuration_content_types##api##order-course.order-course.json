@@ -26,7 +26,7 @@
           "placeholder": "",
           "visible": true,
           "editable": true,
-          "mainField": "id"
+          "mainField": "title"
         },
         "list": {
           "label": "course",
@@ -63,16 +63,16 @@
           "sortable": true
         }
       },
-      "expiredAt": {
+      "durationDay": {
         "edit": {
-          "label": "expiredAt",
+          "label": "durationDay",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "expiredAt",
+          "label": "durationDay",
           "searchable": true,
           "sortable": true
         }
@@ -160,7 +160,7 @@
             "size": 4
           },
           {
-            "name": "expiredAt",
+            "name": "durationDay",
             "size": 4
           }
         ]

@@ -27,8 +27,8 @@
       "type": "integer",
       "required": true
     },
-    "expiredAt": {
-      "type": "date",
+    "durationDay": {
+      "type": "integer",
       "required": true
     }
   }

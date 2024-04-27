@@ -125,9 +125,9 @@
     "layouts": {
       "list": [
         "id",
-        "createdAt",
-        "updatedAt",
-        "createdBy"
+        "user",
+        "course",
+        "expiredAt"
       ],
       "edit": [
         [

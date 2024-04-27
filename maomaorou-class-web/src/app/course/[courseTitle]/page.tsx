@@ -19,8 +19,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 
 import { Metadata } from "next";
-import UserCourseStatusText from "@/components/user/user-course-status-text";
-import AddZeroPriceCourseButton from "@/components/user/add-zero-price-course-button";
+import CourseActionSection from "@/components/course/course-action-section";
 export const metadata: Metadata = {
   title: "課程簡介 - 貓貓肉線上課程網站",
   description: "貓貓肉線上課程網站貓貓肉課程簡介",
@@ -262,22 +261,11 @@ export default async function CoursePage({
               .toISOString()
               .slice(0, 10)}
           </p>
-          {data.courseByTitle.data.attributes.firstPrice === 0 ? (
-            <AddZeroPriceCourseButton
-              className="w-full"
-              courseId={data.courseByTitle.data.id}
-              courseTitle={data.courseByTitle.data.attributes.title}
-            />
-          ) : (
-            <CourseAddToCartButton
-              className="w-full"
-              courseId={data.courseByTitle.data.id}
-              title={data.courseByTitle.data.attributes.title}
-            />
-          )}
-          <UserCourseStatusText
-            className="text-center w-full"
-            courseId={data.courseByTitle.data.id}
+          <CourseActionSection
+            course={{
+              id: data.courseByTitle.data.id,
+              ...data.courseByTitle.data.attributes,
+            }}
           />
         </CardFooter>
       </Card>

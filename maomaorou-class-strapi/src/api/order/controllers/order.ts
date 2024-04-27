@@ -84,14 +84,25 @@ export default factories.createCoreController(
             });
           } else {
             // 如果有購買過這門課
+
+            const isOriginalStatusExpired =
+              new Date(userCourseStatus[0].expiredAt) < new Date();
+
+            const newExpiredAt = isOriginalStatusExpired
+              ? new Date(
+                  new Date().getTime() +
+                    orderCourse.course.firstDurationDay * perDay
+                )
+              : new Date(
+                  new Date(userCourseStatus[0].expiredAt).getTime() +
+                    orderCourse.course.renewDurationDay * perDay
+                );
+
             await strapi.services[
               "api::user-courses-status.user-courses-status"
             ].update(userCourseStatus[0].id, {
               data: {
-                expiredAt: new Date(
-                  new Date(userCourseStatus[0].expiredAt).getTime() +
-                    orderCourse.course.renewDurationDay * perDay
-                ),
+                expiredAt: newExpiredAt,
               },
             });
           }

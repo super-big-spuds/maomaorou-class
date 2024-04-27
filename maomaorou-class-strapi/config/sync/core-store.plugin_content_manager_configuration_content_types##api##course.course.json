@@ -7,7 +7,7 @@
       "searchable": true,
       "pageSize": 10,
       "mainField": "title",
-      "defaultSortBy": "id",
+      "defaultSortBy": "title",
       "defaultSortOrder": "ASC"
     },
     "metadatas": {
@@ -245,27 +245,17 @@
         [
           {
             "name": "image",
-            "size": 12
+            "size": 6
           }
         ],
         [
-          {
-            "name": "description",
-            "size": 6
-          },
           {
             "name": "goal",
             "size": 6
-          }
-        ],
-        [
-          {
-            "name": "firstPrice",
-            "size": 4
           },
           {
-            "name": "firstDurationDay",
-            "size": 4
+            "name": "description",
+            "size": 6
           }
         ],
         [
@@ -275,6 +265,16 @@
           },
           {
             "name": "renewDurationDay",
+            "size": 4
+          }
+        ],
+        [
+          {
+            "name": "firstPrice",
+            "size": 4
+          },
+          {
+            "name": "firstDurationDay",
             "size": 4
           }
         ],
