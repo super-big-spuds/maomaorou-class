@@ -1,7 +1,6 @@
 import { gql } from "@/__generated__";
 import CourseAddToCartButton from "@/components/cart/course-add-to-cart-button";
 import { createApolloSSRClient } from "@/lib/apollo-client";
-import { redirect } from "next/navigation";
 import { z } from "zod";
 import {
   Accordion,
@@ -35,8 +34,10 @@ query GetCourseQueryData($title: String!) {
           title
           goal
           description
-          price
-          durationDay
+          firstPrice
+          renewPrice
+          firstDurationDay
+          renewDurationDay
           updatedAt
           chapters {
           	data {
@@ -78,8 +79,10 @@ const schema = z.object({
         title: z.string(),
         goal: z.string(),
         description: z.string(),
-        price: z.number(),
-        durationDay: z.number(),
+        firstPrice: z.number(),
+        renewPrice: z.number(),
+        firstDurationDay: z.number(),
+        renewDurationDay: z.number(),
         updatedAt: z.string().transform((v) => new Date(v)),
         chapters: z.object({
           data: z.array(
@@ -130,12 +133,7 @@ export default async function CoursePage({
     },
   });
 
-  const result = schema.safeParse(rawData);
-
-  if (!result.success) {
-    redirect("/not-found");
-  }
-  const { data } = result;
+  const data = schema.parse(rawData);
 
   // sort chapters by sequence
   data.courseByTitle.data.attributes.chapters.data.sort(
@@ -222,13 +220,28 @@ export default async function CoursePage({
       <Card className="sticky top-20 flex flex-col md:w-fit w-full h-full gap-3 p-4">
         <CardTitle>課程價格</CardTitle>
         <CardDescription>
-          NT${data.courseByTitle.data.attributes.price.toLocaleString()}
+          <p>
+            首次購買：{" "}
+            {data.courseByTitle.data.attributes.firstPrice.toLocaleString()}天
+          </p>
+          <p>
+            續訂：{" "}
+            {data.courseByTitle.data.attributes.renewPrice.toLocaleString()}天
+          </p>
         </CardDescription>
         <Separator />
         <CardContent className="p-0 flex flex-col gap-y-2">
           <div>
             <p className="text-lg font-semibold">課程有效期</p>
-            <p>{data.courseByTitle.data.attributes.durationDay}天</p>
+            <CardDescription>
+              <p>
+                首次購買： {data.courseByTitle.data.attributes.firstDurationDay}
+                天
+              </p>
+              <p>
+                續訂： {data.courseByTitle.data.attributes.renewDurationDay}天
+              </p>
+            </CardDescription>
           </div>
           <div>
             <p className="text-lg font-semibold">課程包含</p>
@@ -250,8 +263,6 @@ export default async function CoursePage({
             className="w-full"
             courseId={data.courseByTitle.data.id}
             title={data.courseByTitle.data.attributes.title}
-            price={data.courseByTitle.data.attributes.price}
-            durationDay={data.courseByTitle.data.attributes.durationDay}
           />
           <UserCourseStatusText courseId={data.courseByTitle.data.id} />
         </CardFooter>

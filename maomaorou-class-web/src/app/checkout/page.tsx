@@ -44,7 +44,9 @@ const GET_LATEST_PRICE_QUERY = gql(`
         id
         attributes {
           title
-          price
+          firstPrice
+          renewPrice
+          isFirstBuy
           image {
             data {
               id
@@ -83,7 +85,9 @@ const schema = z.object({
         id: z.string(),
         attributes: z.object({
           title: z.string(),
-          price: z.number(),
+          firstPrice: z.number(),
+          renewPrice: z.number(),
+          isFirstBuy: z.boolean(),
           image: z.object({
             data: z.object({
               id: z.string(),
@@ -109,11 +113,17 @@ export default function CheckoutPage() {
   const cartDataWithUserCourseStatus = useCartWithUserCourseStatus();
   const cartData = useCart();
   const { toast } = useToast();
+  const userContext = useUser();
   const { data: latestCartData, loading: getPriceLoading } = useQuery(
     GET_LATEST_PRICE_QUERY,
     {
       variables: {
         courseIds: cartData.cart.map((item) => item.id),
+      },
+      context: {
+        headers: {
+          Authorization: `Bearer ${userContext.token}`,
+        },
       },
     }
   );
@@ -121,8 +131,7 @@ export default function CheckoutPage() {
     useMutation(REGISTER_MUTATION);
   const [sendSubmitOrderMutation, { loading: submitOrderLoading }] =
     useMutation(SUBMIT_ORDER_MUTATION);
-  const userContext = useUser();
-  const { token, handleLogin } = useUser();
+
   const parseResult = schema.safeParse(latestCartData);
 
   const loading = registerLoading || submitOrderLoading || getPriceLoading;
@@ -145,8 +154,8 @@ export default function CheckoutPage() {
 
     // Register a user
     const getToken = async () => {
-      if (userContext.userData !== null && token !== null) {
-        return token;
+      if (userContext.userData !== null && userContext.token !== null) {
+        return userContext.token;
       } else {
         const registerResponse = await sendRegisterUserMutation({
           variables: {
@@ -160,7 +169,7 @@ export default function CheckoutPage() {
         if (registerResponse.errors || !registerResponse.data?.register?.jwt) {
           return null;
         }
-        handleLogin(registerResponse.data.register.jwt);
+        userContext.handleLogin(registerResponse.data.register.jwt);
         return registerResponse.data.register.jwt;
       }
     };
@@ -222,10 +231,10 @@ export default function CheckoutPage() {
           <CardContent className="flex flex-col gap-4 p-0 my-4">
             {/* 已註冊時不用填寫會員資料 */}
             <div>
-              <p>姓名</p>
+              <p>使用者名稱</p>
               <Input
                 required
-                placeholder="輸入本名"
+                placeholder="使用者名稱"
                 name="name"
                 disabled={userContext.userData !== null}
                 className={cn("w-full", {
@@ -306,7 +315,17 @@ export default function CheckoutPage() {
                           ?.expiredAt.toLocaleDateString()}
                       </TableCell>
                       <TableCell className="text-right">
-                        NT$ {course.attributes.price.toLocaleString()}元
+                        {course.attributes.isFirstBuy ? (
+                          <p>
+                            首次購買：NT${" "}
+                            {course.attributes.firstPrice.toLocaleString()}元
+                          </p>
+                        ) : (
+                          <p>
+                            續訂：NT${" "}
+                            {course.attributes.renewPrice.toLocaleString()}元
+                          </p>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -317,7 +336,11 @@ export default function CheckoutPage() {
                     <TableCell className="text-right">
                       NT$
                       {parseResult.data.courses.data.reduce(
-                        (acc, course) => acc + course.attributes.price,
+                        (acc, course) =>
+                          acc +
+                          (course.attributes.isFirstBuy
+                            ? course.attributes.firstPrice
+                            : course.attributes.renewPrice),
                         0
                       )}
                       元

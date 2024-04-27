@@ -1,7 +1,6 @@
 "use client";
 
 import { gql } from "@/__generated__";
-import StrapiMdxToHtmlConverter from "@/components/mdx-converter/strapi-mdx-to-html-converter";
 import {
   Accordion,
   AccordionContent,
@@ -26,8 +25,6 @@ query GetLearningCourseData($title: String!) {
           title
           goal
           description
-          price
-          durationDay
           updatedAt
           chapters {
           	data {
@@ -72,8 +69,6 @@ const schema = z.object({
         title: z.string(),
         goal: z.string(),
         description: z.string(),
-        price: z.number(),
-        durationDay: z.number(),
         updatedAt: z.string(),
         chapters: z.object({
           data: z.array(

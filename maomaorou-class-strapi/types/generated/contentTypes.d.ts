@@ -921,8 +921,10 @@ export interface ApiCourseCourse extends Schema.CollectionType {
     goal: Attribute.Text &
       Attribute.Required &
       Attribute.DefaultTo<'\u9810\u8A2D\u8AB2\u7A0B\u76EE\u6A19'>;
-    price: Attribute.Integer & Attribute.Required & Attribute.DefaultTo<100>;
-    durationDay: Attribute.Integer &
+    renewPrice: Attribute.Integer &
+      Attribute.Required &
+      Attribute.DefaultTo<100>;
+    renewDurationDay: Attribute.Integer &
       Attribute.Required &
       Attribute.DefaultTo<30>;
     chapters: Attribute.Relation<
@@ -949,6 +951,12 @@ export interface ApiCourseCourse extends Schema.CollectionType {
         number
       > &
       Attribute.DefaultTo<0>;
+    firstPrice: Attribute.Integer &
+      Attribute.Required &
+      Attribute.DefaultTo<100>;
+    firstDurationDay: Attribute.Integer &
+      Attribute.Required &
+      Attribute.DefaultTo<30>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

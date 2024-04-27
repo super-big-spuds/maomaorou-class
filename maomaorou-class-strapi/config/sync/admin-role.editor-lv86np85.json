@@ -115,11 +115,13 @@
           "image",
           "description",
           "goal",
-          "price",
-          "durationDay",
+          "renewPrice",
+          "renewDurationDay",
           "chapters",
           "title",
-          "sequence"
+          "sequence",
+          "firstPrice",
+          "firstDurationDay"
         ]
       },
       "conditions": []
@@ -140,11 +142,13 @@
           "image",
           "description",
           "goal",
-          "price",
-          "durationDay",
+          "renewPrice",
+          "renewDurationDay",
           "chapters",
           "title",
-          "sequence"
+          "sequence",
+          "firstPrice",
+          "firstDurationDay"
         ]
       },
       "conditions": []
@@ -158,11 +162,13 @@
           "image",
           "description",
           "goal",
-          "price",
-          "durationDay",
+          "renewPrice",
+          "renewDurationDay",
           "chapters",
           "title",
-          "sequence"
+          "sequence",
+          "firstPrice",
+          "firstDurationDay"
         ]
       },
       "conditions": []

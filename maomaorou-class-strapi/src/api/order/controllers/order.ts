@@ -39,7 +39,7 @@ export default factories.createCoreController(
         return;
       }
 
-      const payment = payments.results[0]
+      const payment = payments.results[0];
 
       await strapi.services["api::order.order"].update(payment.order.id, {
         data: {
@@ -64,7 +64,7 @@ export default factories.createCoreController(
             },
           });
 
-          const userCourseStatus = userCourseStatuses.results
+          const userCourseStatus = userCourseStatuses.results;
 
           const perDay = 1000 * 60 * 60 * 24;
 
@@ -77,7 +77,8 @@ export default factories.createCoreController(
                 user: payment.order.user.id,
                 course: orderCourse.course.id,
                 expiredAt: new Date(
-                  new Date().getTime() + orderCourse.course.durationDay * perDay
+                  new Date().getTime() +
+                    orderCourse.course.firstDurationDay * perDay
                 ),
               },
             });
@@ -89,7 +90,7 @@ export default factories.createCoreController(
               data: {
                 expiredAt: new Date(
                   new Date(userCourseStatus[0].expiredAt).getTime() +
-                  orderCourse.course.durationDay * perDay
+                    orderCourse.course.renewDurationDay * perDay
                 ),
               },
             });
@@ -97,9 +98,12 @@ export default factories.createCoreController(
         })
       );
 
-      ctx.send({
-        message: 'The Payment successs!'
-      }, 200);
+      ctx.send(
+        {
+          message: "The Payment successs!",
+        },
+        200
+      );
     },
   })
 );

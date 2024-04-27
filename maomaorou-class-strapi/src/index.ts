@@ -100,17 +100,37 @@ export default {
 
               const orderCourses = await Promise.all(
                 courses.results.map(async (course) => {
-                  await strapi.services[
+                  const userCourseStatus = await strapi.services[
+                    "api::user-courses-status.user-courses-status"
+                  ].find({
+                    filters: {
+                      user: context.state.user.id,
+                      course: course.id,
+                    },
+                  });
+
+                  const isFirstBuy = userCourseStatus.results.length === 0;
+
+                  const costPrice = isFirstBuy
+                    ? course.firstPrice
+                    : course.renewPrice;
+
+                  const durationDay = isFirstBuy
+                    ? course.firstDurationDay
+                    : course.renewDurationDay;
+
+                  return await strapi.services[
                     "api::order-course.order-course"
                   ].create({
                     data: {
                       course: course.id,
                       order: order.id,
-                      price: course.price,
+                      price: costPrice,
                       expiredAt: new Date(
-                        new Date().getTime() + course.durationDay * 1000
+                        new Date().getTime() + durationDay * 1000
                       ),
                     },
+                    populate: ["course"],
                   });
                 })
               );
@@ -130,10 +150,10 @@ export default {
                   (resolve, reject) => {
                     paymentService
                       .getPaymentUrl({
-                        courses: courses.results.map((course) => ({
-                          courseId: course.id,
-                          name: course.title,
-                          price: course.price,
+                        courses: orderCourses.map((orderCourse) => ({
+                          courseId: orderCourse.course.id,
+                          name: orderCourse.course.title,
+                          price: orderCourse.price,
                         })),
                         paymentId: payment.id,
                         orderId: order.id,
@@ -438,6 +458,7 @@ export default {
         type Course {
           withUserStatus: UserCoursesStatusEntityResponse
           staredLessons: [LessonEntityResponse]
+          isFirstBuy: Boolean
         }
       `,
       resolvers: {
@@ -503,6 +524,26 @@ export default {
               return lessonEntities;
             },
           },
+          isFirstBuy: {
+            resolve: async (parent, args, context) => {
+              const user = context?.state?.user;
+
+              if (!user) {
+                return true;
+              }
+
+              const userCourseStatus = await strapi.services[
+                "api::user-courses-status.user-courses-status"
+              ].find({
+                filters: {
+                  user: user.id,
+                  course: parent.id,
+                },
+              });
+
+              return userCourseStatus.results.length === 0;
+            },
+          },
         },
       },
       resolversConfig: {
@@ -510,6 +551,9 @@ export default {
           auth: false,
         },
         "Course.withUserStatus": {
+          auth: false,
+        },
+        "Course.isFirstBuy": {
           auth: false,
         },
       },

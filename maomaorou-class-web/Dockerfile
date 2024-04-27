@@ -5,9 +5,6 @@ COPY package*.json ./
 EXPOSE 3100
 
 FROM base as production
-WORKDIR /app
-
-FROM base as production
 COPY . .
 RUN npm install
 RUN npm run compile

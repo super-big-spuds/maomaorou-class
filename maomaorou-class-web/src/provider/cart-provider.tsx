@@ -41,9 +41,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const removeFromCart = (courseId: string) => {
-    setCartData((prevCart) =>
-      prevCart.filter((cartItem) => cartItem.id !== courseId)
-    );
+    setCartData((prevCart) => {
+      const newCartData = prevCart.filter(
+        (cartItem) => cartItem.id !== courseId
+      );
+      if (newCartData.length === 0) {
+        localStorage.removeItem("cart");
+      }
+      return newCartData;
+    });
   };
 
   const clearCart = () => {

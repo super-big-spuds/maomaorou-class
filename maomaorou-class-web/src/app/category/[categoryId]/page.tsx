@@ -1,14 +1,6 @@
 import { gql } from "@/__generated__";
-import CourseAddToCartButton from "@/components/cart/course-add-to-cart-button";
 import { createApolloSSRClient } from "@/lib/apollo-client";
-import { redirect } from "next/navigation";
 import { z } from "zod";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 
