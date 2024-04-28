@@ -4,7 +4,7 @@
   "info": {
     "singularName": "new",
     "pluralName": "news",
-    "displayName": "最新消息",
+    "displayName": "精選文章",
     "description": ""
   },
   "options": {
@@ -15,20 +15,20 @@
     "title": {
       "type": "string",
       "required": true,
-      "default": "最新消息文章名稱"
+      "default": "精選文章文章名稱"
     },
     "content": {
       "type": "richtext",
-      "default": "最新消息文章內容",
+      "default": "精選文章文章內容",
       "required": true
     },
     "image": {
-      "allowedTypes": [
-        "images"
-      ],
       "type": "media",
       "multiple": false,
-      "required": true
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
     }
   }
 }
