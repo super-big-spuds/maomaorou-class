@@ -181,8 +181,8 @@ export default async function CoursePage({
               <Accordion type="multiple">
                 {data.courseByTitle.data.attributes.chapters.data.length ===
                   0 && (
-                  <p className="text-center text-gray-200">該課程還沒有章節</p>
-                )}
+                    <p className="text-center text-gray-200">該課程還沒有章節</p>
+                  )}
                 {data.courseByTitle.data.attributes.chapters.data.map(
                   (chapter) => (
                     <AccordionItem
@@ -191,7 +191,6 @@ export default async function CoursePage({
                       key={chapter.id}
                     >
                       <AccordionTrigger className="border-3 border-gray-800 rounded-xl px-5  font-bold">
-                        課程 {chapter.attributes.sequence}：
                         {chapter.attributes.name}
                       </AccordionTrigger>
                       <AccordionContent>
@@ -199,7 +198,6 @@ export default async function CoursePage({
                           chapter.attributes.lessons.data.map((lesson) => (
                             <div key={lesson.id} className="px-5 py-2.5 mx-2">
                               <p>
-                                章節 {lesson.attributes.sequence}：
                                 {lesson.attributes.name}
                               </p>
                             </div>
