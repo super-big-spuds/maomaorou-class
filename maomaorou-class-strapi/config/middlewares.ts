@@ -32,12 +32,28 @@ export default ({ env }) => [
     config: {
       enabled: true,
       headers: ["*"],
-      origin: [process.env.FRONTEND_URL, process.env.BACKEND_URL, process.env.DOMAIN_URL,process.env.DOMAIN_URL_BK],
+      origin: [
+        process.env.FRONTEND_URL,
+        process.env.BACKEND_URL,
+        process.env.DOMAIN_URL,
+        process.env.DOMAIN_URL_BK,
+        "http://103.17.11.140:1338",
+      ],
     },
   },
   "strapi::poweredBy",
   "strapi::query",
-  "strapi::body",
+  {
+    name: "strapi::body",
+    config: {
+      jsonLimit: "256mb",
+      formLimit: "256mb",
+      textLimit: "256mb",
+      formidable: {
+        maxFileSize: 1024 * 1024 * 1024, // multipart data, modify here limit of uploaded file size
+      },
+    },
+  },
   "strapi::session",
   "strapi::favicon",
   "strapi::public",
