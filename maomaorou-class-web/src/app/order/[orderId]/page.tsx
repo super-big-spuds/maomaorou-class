@@ -30,7 +30,7 @@ const QUERY = gql(`
             data {
               id
               attributes {
-                expiredAt
+                durationDay
                 price
                 course {
                   data {
@@ -68,7 +68,7 @@ const schema = z.object({
             z.object({
               id: z.string(),
               attributes: z.object({
-                expiredAt: z.string(),
+                durationDay: z.string(),
                 price: z.number(),
                 course: z.object({
                   data: z.object({

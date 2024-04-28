@@ -1,6 +1,6 @@
 FROM node:18.9.0 as prod
 
-ARG NODE_ENV=production
+ARG NODE_ENV=dev
 
 ENV NODE_ENV=${NODE_ENV}
 
@@ -14,4 +14,4 @@ RUN yarn build
 
 EXPOSE 1337
 
-CMD ["yarn", "start"]
+CMD ["yarn", "develop"]
