@@ -56,7 +56,8 @@
       "subject": "api::category.category",
       "properties": {
         "fields": [
-          "courses"
+          "courses",
+          "image"
         ]
       },
       "conditions": []
@@ -81,7 +82,8 @@
       "subject": "api::category.category",
       "properties": {
         "fields": [
-          "courses"
+          "courses",
+          "image"
         ]
       },
       "conditions": []
@@ -92,7 +94,8 @@
       "subject": "api::category.category",
       "properties": {
         "fields": [
-          "courses"
+          "courses",
+          "image"
         ]
       },
       "conditions": []
@@ -160,8 +163,6 @@
       "properties": {
         "fields": [
           "image",
-          "description",
-          "goal",
           "renewPrice",
           "renewDurationDay",
           "chapters",
@@ -169,7 +170,8 @@
           "category",
           "sequence",
           "firstPrice",
-          "firstDurationDay"
+          "firstDurationDay",
+          "description"
         ]
       },
       "conditions": []
@@ -188,8 +190,6 @@
       "properties": {
         "fields": [
           "image",
-          "description",
-          "goal",
           "renewPrice",
           "renewDurationDay",
           "chapters",
@@ -197,7 +197,8 @@
           "category",
           "sequence",
           "firstPrice",
-          "firstDurationDay"
+          "firstDurationDay",
+          "description"
         ]
       },
       "conditions": []
@@ -209,8 +210,6 @@
       "properties": {
         "fields": [
           "image",
-          "description",
-          "goal",
           "renewPrice",
           "renewDurationDay",
           "chapters",
@@ -218,7 +217,8 @@
           "category",
           "sequence",
           "firstPrice",
-          "firstDurationDay"
+          "firstDurationDay",
+          "description"
         ]
       },
       "conditions": []
@@ -509,6 +509,41 @@
           "expiredAt"
         ]
       },
+      "conditions": []
+    },
+    {
+      "action": "admin::roles.read",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "admin::users.create",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "admin::users.delete",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "admin::users.read",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "admin::users.update",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
       "conditions": []
     },
     {

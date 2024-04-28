@@ -56,7 +56,8 @@
       "subject": "api::category.category",
       "properties": {
         "fields": [
-          "courses"
+          "courses",
+          "image"
         ]
       },
       "conditions": []
@@ -81,7 +82,8 @@
       "subject": "api::category.category",
       "properties": {
         "fields": [
-          "courses"
+          "courses",
+          "image"
         ]
       },
       "conditions": []
@@ -92,7 +94,8 @@
       "subject": "api::category.category",
       "properties": {
         "fields": [
-          "courses"
+          "courses",
+          "image"
         ]
       },
       "conditions": []
@@ -160,8 +163,6 @@
       "properties": {
         "fields": [
           "image",
-          "description",
-          "goal",
           "renewPrice",
           "renewDurationDay",
           "chapters",
@@ -169,7 +170,8 @@
           "category",
           "sequence",
           "firstPrice",
-          "firstDurationDay"
+          "firstDurationDay",
+          "description"
         ]
       },
       "conditions": []
@@ -195,8 +197,6 @@
       "properties": {
         "fields": [
           "image",
-          "description",
-          "goal",
           "renewPrice",
           "renewDurationDay",
           "chapters",
@@ -204,7 +204,8 @@
           "category",
           "sequence",
           "firstPrice",
-          "firstDurationDay"
+          "firstDurationDay",
+          "description"
         ]
       },
       "conditions": []
@@ -216,8 +217,6 @@
       "properties": {
         "fields": [
           "image",
-          "description",
-          "goal",
           "renewPrice",
           "renewDurationDay",
           "chapters",
@@ -225,7 +224,8 @@
           "category",
           "sequence",
           "firstPrice",
-          "firstDurationDay"
+          "firstDurationDay",
+          "description"
         ]
       },
       "conditions": []
@@ -1000,6 +1000,20 @@
     },
     {
       "action": "plugin::i18n.locale.update",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "plugin::import-export-entries.export",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "plugin::import-export-entries.import",
       "actionParameters": {},
       "subject": null,
       "properties": {},

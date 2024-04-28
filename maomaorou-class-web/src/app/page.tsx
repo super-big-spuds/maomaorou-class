@@ -213,7 +213,7 @@ export default async function Home() {
             parsedData.decorationSetting.data.attributes
               .landingPageBackgroundImage.data.attributes.url
           }
-          alt="MaoMaoRou Background Image"
+          alt="MaoMaoRo Background Image"
           width={500}
           height={500}
         />

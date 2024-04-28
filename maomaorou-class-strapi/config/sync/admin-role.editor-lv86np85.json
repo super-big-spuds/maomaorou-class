@@ -56,7 +56,8 @@
       "subject": "api::category.category",
       "properties": {
         "fields": [
-          "courses"
+          "courses",
+          "image"
         ]
       },
       "conditions": []
@@ -81,7 +82,8 @@
       "subject": "api::category.category",
       "properties": {
         "fields": [
-          "courses"
+          "courses",
+          "image"
         ]
       },
       "conditions": []
@@ -92,7 +94,8 @@
       "subject": "api::category.category",
       "properties": {
         "fields": [
-          "courses"
+          "courses",
+          "image"
         ]
       },
       "conditions": []
@@ -160,15 +163,14 @@
       "properties": {
         "fields": [
           "image",
-          "description",
-          "goal",
           "renewPrice",
           "renewDurationDay",
           "chapters",
           "title",
           "sequence",
           "firstPrice",
-          "firstDurationDay"
+          "firstDurationDay",
+          "description"
         ]
       },
       "conditions": []
@@ -187,15 +189,14 @@
       "properties": {
         "fields": [
           "image",
-          "description",
-          "goal",
           "renewPrice",
           "renewDurationDay",
           "chapters",
           "title",
           "sequence",
           "firstPrice",
-          "firstDurationDay"
+          "firstDurationDay",
+          "description"
         ]
       },
       "conditions": []
@@ -207,15 +208,14 @@
       "properties": {
         "fields": [
           "image",
-          "description",
-          "goal",
           "renewPrice",
           "renewDurationDay",
           "chapters",
           "title",
           "sequence",
           "firstPrice",
-          "firstDurationDay"
+          "firstDurationDay",
+          "description"
         ]
       },
       "conditions": []

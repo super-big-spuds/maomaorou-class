@@ -179,7 +179,7 @@
         ]
       ],
       "list": [
-        "id",
+        "name",
         "chapter",
         "sequence",
         "createdAt"

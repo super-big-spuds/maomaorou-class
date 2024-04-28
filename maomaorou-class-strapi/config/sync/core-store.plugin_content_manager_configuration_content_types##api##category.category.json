@@ -34,6 +34,20 @@
           "sortable": false
         }
       },
+      "image": {
+        "edit": {
+          "label": "image",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "image",
+          "searchable": false,
+          "sortable": false
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -104,6 +118,10 @@
         [
           {
             "name": "courses",
+            "size": 6
+          },
+          {
+            "name": "image",
             "size": 6
           }
         ]

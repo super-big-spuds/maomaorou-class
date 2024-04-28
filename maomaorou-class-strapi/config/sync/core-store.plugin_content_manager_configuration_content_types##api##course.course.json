@@ -33,34 +33,6 @@
           "sortable": false
         }
       },
-      "description": {
-        "edit": {
-          "label": "description",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "description",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "goal": {
-        "edit": {
-          "label": "goal",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "goal",
-          "searchable": true,
-          "sortable": true
-        }
-      },
       "renewPrice": {
         "edit": {
           "label": "renewPrice",
@@ -175,6 +147,20 @@
           "sortable": true
         }
       },
+      "description": {
+        "edit": {
+          "label": "description",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "description",
+          "searchable": false,
+          "sortable": false
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -251,11 +237,7 @@
         [
           {
             "name": "description",
-            "size": 6
-          },
-          {
-            "name": "goal",
-            "size": 6
+            "size": 12
           }
         ],
         [
@@ -296,10 +278,8 @@
         ]
       ],
       "list": [
-        "id",
         "image",
-        "description",
-        "goal"
+        "title"
       ]
     },
     "uid": "api::course.course"
