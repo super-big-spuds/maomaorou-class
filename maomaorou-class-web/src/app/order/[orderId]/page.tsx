@@ -30,7 +30,6 @@ const QUERY = gql(`
             data {
               id
               attributes {
-                durationDay
                 price
                 course {
                   data {
@@ -68,7 +67,6 @@ const schema = z.object({
             z.object({
               id: z.string(),
               attributes: z.object({
-                durationDay: z.string(),
                 price: z.number(),
                 course: z.object({
                   data: z.object({
@@ -115,7 +113,7 @@ export default function OrderViewPage({
 
   return (
     <Card className="bg-gray-100 p-8">
-      {loading ? (
+      {loading || !token ? (
         <Skeleton className="w-full h-12" />
       ) : !parseResult.success ? (
         <div className="text-xl font-bold">讀取內容發生錯誤</div>

@@ -49,7 +49,7 @@ export default function CourseActionSection({ course }: Props) {
   const userContext = useUser();
 
   const { data, loading } = useQuery(query, {
-    skip: !userContext.token,
+    skip: userContext.isLoading,
     variables: {
       courseId: course.id,
     },
@@ -73,7 +73,8 @@ export default function CourseActionSection({ course }: Props) {
 
   return (
     <>
-      {(course.firstPrice === 0 && isFirstBuy) || (course.renewPrice === 0 && !isFirstBuy) ? (
+      {(course.firstPrice === 0 && isFirstBuy) ||
+      (course.renewPrice === 0 && !isFirstBuy) ? (
         <AddZeroPriceCourseButton
           className="w-full"
           courseId={course.id}
