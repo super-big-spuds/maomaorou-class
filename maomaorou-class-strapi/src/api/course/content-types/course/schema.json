@@ -20,16 +20,6 @@
         "images"
       ]
     },
-    "description": {
-      "type": "text",
-      "default": "預設課程介紹",
-      "required": true
-    },
-    "goal": {
-      "type": "text",
-      "default": "預設課程目標",
-      "required": true
-    },
     "renewPrice": {
       "default": 100,
       "required": true,
@@ -74,6 +64,11 @@
       "type": "integer",
       "required": true,
       "default": 30
+    },
+    "description": {
+      "type": "richtext",
+      "default": "課程內容",
+      "required": true
     }
   }
 }

@@ -22,6 +22,16 @@ query GetMainPageQueryData {
         category {
 					data {
           	id
+            attributes {
+              image {
+                data {
+                  id
+                  attributes {
+                    url
+                  } 
+                }
+              }
+            }
           }
         }
         image {
@@ -81,6 +91,16 @@ const schema = z.object({
             data: z.nullable(
               z.object({
                 id: z.string(),
+                attributes: z.object({
+                  image: z.object({
+                    data: z.object({
+                      id: z.string(),
+                      attributes: z.object({
+                        url: z.string(),
+                      }),
+                    }),
+                  }),
+                }),
               })
             ),
           }),
@@ -215,7 +235,11 @@ export default async function Home() {
                   className="w-fit aspect-[1/1] hover:-translate-y-[5px] opacity-75 hover:opacity-100 transition-all duration-700"
                 >
                   <Image
-                    src={course.attributes.image.data.attributes.url}
+                    src={
+                      course.attributes.category.data !== null
+                        ? course.attributes.category.data.attributes.image.data.attributes.url
+                        : course.attributes.image.data.attributes.url
+                    }
                     alt={course.attributes.title}
                     width={384}
                     height={384}
@@ -228,7 +252,7 @@ export default async function Home() {
 
         {/* News */}
         <Card className="flex flex-col items-center justify-between px-6 pb-6">
-          <CardTitle className="text-2xl md:text-3xl my-4">最新消息</CardTitle>
+          <CardTitle className="text-2xl md:text-3xl my-4">精選文章</CardTitle>
           <CardContent className="grid md:grid-cols-2 grid-cols-1 gap-4">
             {sortedArticles &&
               sortedArticles.map((article) => (

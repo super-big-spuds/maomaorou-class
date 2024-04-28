@@ -139,7 +139,7 @@ export default function MyCoursesPage() {
     <div className="flex justify-center w-full">
       <div className="flex flex-col items-center justify-between max-w-3xl w-full gap-y-4">
         <Card className="flex flex-col items-center justify-between p-4 w-full">
-          <CardTitle>精選文章</CardTitle>
+          <CardTitle>置頂文章</CardTitle>
           <CardContent className="p-0 flex flex-col gap-y-2 w-full">
             {!parsedResult.success ? (
               <div>
@@ -147,7 +147,7 @@ export default function MyCoursesPage() {
               </div>
             ) : staredLessons.length === 0 ? (
               <CardDescription className="text-center">
-                您擁有的課程尚未有精選文章
+                您擁有的課程尚未有置頂文章
               </CardDescription>
             ) : (
               staredLessons.map((lesson) => (

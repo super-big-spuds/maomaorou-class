@@ -840,6 +840,7 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
       'oneToMany',
       'api::course.course'
     >;
+    image: Attribute.Media & Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -915,12 +916,6 @@ export interface ApiCourseCourse extends Schema.CollectionType {
   };
   attributes: {
     image: Attribute.Media & Attribute.Required;
-    description: Attribute.Text &
-      Attribute.Required &
-      Attribute.DefaultTo<'\u9810\u8A2D\u8AB2\u7A0B\u4ECB\u7D39'>;
-    goal: Attribute.Text &
-      Attribute.Required &
-      Attribute.DefaultTo<'\u9810\u8A2D\u8AB2\u7A0B\u76EE\u6A19'>;
     renewPrice: Attribute.Integer &
       Attribute.Required &
       Attribute.DefaultTo<100>;
@@ -957,6 +952,9 @@ export interface ApiCourseCourse extends Schema.CollectionType {
     firstDurationDay: Attribute.Integer &
       Attribute.Required &
       Attribute.DefaultTo<30>;
+    description: Attribute.RichText &
+      Attribute.Required &
+      Attribute.DefaultTo<'\u8AB2\u7A0B\u5167\u5BB9'>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1059,7 +1057,6 @@ export interface ApiLessonLesson extends Schema.CollectionType {
       >;
     name: Attribute.String &
       Attribute.Required &
-      Attribute.Unique &
       Attribute.DefaultTo<'\u9810\u8A2D\u7AE0\u7BC0\u55AE\u5143\u540D\u7A31'>;
     isStar: Attribute.Boolean & Attribute.Required & Attribute.DefaultTo<false>;
     createdAt: Attribute.DateTime;

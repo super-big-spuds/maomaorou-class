@@ -23,7 +23,6 @@ query GetLearningCourseData($title: String!) {
         id
         attributes {
           title
-          goal
           description
           updatedAt
           chapters {
@@ -67,7 +66,6 @@ const schema = z.object({
       id: z.string(),
       attributes: z.object({
         title: z.string(),
-        goal: z.string(),
         description: z.string(),
         updatedAt: z.string(),
         chapters: z.object({

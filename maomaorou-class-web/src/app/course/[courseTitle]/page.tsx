@@ -20,6 +20,7 @@ import { Separator } from "@/components/ui/separator";
 
 import { Metadata } from "next";
 import CourseActionSection from "@/components/course/course-action-section";
+import StrapiMdxToHtmlConverter from "@/components/mdx-converter/strapi-mdx-to-html-converter";
 export const metadata: Metadata = {
   title: "課程簡介 - 貓貓肉線上課程網站",
   description: "貓貓肉線上課程網站貓貓肉課程簡介",
@@ -32,7 +33,6 @@ query GetCourseQueryData($title: String!) {
         id
         attributes {
           title
-          goal
           description
           firstPrice
           renewPrice
@@ -77,7 +77,6 @@ const schema = z.object({
       id: z.string(),
       attributes: z.object({
         title: z.string(),
-        goal: z.string(),
         description: z.string(),
         firstPrice: z.number(),
         renewPrice: z.number(),
@@ -169,13 +168,11 @@ export default async function CoursePage({
               />
             </div>
             <div>
-              <p className="text-xl font-bold">關於此課程</p>
-              <p>{data.courseByTitle.data.attributes.description}</p>
+              <StrapiMdxToHtmlConverter
+                mdx={data.courseByTitle.data.attributes.description}
+              />
             </div>
-            <div>
-              <p className="text-xl font-bold">你將會學到什麼?</p>
-              <p>{data.courseByTitle.data.attributes.goal}</p>
-            </div>
+
             <div>
               <p className="text-xl font-bold">課程大綱</p>
               <Accordion type="multiple">
