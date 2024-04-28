@@ -532,13 +532,6 @@
       "conditions": []
     },
     {
-      "action": "plugin::import-export-entries.export",
-      "actionParameters": {},
-      "subject": null,
-      "properties": {},
-      "conditions": []
-    },
-    {
       "action": "plugin::users-permissions.roles.create",
       "actionParameters": {},
       "subject": null,

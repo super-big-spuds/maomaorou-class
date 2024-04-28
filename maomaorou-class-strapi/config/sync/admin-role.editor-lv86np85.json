@@ -423,6 +423,20 @@
       "conditions": []
     },
     {
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::order.order",
+      "properties": {
+        "fields": [
+          "status",
+          "user",
+          "order_courses",
+          "payments"
+        ]
+      },
+      "conditions": []
+    },
+    {
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
       "subject": "api::term.term",
@@ -509,10 +523,23 @@
       "conditions": []
     },
     {
-      "action": "plugin::import-export-entries.export",
+      "action": "plugin::content-manager.explorer.read",
       "actionParameters": {},
-      "subject": null,
-      "properties": {},
+      "subject": "plugin::users-permissions.user",
+      "properties": {
+        "fields": [
+          "username",
+          "email",
+          "provider",
+          "password",
+          "resetPasswordToken",
+          "confirmationToken",
+          "confirmed",
+          "blocked",
+          "role",
+          "orders"
+        ]
+      },
       "conditions": []
     },
     {

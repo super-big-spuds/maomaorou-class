@@ -40,7 +40,7 @@
           "placeholder": "",
           "visible": true,
           "editable": true,
-          "mainField": "id"
+          "mainField": "title"
         },
         "list": {
           "label": "course",
@@ -69,7 +69,7 @@
           "placeholder": "",
           "visible": true,
           "editable": true,
-          "mainField": "id"
+          "mainField": "name"
         },
         "list": {
           "label": "lessons",
