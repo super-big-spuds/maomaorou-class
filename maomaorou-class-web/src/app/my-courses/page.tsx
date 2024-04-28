@@ -140,7 +140,7 @@ export default function MyCoursesPage() {
       <div className="flex flex-col items-center justify-between max-w-3xl w-full gap-y-4">
         <Card className="flex flex-col items-center justify-between p-4 w-full">
           <CardTitle>精選文章</CardTitle>
-          <CardContent className="p-0 flex flex-col gap-y-2">
+          <CardContent className="p-0 flex flex-col gap-y-2 w-full">
             {!parsedResult.success ? (
               <div>
                 <Skeleton className="w-full h-6" />
@@ -154,7 +154,7 @@ export default function MyCoursesPage() {
                 <Link
                   key={lesson.data.id}
                   href={`/learning-lesson/${lesson.data.id}`}
-                  className="border p-2 flex justify-between items-center transition-all hover:bg-gray-50"
+                  className="border p-2 flex justify-between items-center transition-all hover:bg-gray-50 w-full"
                 >
                   <p>{lesson.data.attributes.name}</p>
                   {lesson.data.attributes.content[0].__typename ===
