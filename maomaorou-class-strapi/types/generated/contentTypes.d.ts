@@ -1082,7 +1082,7 @@ export interface ApiNewNew extends Schema.CollectionType {
   info: {
     singularName: 'new';
     pluralName: 'news';
-    displayName: '\u6700\u65B0\u6D88\u606F';
+    displayName: '\u7CBE\u9078\u6587\u7AE0';
     description: '';
   };
   options: {
@@ -1091,10 +1091,10 @@ export interface ApiNewNew extends Schema.CollectionType {
   attributes: {
     title: Attribute.String &
       Attribute.Required &
-      Attribute.DefaultTo<'\u6700\u65B0\u6D88\u606F\u6587\u7AE0\u540D\u7A31'>;
+      Attribute.DefaultTo<'\u7CBE\u9078\u6587\u7AE0\u6587\u7AE0\u540D\u7A31'>;
     content: Attribute.RichText &
       Attribute.Required &
-      Attribute.DefaultTo<'\u6700\u65B0\u6D88\u606F\u6587\u7AE0\u5167\u5BB9'>;
+      Attribute.DefaultTo<'\u7CBE\u9078\u6587\u7AE0\u6587\u7AE0\u5167\u5BB9'>;
     image: Attribute.Media & Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;

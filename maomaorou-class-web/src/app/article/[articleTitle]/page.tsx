@@ -15,6 +15,7 @@ const QUERY = gql(`
       data {
         id
         attributes {
+          title
           content
           updatedAt
         }
@@ -28,6 +29,7 @@ const schema = z.object({
     data: z.object({
       id: z.string(),
       attributes: z.object({
+        title: z.string(),
         content: z.string(),
         updatedAt: z.string(),
       }),
@@ -54,7 +56,9 @@ export default async function ArticlePage({
 
   return (
     <Card className="mx-auto flex h-fit w-4/5 flex-col p-4 gap-y-2">
-      <h1 className="text-4xl text-primary-100">關於我們</h1>
+      <h1 className="text-4xl text-primary-100">
+        {parsedData.newByTitle.data.attributes.title}
+      </h1>
       <div className="flex flex-row justify-between">
         <div className="flex flex-row items-center">
           <span className="py-1 text-gray-200">最新更新日期:</span>
