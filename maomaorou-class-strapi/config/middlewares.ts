@@ -38,6 +38,7 @@ export default ({ env }) => [
         process.env.DOMAIN_URL,
         process.env.DOMAIN_URL_BK,
         "http://103.17.11.140:1338",
+        process.env.UN_SECURE_BACKEND_URL,
       ],
     },
   },
