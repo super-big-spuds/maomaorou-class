@@ -12,6 +12,8 @@ RUN yarn install
 
 RUN yarn build
 
+RUN npm install pm2 -g
+
 EXPOSE 1337
 
-CMD ["yarn", "develop"]
+CMD ["pm2-runtime", "start", "yarn", "--interpreter", "bash", "--name", "api", "--", "start"]

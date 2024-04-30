@@ -15,4 +15,5 @@ services:
       - ./maomaorou-class-strapi/.env
     ports:
       - "1338:1338"
-      
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
