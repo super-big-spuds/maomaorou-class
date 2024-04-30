@@ -13,6 +13,7 @@ import { useQuery } from "@apollo/client";
 import { z } from "zod";
 import StrapiMdxToHtmlConverter from "@/components/mdx-converter/strapi-mdx-to-html-converter";
 import { Separator } from "@/components/ui/separator";
+import BlockedDownloadVideo from "@/components/ui/blocked-download-video";
 
 const QUERY = gql(`
 query getMyLesson($id: ID!) {
@@ -124,16 +125,12 @@ export default function LearningLesson({
                 <div>尚未新增該小節的內容, 請稍後再來~</div>
               ) : parseResult.data.myLesson.data.attributes.content[0]
                   .__typename === "ComponentLessonContentVideoContent" ? (
-                <video controls>
-                  <source
-                    src={
-                      parseResult.data.myLesson.data.attributes.content[0].video
-                        .data.attributes.url
-                    }
-                    type="video/mp4"
-                  />
-                  您的瀏覽器不支援線上撥放影片
-                </video>
+                <BlockedDownloadVideo
+                  url={
+                    parseResult.data.myLesson.data.attributes.content[0].video
+                      .data.attributes.url
+                  }
+                />
               ) : (
                 <StrapiMdxToHtmlConverter
                   mdx={

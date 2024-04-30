@@ -1092,10 +1092,17 @@ export interface ApiNewNew extends Schema.CollectionType {
     title: Attribute.String &
       Attribute.Required &
       Attribute.DefaultTo<'\u7CBE\u9078\u6587\u7AE0\u6587\u7AE0\u540D\u7A31'>;
-    content: Attribute.RichText &
-      Attribute.Required &
-      Attribute.DefaultTo<'\u7CBE\u9078\u6587\u7AE0\u6587\u7AE0\u5167\u5BB9'>;
     image: Attribute.Media & Attribute.Required;
+    content: Attribute.DynamicZone<
+      ['lesson-content.text-content', 'lesson-content.video-content']
+    > &
+      Attribute.Required &
+      Attribute.SetMinMax<
+        {
+          max: 1;
+        },
+        number
+      >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

@@ -4,6 +4,7 @@ import { createApolloSSRClient } from "@/lib/apollo-client";
 import { z } from "zod";
 import type { Metadata } from "next";
 import { Card } from "@/components/ui/card";
+import BlockedDownloadVideo from "@/components/ui/blocked-download-video";
 export const metadata: Metadata = {
   title: "文章內容 - 貓貓肉線上課程網站",
   description: "貓貓肉線上課程網站文章內容",
@@ -16,8 +17,22 @@ const QUERY = gql(`
         id
         attributes {
           title
-          content
           updatedAt
+          content {
+            __typename
+            ... on ComponentLessonContentVideoContent {
+              video {
+                data {
+                  attributes {
+                    url
+                  }
+                }
+              }
+            }
+            ... on ComponentLessonContentTextContent {
+              richText
+            }
+          }
         }
       }
     }
@@ -30,8 +45,25 @@ const schema = z.object({
       id: z.string(),
       attributes: z.object({
         title: z.string(),
-        content: z.string(),
         updatedAt: z.string(),
+        content: z.array(
+          z.union([
+            z.object({
+              __typename: z.literal("ComponentLessonContentVideoContent"),
+              video: z.object({
+                data: z.object({
+                  attributes: z.object({
+                    url: z.string(),
+                  }),
+                }),
+              }),
+            }),
+            z.object({
+              __typename: z.literal("ComponentLessonContentTextContent"),
+              richText: z.string(),
+            }),
+          ])
+        ),
       }),
     }),
   }),
@@ -68,9 +100,21 @@ export default async function ArticlePage({
         </div>
       </div>
       <hr />
-      <StrapiMdxToHtmlConverter
-        mdx={parsedData.newByTitle.data.attributes.content}
-      />
+      {parsedData.newByTitle.data.attributes.content.length < 1 ? (
+        <div>該文章尚未新增內容, 請稍後再來~</div>
+      ) : parsedData.newByTitle.data.attributes.content[0].__typename ===
+        "ComponentLessonContentVideoContent" ? (
+        <BlockedDownloadVideo
+          url={
+            parsedData.newByTitle.data.attributes.content[0].video.data
+              .attributes.url
+          }
+        />
+      ) : (
+        <StrapiMdxToHtmlConverter
+          mdx={parsedData.newByTitle.data.attributes.content[0].richText}
+        />
+      )}
     </Card>
   );
 }

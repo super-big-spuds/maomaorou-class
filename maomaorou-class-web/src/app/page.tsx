@@ -237,7 +237,8 @@ export default async function Home() {
                   <Image
                     src={
                       course.attributes.category.data !== null
-                        ? course.attributes.category.data.attributes.image.data.attributes.url
+                        ? course.attributes.category.data.attributes.image.data
+                            .attributes.url
                         : course.attributes.image.data.attributes.url
                     }
                     alt={course.attributes.title}
@@ -256,11 +257,11 @@ export default async function Home() {
           <CardContent className="grid md:grid-cols-2 grid-cols-1 gap-4">
             {sortedArticles &&
               sortedArticles.map((article) => (
-                <Link
+                <article
                   key={article.id}
-                  href={`/article/${article.attributes.title}`}
+                  className="bg-white rounded-lg shadow-sm overflow-hidden dark:bg-gray-950 relative border hover:-translate-y-[5px] opacity-75 hover:opacity-100 transition-all duration-700"
                 >
-                  <article className="bg-white rounded-lg shadow-sm overflow-hidden dark:bg-gray-950 relative border hover:-translate-y-[5px] opacity-75 hover:opacity-100 transition-all duration-700">
+                  <Link href={`/article/${article.attributes.title}`}>
                     <Image
                       alt={article.attributes.title}
                       className="w-full h-52 object-cover"
@@ -282,8 +283,8 @@ export default async function Home() {
                         發文日期: {getTimeString(article.attributes.createdAt)}
                       </p>
                     </div>
-                  </article>
-                </Link>
+                  </Link>
+                </article>
               ))}
           </CardContent>
         </Card>
