@@ -233,7 +233,7 @@ export default async function Home() {
                       ? `/category/${course.attributes.category.data.id}`
                       : `/course/${course.attributes.title}`
                   }
-                  className="w-fit aspect-[1/1] hover:-translate-y-[5px] opacity-75 hover:opacity-100 transition-all duration-700"
+                  className="w-fit aspect-[1/1] hover:-translate-y-[5px] transition-all duration-700"
                 >
                   <Image
                     src={
