@@ -260,7 +260,7 @@ export default async function Home() {
               sortedArticles.map((article) => (
                 <article
                   key={article.id}
-                  className="bg-white rounded-lg shadow-sm overflow-hidden dark:bg-gray-950 relative border hover:-translate-y-[5px] opacity-75 hover:opacity-100 transition-all duration-700"
+                  className="bg-white rounded-lg shadow-sm overflow-hidden dark:bg-gray-950 relative border hover:-translate-y-[5px] transition-all duration-700"
                 >
                   <Link href={`/article/${article.attributes.title}`}>
                     <Image
