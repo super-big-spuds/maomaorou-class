@@ -11,7 +11,7 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUser } from "@/provider/user-provider";
 import { useQuery } from "@apollo/client";
-import { Text, Video } from "lucide-react";
+import { Text, Video, Youtube } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { z } from "zod";
@@ -92,6 +92,11 @@ const schema = z.object({
                             z.object({
                               __typename: z.literal(
                                 "ComponentLessonContentTextContent"
+                              ),
+                            }),
+                            z.object({
+                              __typename: z.literal(
+                                "ComponentLessonContentYoutubeLesson"
                               ),
                             }),
                           ])
@@ -193,8 +198,11 @@ export default function LearningCoursePage({
                           {lesson.attributes.content[0].__typename ===
                           "ComponentLessonContentVideoContent" ? (
                             <Video className="text-gray-200" />
-                          ) : (
+                          ) : lesson.attributes.content[0].__typename ===
+                            "ComponentLessonContentTextContent" ? (
                             <Text className="text-gray-200" />
+                          ) : (
+                            <Youtube className="text-gray-200" />
                           )}
                         </Link>
                       ))

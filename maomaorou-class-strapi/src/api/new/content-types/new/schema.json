@@ -29,7 +29,8 @@
       "type": "dynamiczone",
       "components": [
         "lesson-content.text-content",
-        "lesson-content.video-content"
+        "lesson-content.video-content",
+        "lesson-content.youtube-lesson"
       ],
       "required": true,
       "max": 1

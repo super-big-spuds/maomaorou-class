@@ -14,6 +14,7 @@ import { z } from "zod";
 import StrapiMdxToHtmlConverter from "@/components/mdx-converter/strapi-mdx-to-html-converter";
 import { Separator } from "@/components/ui/separator";
 import BlockedDownloadVideo from "@/components/ui/blocked-download-video";
+import YoutubeIframe from "@/components/ui/youtube-iframe";
 
 const QUERY = gql(`
 query getMyLesson($id: ID!) {
@@ -37,6 +38,9 @@ query getMyLesson($id: ID!) {
           }
           ... on ComponentLessonContentTextContent {
             richText
+          }
+          ... on ComponentLessonContentYoutubeLesson {
+            url
           }
         }
       }
@@ -68,6 +72,10 @@ const schema = z.object({
             z.object({
               __typename: z.literal("ComponentLessonContentTextContent"),
               richText: z.string(),
+            }),
+            z.object({
+              __typename: z.literal("ComponentLessonContentYoutubeLesson"),
+              url: z.string(),
             }),
           ])
         ),
@@ -131,12 +139,17 @@ export default function LearningLesson({
                       .data.attributes.url
                   }
                 />
-              ) : (
+              ) : parseResult.data.myLesson.data.attributes.content[0]
+                  .__typename === "ComponentLessonContentTextContent" ? (
                 <StrapiMdxToHtmlConverter
                   mdx={
                     parseResult.data.myLesson.data.attributes.content[0]
                       .richText
                   }
+                />
+              ) : (
+                <YoutubeIframe
+                  url={parseResult.data.myLesson.data.attributes.content[0].url}
                 />
               )}
             </CardContent>

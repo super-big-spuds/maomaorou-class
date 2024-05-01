@@ -1045,7 +1045,11 @@ export interface ApiLessonLesson extends Schema.CollectionType {
     >;
     sequence: Attribute.Integer & Attribute.Required;
     content: Attribute.DynamicZone<
-      ['lesson-content.text-content', 'lesson-content.video-content']
+      [
+        'lesson-content.text-content',
+        'lesson-content.video-content',
+        'lesson-content.youtube-lesson'
+      ]
     > &
       Attribute.Required &
       Attribute.SetMinMax<
@@ -1094,7 +1098,11 @@ export interface ApiNewNew extends Schema.CollectionType {
       Attribute.DefaultTo<'\u7CBE\u9078\u6587\u7AE0\u6587\u7AE0\u540D\u7A31'>;
     image: Attribute.Media & Attribute.Required;
     content: Attribute.DynamicZone<
-      ['lesson-content.text-content', 'lesson-content.video-content']
+      [
+        'lesson-content.text-content',
+        'lesson-content.video-content',
+        'lesson-content.youtube-lesson'
+      ]
     > &
       Attribute.Required &
       Attribute.SetMinMax<

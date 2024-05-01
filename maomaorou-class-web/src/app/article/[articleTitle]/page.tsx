@@ -5,6 +5,7 @@ import { z } from "zod";
 import type { Metadata } from "next";
 import { Card } from "@/components/ui/card";
 import BlockedDownloadVideo from "@/components/ui/blocked-download-video";
+import YoutubeIframe from "@/components/ui/youtube-iframe";
 export const metadata: Metadata = {
   title: "文章內容 - 貓貓肉線上課程網站",
   description: "貓貓肉線上課程網站文章內容",
@@ -31,6 +32,9 @@ const QUERY = gql(`
             }
             ... on ComponentLessonContentTextContent {
               richText
+            }
+            ... on ComponentLessonContentYoutubeLesson {
+              url
             }
           }
         }
@@ -61,6 +65,10 @@ const schema = z.object({
             z.object({
               __typename: z.literal("ComponentLessonContentTextContent"),
               richText: z.string(),
+            }),
+            z.object({
+              __typename: z.literal("ComponentLessonContentYoutubeLesson"),
+              url: z.string(),
             }),
           ])
         ),
@@ -110,9 +118,14 @@ export default async function ArticlePage({
               .attributes.url
           }
         />
-      ) : (
+      ) : parsedData.newByTitle.data.attributes.content[0].__typename ===
+        "ComponentLessonContentTextContent" ? (
         <StrapiMdxToHtmlConverter
           mdx={parsedData.newByTitle.data.attributes.content[0].richText}
+        />
+      ) : (
+        <YoutubeIframe
+          url={parsedData.newByTitle.data.attributes.content[0].url}
         />
       )}
     </Card>

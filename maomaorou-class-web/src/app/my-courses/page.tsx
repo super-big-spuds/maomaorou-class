@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/table";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Video, Text } from "lucide-react";
+import { Video, Text, Youtube } from "lucide-react";
 
 const QUERY = gql(`
 query getBuyedCourses {
@@ -82,6 +82,7 @@ const schema = z.object({
                       __typename: z.union([
                         z.literal("ComponentLessonContentVideoContent"),
                         z.literal("ComponentLessonContentTextContent"),
+                        z.literal("ComponentLessonContentYoutubeLesson"),
                       ]),
                     })
                   ),
@@ -160,8 +161,11 @@ export default function MyCoursesPage() {
                   {lesson.data.attributes.content[0].__typename ===
                   "ComponentLessonContentVideoContent" ? (
                     <Video className="text-gray-200" />
-                  ) : (
+                  ) : lesson.data.attributes.content[0].__typename ===
+                    "ComponentLessonContentTextContent" ? (
                     <Text className="text-gray-200" />
+                  ) : (
+                    <Youtube className="text-gray-200" />
                   )}
                 </Link>
               ))
