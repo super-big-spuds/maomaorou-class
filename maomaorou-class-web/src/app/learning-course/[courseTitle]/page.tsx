@@ -176,8 +176,9 @@ export default function LearningCoursePage({
           />
 
           <Accordion className="flex flex-col gap-y-2" type="multiple">
-            {parsedData.data.courseByTitle.data.attributes.chapters.data.map(
-              (chapter) => (
+            {parsedData.data.courseByTitle.data.attributes.chapters.data
+              .sort((a, b) => a.attributes.sequence - b.attributes.sequence)
+              .map((chapter) => (
                 <AccordionItem
                   value={chapter.id}
                   className="border border-gray-300 rounded-xl py-2 px-4"
@@ -188,24 +189,29 @@ export default function LearningCoursePage({
                   </AccordionTrigger>
                   <AccordionContent>
                     {chapter.attributes.lessons.data.length > 0 ? (
-                      chapter.attributes.lessons.data.map((lesson) => (
-                        <Link
-                          key={lesson.id}
-                          href={`/learning-lesson/${lesson.id}`}
-                          className="border p-2 flex justify-between items-center transition-all hover:bg-gray-50"
-                        >
-                          <p>{lesson.attributes.name}</p>
-                          {lesson.attributes.content[0].__typename ===
-                          "ComponentLessonContentVideoContent" ? (
-                            <Video className="text-gray-200" />
-                          ) : lesson.attributes.content[0].__typename ===
-                            "ComponentLessonContentTextContent" ? (
-                            <Text className="text-gray-200" />
-                          ) : (
-                            <Youtube className="text-gray-200" />
-                          )}
-                        </Link>
-                      ))
+                      chapter.attributes.lessons.data
+                        .sort(
+                          (a, b) =>
+                            a.attributes.sequence - b.attributes.sequence
+                        )
+                        .map((lesson) => (
+                          <Link
+                            key={lesson.id}
+                            href={`/learning-lesson/${lesson.id}`}
+                            className="border p-2 flex justify-between items-center transition-all hover:bg-gray-50"
+                          >
+                            <p>{lesson.attributes.name}</p>
+                            {lesson.attributes.content[0].__typename ===
+                            "ComponentLessonContentVideoContent" ? (
+                              <Video className="text-gray-200" />
+                            ) : lesson.attributes.content[0].__typename ===
+                              "ComponentLessonContentTextContent" ? (
+                              <Text className="text-gray-200" />
+                            ) : (
+                              <Youtube className="text-gray-200" />
+                            )}
+                          </Link>
+                        ))
                     ) : (
                       <div className="text-center text-gray-200">
                         該章節暫無內容
@@ -213,8 +219,7 @@ export default function LearningCoursePage({
                     )}
                   </AccordionContent>
                 </AccordionItem>
-              )
-            )}
+              ))}
           </Accordion>
         </Card>
       )}
