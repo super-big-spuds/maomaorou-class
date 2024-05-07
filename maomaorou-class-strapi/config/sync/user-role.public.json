@@ -46,6 +46,9 @@
       "action": "api::new.new.findOne"
     },
     {
+      "action": "api::order.order.adminConfirmPayment"
+    },
+    {
       "action": "api::order.order.newebPayNotifyCallback"
     },
     {

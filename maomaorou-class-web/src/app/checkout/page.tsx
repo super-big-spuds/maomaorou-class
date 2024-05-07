@@ -1,13 +1,23 @@
 "use client";
 
 import { gql } from "@/__generated__";
-import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
-import { cn, getPaymentUrl } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { useCart } from "@/provider/cart-provider";
 import { useUser } from "@/provider/user-provider";
 import { useMutation, useQuery } from "@apollo/client";
-import { FormEventHandler } from "react";
+import { FormEventHandler, useRef } from "react";
 import { z } from "zod";
 import {
   Card,
@@ -32,6 +42,8 @@ import { useToast } from "@/components/ui/use-toast";
 import Image from "next/image";
 import { Loader2, X } from "lucide-react";
 import useCartWithUserCourseStatus from "@/hook/useCartWithUserCourseStatus";
+import { useRouter } from "next/navigation";
+import { buttonVariants } from "@/components/ui/button";
 
 const GET_LATEST_PRICE_QUERY = gql(`
   query GetCoursesQueryData($courseIds: [ID]) {
@@ -73,6 +85,7 @@ const SUBMIT_ORDER_MUTATION = gql(`
 mutation createOrderWithPayment($courseIds: [ID]) {
   createOrderWithPayment(courseIds: $courseIds) {
     paymentUrl
+    orderId
     error
   }
 }
@@ -114,6 +127,8 @@ export default function CheckoutPage() {
   const cartData = useCart();
   const { toast } = useToast();
   const userContext = useUser();
+  const router = useRouter();
+  const formRef = useRef<HTMLFormElement>(null);
   const { data: latestCartData, loading: getPriceLoading } = useQuery(
     GET_LATEST_PRICE_QUERY,
     {
@@ -200,14 +215,19 @@ export default function CheckoutPage() {
       return;
     }
 
-    window.location.href = getPaymentUrl(
-      submitOrderResponse.data.createOrderWithPayment.paymentUrl
+    // 因為藍新有問題 暫時不導向到付款連結 直接導向到訂單葉面
+    //window.location.href = getPaymentUrl(
+    //  submitOrderResponse.data.createOrderWithPayment.paymentUrl
+    //);
+    router.push(
+      `/order/${submitOrderResponse.data.createOrderWithPayment.orderId}`
     );
   };
 
   return (
     <div className="w-full h-full relative">
       <form
+        ref={formRef}
         onSubmit={onSubmit}
         className={cn(
           "flex md:flex-row flex-col items-center justify-center w-full h-full gap-4 m-4",
@@ -352,13 +372,32 @@ export default function CheckoutPage() {
           </CardContent>
           <Separator className="mb-4" />
           <CardFooter className="flex-col">
-            <Button
-              type="submit"
-              className="text-lg font-semibold w-full"
-              disabled={cartData.cart.length === 0 || loading}
-            >
-              下單購買
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger
+                className={cn(buttonVariants(), "text-lg font-semibold w-full")}
+                disabled={cartData.cart.length === 0 || loading}
+              >
+                下單購買
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>確認下訂?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    送出訂單後，請依據提示進行匯款，並於匯款後聯絡我們，以完成訂單流程。
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>取消</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => {
+                      formRef.current!.requestSubmit();
+                    }}
+                  >
+                    確定送出
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
             <p className=" text-gray-400 text-center">
               您的個人資訊將會被用於處理您的訂單，以及支持您在整個網站上的體驗，以及其他在我們的
               <Link className="text-blue-500 hover:underline" href="/terms">

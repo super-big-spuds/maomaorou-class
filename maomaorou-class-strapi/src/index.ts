@@ -68,6 +68,7 @@ export default {
       typeDefs: `
       type createOrderWithPaymentResponse {
         paymentUrl: String
+        orderId: ID
         error: String
       }
 
@@ -182,6 +183,7 @@ export default {
 
               return {
                 paymentUrl: paymentUrl,
+                orderId: order.id,
                 error: error,
               };
             },
@@ -619,12 +621,8 @@ export default {
                 throw new ForbiddenError("此課程不是續訂免費課程");
               }
 
-              console.log(userCourseStatus.results[0].expiredAt);
-
               const isExpired =
                 userCourseStatus.results[0].expiredAt < new Date();
-
-              console.log(isExpired);
 
               const newExpiredAt = isExpired
                 ? new Date(
@@ -636,8 +634,6 @@ export default {
                       course.renewDurationDay * 1000 * 60 * 60 * 24
                   );
 
-              console.log(newExpiredAt);
-
               const newUserCourseStatus = await strapi.services[
                 "api::user-courses-status.user-courses-status"
               ].update(userCourseStatus.results[0].id, {
@@ -647,6 +643,96 @@ export default {
               });
 
               return toEntityResponse(newUserCourseStatus);
+            },
+          },
+        },
+      },
+    }));
+
+    extensionService.use(({ strapi }) => ({
+      typeDefs: `
+
+      type Mutation {
+        userDoneHandlePayment(orderId: ID!): OrderEntityResponse
+      }
+
+      `,
+      resolvers: {
+        Mutation: {
+          userDoneHandlePayment: {
+            resolve: async (parent, args, context) => {
+              const { toEntityResponse } = strapi.service(
+                "plugin::graphql.format"
+              ).returnTypes;
+
+              const orderId = args.orderId;
+
+              const orderResult = await strapi.services[
+                "api::order.order"
+              ].find({
+                filters: { id: orderId },
+                populate: ["user", "order_courses", "order_courses.course"],
+              });
+
+              if (orderResult.results.length === 0) {
+                throw new NotFoundError("Order not found");
+              }
+
+              const user = context.state.user;
+
+              const order = orderResult.results[0];
+
+              if (order.user.id !== user.id) {
+                throw new ForbiddenError("User not match");
+              }
+
+              const orderCourseString = order.order_courses
+                .map((orderCourse) => {
+                  return orderCourse.course.title;
+                })
+                .join(", ");
+
+              const totalPrice = order.order_courses.reduce(
+                (acc, orderCourse) => {
+                  return Number(acc) + Number(orderCourse.price);
+                },
+                0
+              );
+
+              // send email
+              const isDev = process.env.NODE_ENV === "development";
+              await strapi.plugins["email"].services.email.send({
+                to: isDev ? "rgok307085@gmail.com" : process.env.SMTP_USERNAME,
+                from: process.env.SMTP_USERNAME,
+                cc: process.env.SMTP_USERNAME,
+                bcc: process.env.SMTP_USERNAME,
+                replyTo: process.env.SMTP_USERNAME,
+                subject: `貓貓肉課程網站, 訂單編號${orderId}已繳費`,
+                html: `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                <title>使用者繳款通知</title>
+                </head>
+                <body>
+
+                <h1>訂單編號${orderId}已由使用者${user.username}進行繳費</h1>
+
+                <p>購買的課程內容為：${orderCourseString}</p>
+                <p>總金額為： ${Number(totalPrice).toLocaleString()}</p>
+                <p>請確認款項是否已入帳</p>
+
+                <a href="${
+                  process.env.BACKEND_URL
+                }/api/order/admin-confirmPayment/${orderId}">已入帳請點擊我為使用者確認款項</a>
+
+                </body>
+                </html>
+
+                `,
+              });
+
+              return toEntityResponse(order);
             },
           },
         },

@@ -13,6 +13,11 @@ const customRoutes = [
     path: "/order/neweb-pay-notify-callback",
     handler: "order.newebPayNotifyCallback",
   },
+  {
+    method: "GET",
+    path: "/order/admin-confirmPayment/:orderId",
+    handler: "order.adminConfirmPayment",
+  },
 ];
 
 export default customRouter(defaultRoutes, customRoutes);

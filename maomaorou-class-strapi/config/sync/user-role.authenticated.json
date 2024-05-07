@@ -43,6 +43,9 @@
       "action": "api::order-course.order-course.find"
     },
     {
+      "action": "api::order.order.adminConfirmPayment"
+    },
+    {
       "action": "api::order.order.find"
     },
     {
@@ -50,6 +53,9 @@
     },
     {
       "action": "api::order.order.newebPayNotifyCallback"
+    },
+    {
+      "action": "api::order.order.update"
     },
     {
       "action": "api::payment.payment.find"
