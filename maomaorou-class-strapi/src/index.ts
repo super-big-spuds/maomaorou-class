@@ -30,6 +30,7 @@ export default {
 
               const data = await strapi.services["api::course.course"].find({
                 filters: { title: args.title },
+                publicationState: "preview",
               });
 
               const response = toEntityResponse(data.results[0]);
@@ -214,7 +215,11 @@ export default {
                 filters: {
                   user: user.id,
                 },
-                populate: ["course"],
+                populate: {
+                  course: {
+                    publicationState: "preview",
+                  },
+                },
               });
 
               const userBuyedCourses = userCourseStatus.results.map(
@@ -421,6 +426,7 @@ export default {
                 filters: {
                   id: args.id,
                 },
+                publicationState: "preview",
                 populate: ["chapter", "chapter.course"],
               });
 
