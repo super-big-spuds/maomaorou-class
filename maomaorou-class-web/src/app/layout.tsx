@@ -7,6 +7,7 @@ import { CartProvider } from "@/provider/cart-provider";
 import { UserProvider } from "@/provider/user-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { Metadata } from "next";
+import LineButton from "@/components/line-button";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,6 +29,7 @@ export default function RootLayout({
             <CartProvider>
               <Header />
               <main className="grow bg-gray-50 p-4">{children}</main>
+              <LineButton />
               <Toaster />
               <Footer />
             </CartProvider>
