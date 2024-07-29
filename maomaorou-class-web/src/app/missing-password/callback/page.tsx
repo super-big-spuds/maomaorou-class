@@ -49,7 +49,6 @@ mutation resetPasswordWithCode($password: String!, $passwordConfirmation: String
 
 export default function MissingPasswordPage() {
   const { toast } = useToast();
-  const { token } = useUser();
   const { code } = useParams<{ code: string }>();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -92,11 +91,6 @@ export default function MissingPasswordPage() {
         password: values.newPassword,
         passwordConfirmation: values.confirmNewPassword,
         code: code,
-      },
-      context: {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       },
     });
   }
