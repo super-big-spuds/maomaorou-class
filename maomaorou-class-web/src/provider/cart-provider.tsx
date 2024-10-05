@@ -9,6 +9,11 @@ type CartItem = {
   price: number;
   expiredAt: Date;
   durationDay: number;
+  selectedOption?: {
+    id: string;
+    name: string;
+    price: number;
+  };
 };
 
 const context = createContext({
@@ -71,6 +76,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           price: z.number(),
           expiredAt: z.string().transform((v) => new Date(v)),
           durationDay: z.number(),
+          selectedOption: z
+            .object({
+              id: z.string(),
+              name: z.string(),
+              price: z.number(),
+            })
+            .optional(),
         })
       );
 

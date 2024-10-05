@@ -59,6 +59,11 @@ const GET_LATEST_PRICE_QUERY = gql(`
           firstPrice
           renewPrice
           isFirstBuy
+          buyOption {
+            id
+            name
+            price
+          }
           image {
             data {
               id
@@ -82,8 +87,8 @@ mutation registerUser($userData: UsersPermissionsRegisterInput!) {
 `);
 
 const SUBMIT_ORDER_MUTATION = gql(`
-mutation createOrderWithPayment($courseIds: [ID]) {
-  createOrderWithPayment(courseIds: $courseIds) {
+mutation createOrderWithPayment($courses: [CreateOrderWithPaymentInput!]) {
+  createOrderWithPayment(courses: $courses) {
     paymentUrl
     orderId
     error
@@ -109,6 +114,13 @@ const schema = z.object({
               }),
             }),
           }),
+          buyOption: z.array(
+            z.object({
+              id: z.string(),
+              name: z.string(),
+              price: z.number(),
+            })
+          ),
         }),
       })
     ),
@@ -199,7 +211,10 @@ export default function CheckoutPage() {
     // Send Create Order To Server.
     const submitOrderResponse = await sendSubmitOrderMutation({
       variables: {
-        courseIds: parseResult.data.courses.data.map((course) => course.id),
+        courses: cartData.cart.map((item) => ({
+          courseId: item.id,
+          optionId: item.selectedOption?.id,
+        })),
       },
       context: {
         headers: {
@@ -222,6 +237,57 @@ export default function CheckoutPage() {
     router.push(
       `/order/${submitOrderResponse.data.createOrderWithPayment.orderId}`
     );
+  };
+
+  const getCourseExpiryDate = (courseId: string) => {
+    const course = cartDataWithUserCourseStatus.find(
+      (courseStatus) => courseStatus.id === courseId
+    );
+    if (course === undefined) {
+      return "未知";
+    }
+
+    const expiredAt = new Date(course.expiredAt);
+
+    if (expiredAt.getFullYear() > 2100) {
+      return "永久有效";
+    }
+
+    return `${expiredAt.getFullYear()}/${
+      expiredAt.getMonth() + 1
+    }/${expiredAt.getDate()}`;
+  };
+
+  const getCoursePriceInCart = (courseId: string) => {
+    const courseStatus = cartDataWithUserCourseStatus.find(
+      (courseStatus) => courseStatus.id === courseId
+    );
+
+    if (courseStatus === undefined) {
+      return 0;
+    }
+
+    if (!parseResult.success) {
+      return 0;
+    }
+
+    const course = parseResult.data.courses.data.find(
+      (course) => course.id === courseId
+    );
+
+    if (course === undefined) {
+      return 0;
+    }
+
+    if (course.attributes.isFirstBuy) {
+      const inOption = course.attributes.buyOption.find(
+        (option) => option.id === courseStatus.selectedOption?.id
+      );
+
+      return inOption?.price || course.attributes.firstPrice;
+    } else {
+      return course.attributes.renewPrice;
+    }
   };
 
   return (
@@ -328,17 +394,22 @@ export default function CheckoutPage() {
                           alt={course.attributes.title}
                         />
                       </TableCell>
-                      <TableCell>{course.attributes.title}</TableCell>
                       <TableCell>
-                        {cartDataWithUserCourseStatus
-                          .find((courseStatus) => courseStatus.id === course.id)
-                          ?.expiredAt.toLocaleDateString()}
+                        {course.attributes.title}{" "}
+                        {cartDataWithUserCourseStatus.find(
+                          (courseStatus) => courseStatus.id === course.id
+                        )?.selectedOption &&
+                          `- ${
+                            cartDataWithUserCourseStatus.find(
+                              (courseStatus) => courseStatus.id === course.id
+                            )?.selectedOption?.name
+                          }`}
                       </TableCell>
+                      <TableCell>{getCourseExpiryDate(course.id)}</TableCell>
                       <TableCell className="text-right">
                         {course.attributes.isFirstBuy ? (
                           <p>
-                            首次購買：NT${" "}
-                            {course.attributes.firstPrice.toLocaleString()}元
+                            {getCoursePriceInCart(course.id).toLocaleString()}元
                           </p>
                         ) : (
                           <p>
@@ -355,14 +426,16 @@ export default function CheckoutPage() {
                     <TableCell colSpan={4}>總金額</TableCell>
                     <TableCell className="text-right">
                       NT$
-                      {parseResult.data.courses.data.reduce(
-                        (acc, course) =>
-                          acc +
-                          (course.attributes.isFirstBuy
-                            ? course.attributes.firstPrice
-                            : course.attributes.renewPrice),
-                        0
-                      )}
+                      {parseResult.data.courses.data
+                        .reduce(
+                          (acc, course) =>
+                            acc +
+                            (course.attributes.isFirstBuy
+                              ? getCoursePriceInCart(course.id)
+                              : course.attributes.renewPrice),
+                          0
+                        )
+                        .toLocaleString()}
                       元
                     </TableCell>
                   </TableRow>

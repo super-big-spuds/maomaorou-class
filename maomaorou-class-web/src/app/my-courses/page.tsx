@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import Image from "next/image";
 import { gql } from "@/__generated__/gql";
 import Link from "next/link";
@@ -235,10 +236,14 @@ export default function MyCoursesPage() {
                             ),
                           })}
                         >
-                          {
-                            course.data.attributes.withUserStatus.data
-                              .attributes.expiredAt
-                          }
+                          {Number(
+                            course.data.attributes.withUserStatus.data.attributes.expiredAt.split(
+                              "-"
+                            )[0]
+                          ) > 2100
+                            ? "永久"
+                            : course.data.attributes.withUserStatus.data
+                                .attributes.expiredAt}
                         </p>
                       </TableCell>
                       <TableCell className="text-right">

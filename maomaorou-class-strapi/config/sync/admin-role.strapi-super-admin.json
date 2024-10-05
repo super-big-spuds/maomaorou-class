@@ -171,7 +171,9 @@
           "sequence",
           "firstPrice",
           "firstDurationDay",
-          "description"
+          "description",
+          "buyOption.name",
+          "buyOption.price"
         ]
       },
       "conditions": []
@@ -205,7 +207,9 @@
           "sequence",
           "firstPrice",
           "firstDurationDay",
-          "description"
+          "description",
+          "buyOption.name",
+          "buyOption.price"
         ]
       },
       "conditions": []
@@ -225,7 +229,9 @@
           "sequence",
           "firstPrice",
           "firstDurationDay",
-          "description"
+          "description",
+          "buyOption.name",
+          "buyOption.price"
         ]
       },
       "conditions": []
@@ -386,8 +392,8 @@
       "properties": {
         "fields": [
           "title",
-          "content",
-          "image"
+          "image",
+          "content"
         ]
       },
       "conditions": []
@@ -413,8 +419,8 @@
       "properties": {
         "fields": [
           "title",
-          "content",
-          "image"
+          "image",
+          "content"
         ]
       },
       "conditions": []
@@ -426,8 +432,8 @@
       "properties": {
         "fields": [
           "title",
-          "content",
-          "image"
+          "image",
+          "content"
         ]
       },
       "conditions": []
@@ -441,7 +447,8 @@
           "course",
           "order",
           "price",
-          "durationDay"
+          "durationDay",
+          "option"
         ]
       },
       "conditions": []
@@ -462,7 +469,8 @@
           "course",
           "order",
           "price",
-          "durationDay"
+          "durationDay",
+          "option"
         ]
       },
       "conditions": []
@@ -476,7 +484,8 @@
           "course",
           "order",
           "price",
-          "durationDay"
+          "durationDay",
+          "option"
         ]
       },
       "conditions": []

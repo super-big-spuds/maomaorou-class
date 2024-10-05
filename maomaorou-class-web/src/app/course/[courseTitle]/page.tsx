@@ -1,5 +1,4 @@
 import { gql } from "@/__generated__";
-import CourseAddToCartButton from "@/components/cart/course-add-to-cart-button";
 import { createApolloSSRClient } from "@/lib/apollo-client";
 import { z } from "zod";
 import {
@@ -9,18 +8,11 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import Image from "next/image";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardTitle,
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 
 import { Metadata } from "next";
-import CourseActionSection from "@/components/course/course-action-section";
 import StrapiMdxToHtmlConverter from "@/components/mdx-converter/strapi-mdx-to-html-converter";
+import CourseSideSection from "@/components/course/course-side-section";
 export const metadata: Metadata = {
   title: "課程簡介 - 貓貓肉線上課程網站",
   description: "貓貓肉線上課程網站貓貓肉課程簡介",
@@ -39,6 +31,11 @@ query GetCourseQueryData($title: String!) {
           firstDurationDay
           renewDurationDay
           updatedAt
+          buyOption {
+            id
+            name
+            price
+          }
           chapters {
           	data {
               id
@@ -113,10 +110,19 @@ const schema = z.object({
             }),
           }),
         }),
+        buyOption: z.array(
+          z.object({
+            id: z.string(),
+            name: z.string(),
+            price: z.number(),
+          })
+        ),
       }),
     }),
   }),
 });
+
+export type CoursePageData = z.infer<typeof schema>;
 
 export default async function CoursePage({
   params,
@@ -178,8 +184,8 @@ export default async function CoursePage({
               <Accordion type="multiple">
                 {data.courseByTitle.data.attributes.chapters.data.length ===
                   0 && (
-                    <p className="text-center text-gray-200">該課程還沒有章節</p>
-                  )}
+                  <p className="text-center text-gray-200">該課程還沒有章節</p>
+                )}
                 {data.courseByTitle.data.attributes.chapters.data.map(
                   (chapter) => (
                     <AccordionItem
@@ -194,9 +200,7 @@ export default async function CoursePage({
                         {chapter.attributes.lessons.data.length > 0 ? (
                           chapter.attributes.lessons.data.map((lesson) => (
                             <div key={lesson.id} className="px-5 py-2.5 mx-2">
-                              <p>
-                                {lesson.attributes.name}
-                              </p>
+                              <p>{lesson.attributes.name}</p>
                             </div>
                           ))
                         ) : (
@@ -212,58 +216,7 @@ export default async function CoursePage({
         </CardContent>
       </Card>
 
-      <Card className="sticky top-20 flex flex-col md:w-fit w-full h-full gap-3 p-4">
-        <CardTitle>課程價格</CardTitle>
-        <CardDescription>
-          <p>
-            首次購買:
-            {data.courseByTitle.data.attributes.firstPrice.toLocaleString()}元
-          </p>
-          <p>
-            續訂:
-            {data.courseByTitle.data.attributes.renewPrice.toLocaleString()}元
-          </p>
-        </CardDescription>
-        <Separator />
-        <CardContent className="p-0 flex flex-col gap-y-2">
-          <div>
-            <p className="text-lg font-semibold">課程有效期</p>
-            <CardDescription>
-              <p>
-                首次購買： {data.courseByTitle.data.attributes.firstDurationDay}
-                天
-              </p>
-              <p>
-                續訂： {data.courseByTitle.data.attributes.renewDurationDay}天
-              </p>
-            </CardDescription>
-          </div>
-          <div>
-            <p className="text-lg font-semibold">課程包含</p>
-            <CardDescription>
-              <ul>
-                <li>- 教學影片</li>
-                <li>- 教材</li>
-              </ul>
-            </CardDescription>
-          </div>
-        </CardContent>
-        <Separator />
-        <CardFooter className="flex flex-col p-0 items-start gap-y-2">
-          <p className="text-gray-400 font-xs">
-            最後更新:
-            {data.courseByTitle.data.attributes.updatedAt
-              .toISOString()
-              .slice(0, 10)}
-          </p>
-          <CourseActionSection
-            course={{
-              id: data.courseByTitle.data.id,
-              ...data.courseByTitle.data.attributes,
-            }}
-          />
-        </CardFooter>
-      </Card>
+      <CourseSideSection data={data} />
     </div>
   );
 }

@@ -77,6 +77,20 @@
           "sortable": true
         }
       },
+      "option": {
+        "edit": {
+          "label": "option",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "option",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -162,6 +176,12 @@
           {
             "name": "durationDay",
             "size": 4
+          }
+        ],
+        [
+          {
+            "name": "option",
+            "size": 6
           }
         ]
       ]

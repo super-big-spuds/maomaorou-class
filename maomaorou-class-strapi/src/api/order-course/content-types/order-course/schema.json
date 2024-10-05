@@ -30,6 +30,9 @@
     "durationDay": {
       "type": "integer",
       "required": true
+    },
+    "option": {
+      "type": "string"
     }
   }
 }

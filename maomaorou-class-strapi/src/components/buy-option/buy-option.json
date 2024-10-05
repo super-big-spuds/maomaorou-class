@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_buy_option_buy_options",
+  "info": {
+    "displayName": "buy-option",
+    "icon": "filter"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "unique": false
+    },
+    "price": {
+      "type": "integer",
+      "required": true,
+      "min": 0
+    }
+  }
+}

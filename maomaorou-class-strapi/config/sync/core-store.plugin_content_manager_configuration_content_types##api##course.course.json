@@ -161,6 +161,20 @@
           "sortable": false
         }
       },
+      "buyOption": {
+        "edit": {
+          "label": "購買選項",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "buyOption",
+          "searchable": false,
+          "sortable": false
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -275,11 +289,18 @@
             "name": "category",
             "size": 6
           }
+        ],
+        [
+          {
+            "name": "buyOption",
+            "size": 12
+          }
         ]
       ],
       "list": [
         "image",
-        "title"
+        "title",
+        "buyOption"
       ]
     },
     "uid": "api::course.course"

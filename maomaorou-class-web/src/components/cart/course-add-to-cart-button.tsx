@@ -10,12 +10,18 @@ type Props = {
     price: number;
     durationDay: number;
   };
+  selectedOption?: {
+    id: string;
+    name: string;
+    price: number;
+  };
   className?: string;
 };
 
 // Check is firstBuy outside of the component
 export default function CourseAddToCartButton({
   course,
+  selectedOption,
   className = "",
   ...props
 }: Props) {
@@ -36,6 +42,7 @@ export default function CourseAddToCartButton({
           price: course.price,
           expiredAt: getExpiredAt(course.durationDay),
           durationDay: course.durationDay,
+          selectedOption: selectedOption,
         })
       }
       {...props}

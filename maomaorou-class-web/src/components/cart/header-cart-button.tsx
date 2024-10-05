@@ -56,12 +56,18 @@ export default function CartButton() {
                 <X className="text-gray-100" />
               </button>
               <div className="space-y-1">
-                <h4 className="font-medium">{item.title}</h4>
+                <h4 className="font-medium">
+                  {item.title}
+                  {item.selectedOption && `- ${item.selectedOption.name}`}
+                </h4>
                 <div className="text-sm text-gray-500 dark:text-gray-400">
                   課程有效至: {item.expiredAt.toLocaleDateString()}
                 </div>
               </div>
-              <div className="text-right font-medium">NT${item.price}</div>
+              <div className="text-right font-medium">
+                NT$
+                {item.price}
+              </div>
             </div>
           </div>
         ))}

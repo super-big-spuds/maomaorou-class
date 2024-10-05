@@ -1,6 +1,6 @@
 "use client";
 
-import { useCart } from "@/provider/cart-provider";
+import * as React from "react";
 import CourseAddToCartButton from "../cart/course-add-to-cart-button";
 import AddZeroPriceCourseButton from "../user/add-zero-price-course-button";
 import UserCourseStatusText from "../user/user-course-status-text";
@@ -19,58 +19,15 @@ type Props = {
     renewPrice: number;
     renewDurationDay: number;
   };
+  selectedOption?: {
+    id: string;
+    name: string;
+    price: number;
+  };
+  isFirstBuy: boolean
 };
 
-const query = gql(`
- query getIsUserFirstBuyAndPrice($courseId: ID!) {
-    course(id: $courseId) {
-      data {
-        id
-        attributes {
-          isFirstBuy
-        }
-      }
-    }
-  }
-`);
-
-const schema = z.object({
-  course: z.object({
-    data: z.object({
-      id: z.string(),
-      attributes: z.object({
-        isFirstBuy: z.boolean(),
-      }),
-    }),
-  }),
-});
-
-export default function CourseActionSection({ course }: Props) {
-  const userContext = useUser();
-
-  const { data, loading } = useQuery(query, {
-    skip: userContext.isLoading,
-    variables: {
-      courseId: course.id,
-    },
-    context: {
-      headers: {
-        authorization: `Bearer ${userContext.token}`,
-      },
-    },
-  });
-
-  const parsedResult = schema.safeParse(data);
-
-  if (loading) {
-    return <Skeleton className="w-full h-10" />;
-  }
-  if (!parsedResult.success) {
-    return <div>系統發生錯誤, 無法加入課程!</div>;
-  }
-
-  const isFirstBuy = parsedResult.data.course.data.attributes.isFirstBuy;
-
+export default function CourseActionSection({ course, selectedOption, isFirstBuy }: Props) {
   return (
     <>
       {(course.firstPrice === 0 && isFirstBuy) ||
@@ -81,16 +38,24 @@ export default function CourseActionSection({ course }: Props) {
           courseTitle={course.title}
         />
       ) : (
+        // 有 selectedOption 的話就根據 option的價格和天數來加入購物車
         <CourseAddToCartButton
           className="w-full"
           course={{
             id: course.id,
             title: course.title,
-            price: isFirstBuy ? course.firstPrice : course.renewPrice,
-            durationDay: isFirstBuy
+            price: selectedOption
+              ? selectedOption.price
+              : isFirstBuy
+              ? course.firstPrice
+              : course.renewPrice,
+            durationDay: selectedOption
+              ? 99999
+              : isFirstBuy
               ? course.firstDurationDay
               : course.renewDurationDay,
           }}
+          selectedOption={selectedOption}
         />
       )}
       <UserCourseStatusText

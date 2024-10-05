@@ -69,6 +69,11 @@
       "type": "richtext",
       "default": "課程內容",
       "required": true
+    },
+    "buyOption": {
+      "type": "component",
+      "repeatable": true,
+      "component": "buy-option.buy-option"
     }
   }
 }

@@ -955,6 +955,7 @@ export interface ApiCourseCourse extends Schema.CollectionType {
     description: Attribute.RichText &
       Attribute.Required &
       Attribute.DefaultTo<'\u8AB2\u7A0B\u5167\u5BB9'>;
+    buyOption: Attribute.Component<'buy-option.buy-option', true>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1192,6 +1193,7 @@ export interface ApiOrderCourseOrderCourse extends Schema.CollectionType {
     >;
     price: Attribute.Integer & Attribute.Required;
     durationDay: Attribute.Integer & Attribute.Required;
+    option: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<

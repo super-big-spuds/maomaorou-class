@@ -219,7 +219,7 @@ export default factories.createCoreController(
 
       const orderCourseString = order.order_courses
         .map((orderCourse) => {
-          return orderCourse.course.title;
+          return `${orderCourse.course.title} - ${orderCourse.option}`;
         })
         .join(", ");
 

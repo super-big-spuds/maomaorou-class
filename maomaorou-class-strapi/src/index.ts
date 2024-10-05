@@ -73,8 +73,13 @@ export default {
         error: String
       }
 
+      input CreateOrderWithPaymentInput {
+        courseId: String!
+        optionId: String
+      }
+
       type Mutation {
-        createOrderWithPayment(courseIds: [ID]): createOrderWithPaymentResponse
+        createOrderWithPayment(courses: [CreateOrderWithPaymentInput]): createOrderWithPaymentResponse
       }
 
       `,
@@ -89,9 +94,10 @@ export default {
               const courses = await strapi.services["api::course.course"].find({
                 filters: {
                   id: {
-                    $in: args.courseIds,
+                    $in: args.courses.map((course) => course.courseId),
                   },
                 },
+                populate: ["buyOption"],
               });
 
               const order = await strapi.services["api::order.order"].create({
@@ -113,12 +119,24 @@ export default {
 
                   const isFirstBuy = userCourseStatus.results.length === 0;
 
+                  const userInputOfThisCourse = args.courses.find(
+                    (c) => c.courseId == course.id
+                  );
+
+                  if (isFirstBuy && !userInputOfThisCourse) {
+                    throw new ForbiddenError("使用者未選擇購買方式");
+                  }
+
+                  const userOption = course.buyOption.find(
+                    (option) => option.id == userInputOfThisCourse.optionId
+                  );
+
                   const costPrice = isFirstBuy
-                    ? course.firstPrice
+                    ? userOption.price
                     : course.renewPrice;
 
                   const durationDay = isFirstBuy
-                    ? course.firstDurationDay
+                    ? 99999
                     : course.renewDurationDay;
 
                   return await strapi.services[
@@ -129,6 +147,7 @@ export default {
                       order: order.id,
                       price: costPrice,
                       durationDay: durationDay,
+                      option: isFirstBuy ? userOption.name : "續訂",
                     },
                     populate: ["course"],
                   });
@@ -694,7 +713,7 @@ export default {
 
               const orderCourseString = order.order_courses
                 .map((orderCourse) => {
-                  return orderCourse.course.title;
+                  return `${orderCourse.course.title} - ${orderCourse.option}`;
                 })
                 .join(", ");
 
