@@ -7,8 +7,8 @@ import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { z } from "zod";
 
 export const metadata: Metadata = {
-  title: "首頁 - 貓貓肉線上課程網站",
-  description: "貓貓肉課程介紹",
+  title: "首頁 - 價量投機線上課程網站",
+  description: "價量投機課程介紹",
 };
 
 const QUERY = gql(`
@@ -214,7 +214,7 @@ export default async function Home() {
               .landingPageBackgroundImage.data.attributes.url
           }
           unoptimized
-          alt="MaoMaoRo Background Image"
+          alt="Pajusdtdoit Background Image"
           width={500}
           height={500}
         />

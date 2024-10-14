@@ -13,7 +13,7 @@ export default function Header() {
           href="/"
           className="flex items-center gap-2 text-lg font-semibold whitespace-nowrap"
         >
-          MaoMaoRo
+          Pajusdtdoit
         </Link>
       </nav>
       {/*<Sheet>
@@ -29,7 +29,7 @@ export default function Header() {
               href="/"
               className="flex items-center gap-2 text-lg font-semibold"
             >
-              MaoMaoRou Inc
+              Pajusdtdoit Inc
             </Link>
           </nav>
         </SheetContent>

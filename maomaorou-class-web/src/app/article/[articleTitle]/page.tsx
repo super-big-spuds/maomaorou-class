@@ -7,8 +7,8 @@ import { Card } from "@/components/ui/card";
 import BlockedDownloadVideo from "@/components/ui/blocked-download-video";
 import YoutubeIframe from "@/components/ui/youtube-iframe";
 export const metadata: Metadata = {
-  title: "文章內容 - 貓貓肉線上課程網站",
-  description: "貓貓肉線上課程網站文章內容",
+  title: "文章內容 - 價量投機線上課程網站",
+  description: "價量投機線上課程網站文章內容",
 };
 
 const QUERY = gql(`

@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "藍新交易 - 貓貓肉線上課程網站",
+  title: "藍新交易 - 價量投機線上課程網站",
   description: "正在為您重新導向至付款連結...",
 };
 

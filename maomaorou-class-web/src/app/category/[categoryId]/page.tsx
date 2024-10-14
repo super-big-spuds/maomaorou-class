@@ -8,8 +8,8 @@ import { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "課程分類 - 貓貓肉線上課程網站",
-  description: "貓貓肉線上課程網站貓貓肉課程分類",
+  title: "課程分類 - 價量投機線上課程網站",
+  description: "價量投機線上課程網站價量投機課程分類",
 };
 
 const QUERY = gql(`

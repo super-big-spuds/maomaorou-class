@@ -12,8 +12,8 @@ import LineButton from "@/components/line-button";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "貓貓肉線上課程網站",
-  description: "貓貓肉線上課程網站",
+  title: "價量投機線上課程網站",
+  description: "價量投機線上課程網站",
 };
 
 export default function RootLayout({

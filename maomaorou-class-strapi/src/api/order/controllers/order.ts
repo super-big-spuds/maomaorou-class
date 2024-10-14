@@ -234,7 +234,7 @@ export default factories.createCoreController(
         cc: process.env.SMTP_USERNAME,
         bcc: process.env.SMTP_USERNAME,
         replyTo: process.env.SMTP_USERNAME,
-        subject: `您於貓貓肉課程網站中訂單編號${orderId}已繳款成功`,
+        subject: `您於價量投機課程網站中訂單編號${orderId}已繳款成功`,
         html: `
           <!DOCTYPE html>
           <html>

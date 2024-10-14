@@ -6,11 +6,11 @@
       "icon": "sync",
       "options": {
         "from": {
-          "name": "貓貓肉數位學習網站",
+          "name": "價量投機數位學習網站",
           "email": "maomaorou@gmail.com"
         },
         "response_email": "maomaorou@gmail.com",
-        "object": "貓貓肉數位學習網站-重新設定密碼信件",
+        "object": "價量投機數位學習網站-重新設定密碼信件",
         "message": "<p>您似乎想要重新設定您的密碼</p>\n\n<p>請點擊下方連結以繼續重新設定流程</p>\n<p><%= URL %>?code=<%= TOKEN %></p>\n\n<p>如果沒有想要重新設定密碼, 請忽略此信件</p>\n<p>感謝</p>"
       }
     },

@@ -6,8 +6,8 @@ import type { Metadata } from "next";
 import { Card } from "@/components/ui/card";
 
 export const metadata: Metadata = {
-  title: "服務條款 - 貓貓肉線上課程網站",
-  description: "貓貓肉線上課程網站服務條款",
+  title: "服務條款 - 價量投機線上課程網站",
+  description: "價量投機線上課程網站服務條款",
 };
 
 const QUERY = gql(`

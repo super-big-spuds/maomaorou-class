@@ -3,8 +3,8 @@ import { Card, CardTitle, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const metadata: Metadata = {
-  title: "貓貓肉課程",
-  description: "貓貓肉課程介紹",
+  title: "價量投機課程",
+  description: "價量投機課程介紹",
 };
 
 export default async function Home() {

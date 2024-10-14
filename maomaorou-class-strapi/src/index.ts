@@ -732,7 +732,7 @@ export default {
                 cc: process.env.SMTP_USERNAME,
                 bcc: process.env.SMTP_USERNAME,
                 replyTo: process.env.SMTP_USERNAME,
-                subject: `貓貓肉課程網站, 訂單編號${orderId}已繳費`,
+                subject: `價量投機課程網站, 訂單編號${orderId}已繳費`,
                 html: `
                 <!DOCTYPE html>
                 <html>

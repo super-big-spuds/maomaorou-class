@@ -14,8 +14,8 @@ import { Metadata } from "next";
 import StrapiMdxToHtmlConverter from "@/components/mdx-converter/strapi-mdx-to-html-converter";
 import CourseSideSection from "@/components/course/course-side-section";
 export const metadata: Metadata = {
-  title: "課程簡介 - 貓貓肉線上課程網站",
-  description: "貓貓肉線上課程網站貓貓肉課程簡介",
+  title: "課程簡介 - 價量投機線上課程網站",
+  description: "價量投機線上課程網站價量投機課程簡介",
 };
 
 const QUERY = gql(`
