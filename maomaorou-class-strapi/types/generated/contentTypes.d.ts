@@ -823,6 +823,42 @@ export interface ApiAboutUsAboutUs extends Schema.SingleType {
   };
 }
 
+export interface ApiCategoryCategory extends Schema.CollectionType {
+  collectionName: 'categories';
+  info: {
+    singularName: 'category';
+    pluralName: 'categories';
+    displayName: '\u8AB2\u7A0B\u7FA4\u7D44';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    courses: Attribute.Relation<
+      'api::category.category',
+      'oneToMany',
+      'api::course.course'
+    >;
+    image: Attribute.Media & Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::category.category',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::category.category',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiChapterChapter extends Schema.CollectionType {
   collectionName: 'chapters';
   info: {
@@ -880,14 +916,10 @@ export interface ApiCourseCourse extends Schema.CollectionType {
   };
   attributes: {
     image: Attribute.Media & Attribute.Required;
-    description: Attribute.Text &
+    renewPrice: Attribute.Integer &
       Attribute.Required &
-      Attribute.DefaultTo<'\u9810\u8A2D\u8AB2\u7A0B\u4ECB\u7D39'>;
-    goal: Attribute.Text &
-      Attribute.Required &
-      Attribute.DefaultTo<'\u9810\u8A2D\u8AB2\u7A0B\u76EE\u6A19'>;
-    price: Attribute.Integer & Attribute.Required & Attribute.DefaultTo<100>;
-    durationDay: Attribute.Integer &
+      Attribute.DefaultTo<100>;
+    renewDurationDay: Attribute.Integer &
       Attribute.Required &
       Attribute.DefaultTo<30>;
     chapters: Attribute.Relation<
@@ -899,6 +931,31 @@ export interface ApiCourseCourse extends Schema.CollectionType {
       Attribute.Required &
       Attribute.Unique &
       Attribute.DefaultTo<'\u8AB2\u7A0B\u540D\u7A31'>;
+    category: Attribute.Relation<
+      'api::course.course',
+      'manyToOne',
+      'api::category.category'
+    >;
+    sequence: Attribute.Integer &
+      Attribute.Required &
+      Attribute.Unique &
+      Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      > &
+      Attribute.DefaultTo<0>;
+    firstPrice: Attribute.Integer &
+      Attribute.Required &
+      Attribute.DefaultTo<100>;
+    firstDurationDay: Attribute.Integer &
+      Attribute.Required &
+      Attribute.DefaultTo<30>;
+    description: Attribute.RichText &
+      Attribute.Required &
+      Attribute.DefaultTo<'\u8AB2\u7A0B\u5167\u5BB9'>;
+    buyOption: Attribute.Component<'buy-option.buy-option', true>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -989,7 +1046,11 @@ export interface ApiLessonLesson extends Schema.CollectionType {
     >;
     sequence: Attribute.Integer & Attribute.Required;
     content: Attribute.DynamicZone<
-      ['lesson-content.text-content', 'lesson-content.video-content']
+      [
+        'lesson-content.text-content',
+        'lesson-content.video-content',
+        'lesson-content.youtube-lesson'
+      ]
     > &
       Attribute.Required &
       Attribute.SetMinMax<
@@ -1001,8 +1062,8 @@ export interface ApiLessonLesson extends Schema.CollectionType {
       >;
     name: Attribute.String &
       Attribute.Required &
-      Attribute.Unique &
       Attribute.DefaultTo<'\u9810\u8A2D\u7AE0\u7BC0\u55AE\u5143\u540D\u7A31'>;
+    isStar: Attribute.Boolean & Attribute.Required & Attribute.DefaultTo<false>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1017,6 +1078,46 @@ export interface ApiLessonLesson extends Schema.CollectionType {
       'oneToOne',
       'admin::user'
     > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiNewNew extends Schema.CollectionType {
+  collectionName: 'news';
+  info: {
+    singularName: 'new';
+    pluralName: 'news';
+    displayName: '\u7CBE\u9078\u6587\u7AE0';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    title: Attribute.String &
+      Attribute.Required &
+      Attribute.DefaultTo<'\u7CBE\u9078\u6587\u7AE0\u6587\u7AE0\u540D\u7A31'>;
+    image: Attribute.Media & Attribute.Required;
+    content: Attribute.DynamicZone<
+      [
+        'lesson-content.text-content',
+        'lesson-content.video-content',
+        'lesson-content.youtube-lesson'
+      ]
+    > &
+      Attribute.Required &
+      Attribute.SetMinMax<
+        {
+          max: 1;
+        },
+        number
+      >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::new.new', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::new.new', 'oneToOne', 'admin::user'> &
       Attribute.Private;
   };
 }
@@ -1091,7 +1192,8 @@ export interface ApiOrderCourseOrderCourse extends Schema.CollectionType {
       'api::order.order'
     >;
     price: Attribute.Integer & Attribute.Required;
-    expiredAt: Attribute.Date & Attribute.Required;
+    durationDay: Attribute.Integer & Attribute.Required;
+    option: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1237,11 +1339,13 @@ declare module '@strapi/types' {
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'api::about-us.about-us': ApiAboutUsAboutUs;
+      'api::category.category': ApiCategoryCategory;
       'api::chapter.chapter': ApiChapterChapter;
       'api::course.course': ApiCourseCourse;
       'api::decoration-setting.decoration-setting': ApiDecorationSettingDecorationSetting;
       'api::faq.faq': ApiFaqFaq;
       'api::lesson.lesson': ApiLessonLesson;
+      'api::new.new': ApiNewNew;
       'api::order.order': ApiOrderOrder;
       'api::order-course.order-course': ApiOrderCourseOrderCourse;
       'api::payment.payment': ApiPaymentPayment;

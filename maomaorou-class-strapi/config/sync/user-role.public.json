@@ -7,6 +7,12 @@
       "action": "api::about-us.about-us.find"
     },
     {
+      "action": "api::category.category.find"
+    },
+    {
+      "action": "api::category.category.findOne"
+    },
+    {
       "action": "api::chapter.chapter.find"
     },
     {
@@ -32,6 +38,15 @@
     },
     {
       "action": "api::lesson.lesson.findOne"
+    },
+    {
+      "action": "api::new.new.find"
+    },
+    {
+      "action": "api::new.new.findOne"
+    },
+    {
+      "action": "api::order.order.adminConfirmPayment"
     },
     {
       "action": "api::order.order.newebPayNotifyCallback"

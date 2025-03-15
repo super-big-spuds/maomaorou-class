@@ -7,7 +7,22 @@
       "action": "api::about-us.about-us.find"
     },
     {
+      "action": "api::category.category.find"
+    },
+    {
+      "action": "api::category.category.findOne"
+    },
+    {
+      "action": "api::chapter.chapter.find"
+    },
+    {
       "action": "api::course.course.find"
+    },
+    {
+      "action": "api::course.course.findOne"
+    },
+    {
+      "action": "api::decoration-setting.decoration-setting.find"
     },
     {
       "action": "api::faq.faq.find"
@@ -16,13 +31,40 @@
       "action": "api::faq.faq.findOne"
     },
     {
+      "action": "api::lesson.lesson.find"
+    },
+    {
+      "action": "api::new.new.find"
+    },
+    {
+      "action": "api::new.new.findOne"
+    },
+    {
       "action": "api::order-course.order-course.find"
+    },
+    {
+      "action": "api::order.order.adminConfirmPayment"
+    },
+    {
+      "action": "api::order.order.find"
     },
     {
       "action": "api::order.order.findOne"
     },
     {
+      "action": "api::order.order.newebPayNotifyCallback"
+    },
+    {
+      "action": "api::order.order.update"
+    },
+    {
+      "action": "api::payment.payment.find"
+    },
+    {
       "action": "api::term.term.find"
+    },
+    {
+      "action": "api::user-courses-status.user-courses-status.find"
     },
     {
       "action": "plugin::users-permissions.auth.changePassword"

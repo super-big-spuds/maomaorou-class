@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function Footer() {
   return (
     <footer className="bg-black flex flex-col justify-center items-center py-12">
-      <p className="text-white">Copyright ©  2024 MaoMaoRouInc 線上影音網 </p>
+      <p className="text-white">Copyright ©  2024 Pajusdtdoit 線上影音網 </p>
       <div className="flex text-blue-500">
         <Link href="/about-us">
           <p>關於我們 |</p>

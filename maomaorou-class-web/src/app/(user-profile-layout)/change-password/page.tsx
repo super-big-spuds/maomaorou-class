@@ -22,9 +22,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useMutation } from "@apollo/client";
-import useToken from "@/hook/useToken";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { useUser } from "@/provider/user-provider";
 
 const formSchema = z
   .object({
@@ -49,7 +49,7 @@ mutation updateUserPassword($data: UpdateSelfUserPasswordInput) {
 
 export default function ChangePasswordPage() {
   const { toast } = useToast();
-  const { token } = useToken();
+  const { token } = useUser();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -107,7 +107,7 @@ export default function ChangePasswordPage() {
           <Card
             className={`${
               isSendUpdateUserProfileLoading ? "animate-pulse" : ""
-            } mx-auto max-w-sm relative`}
+            } relative`}
           >
             {isSendUpdateUserProfileLoading && (
               <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 top-1/2">

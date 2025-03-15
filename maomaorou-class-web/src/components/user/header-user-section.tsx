@@ -12,20 +12,12 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import Link from "next/link";
-import useToken from "@/hook/useToken";
 
 export default function HeaderUserSection() {
-  const { token } = useToken();
-  const userData = useUser();
+  const userContext = useUser();
 
   return (
-    <>
-      {(userData.isLoading && token !== "") || userData.userData !== null ? (
-        <UserProfile />
-      ) : (
-        <GuestProfile />
-      )}
-    </>
+    <>{userContext.userData !== null ? <UserProfile /> : <GuestProfile />}</>
   );
 }
 
@@ -51,18 +43,13 @@ function UserProfile() {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Link href="/setting">
+            <Link href="/account-setting">
               <p>帳號設定</p>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Link href="/update-password">
+            <Link href="/change-password">
               <p>變更密碼</p>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link href="/missing-password">
-              <p>遺失密碼</p>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />

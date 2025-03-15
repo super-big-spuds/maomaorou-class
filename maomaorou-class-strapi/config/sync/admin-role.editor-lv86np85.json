@@ -53,6 +53,56 @@
     {
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
+      "subject": "api::category.category",
+      "properties": {
+        "fields": [
+          "courses",
+          "image"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.delete",
+      "actionParameters": {},
+      "subject": "api::category.category",
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.publish",
+      "actionParameters": {},
+      "subject": "api::category.category",
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::category.category",
+      "properties": {
+        "fields": [
+          "courses",
+          "image"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.update",
+      "actionParameters": {},
+      "subject": "api::category.category",
+      "properties": {
+        "fields": [
+          "courses",
+          "image"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.create",
+      "actionParameters": {},
       "subject": "api::chapter.chapter",
       "properties": {
         "fields": [
@@ -113,21 +163,16 @@
       "properties": {
         "fields": [
           "image",
-          "description",
-          "goal",
-          "price",
-          "durationDay",
+          "renewPrice",
+          "renewDurationDay",
           "chapters",
-          "title"
+          "title",
+          "sequence",
+          "firstPrice",
+          "firstDurationDay",
+          "description"
         ]
       },
-      "conditions": []
-    },
-    {
-      "action": "plugin::content-manager.explorer.delete",
-      "actionParameters": {},
-      "subject": "api::course.course",
-      "properties": {},
       "conditions": []
     },
     {
@@ -144,12 +189,14 @@
       "properties": {
         "fields": [
           "image",
-          "description",
-          "goal",
-          "price",
-          "durationDay",
+          "renewPrice",
+          "renewDurationDay",
           "chapters",
-          "title"
+          "title",
+          "sequence",
+          "firstPrice",
+          "firstDurationDay",
+          "description"
         ]
       },
       "conditions": []
@@ -161,12 +208,14 @@
       "properties": {
         "fields": [
           "image",
-          "description",
-          "goal",
-          "price",
-          "durationDay",
+          "renewPrice",
+          "renewDurationDay",
           "chapters",
-          "title"
+          "title",
+          "sequence",
+          "firstPrice",
+          "firstDurationDay",
+          "description"
         ]
       },
       "conditions": []
@@ -270,7 +319,8 @@
           "chapter",
           "sequence",
           "content",
-          "name"
+          "name",
+          "isStar"
         ]
       },
       "conditions": []
@@ -298,7 +348,8 @@
           "chapter",
           "sequence",
           "content",
-          "name"
+          "name",
+          "isStar"
         ]
       },
       "conditions": []
@@ -312,7 +363,75 @@
           "chapter",
           "sequence",
           "content",
-          "name"
+          "name",
+          "isStar"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.create",
+      "actionParameters": {},
+      "subject": "api::new.new",
+      "properties": {
+        "fields": [
+          "title",
+          "content",
+          "image"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.delete",
+      "actionParameters": {},
+      "subject": "api::new.new",
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.publish",
+      "actionParameters": {},
+      "subject": "api::new.new",
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::new.new",
+      "properties": {
+        "fields": [
+          "title",
+          "content",
+          "image"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.update",
+      "actionParameters": {},
+      "subject": "api::new.new",
+      "properties": {
+        "fields": [
+          "title",
+          "content",
+          "image"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::order.order",
+      "properties": {
+        "fields": [
+          "status",
+          "user",
+          "order_courses",
+          "payments"
         ]
       },
       "conditions": []
@@ -362,6 +481,107 @@
           "content"
         ]
       },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.create",
+      "actionParameters": {},
+      "subject": "api::user-courses-status.user-courses-status",
+      "properties": {
+        "fields": [
+          "user",
+          "course",
+          "expiredAt"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::user-courses-status.user-courses-status",
+      "properties": {
+        "fields": [
+          "user",
+          "course",
+          "expiredAt"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.update",
+      "actionParameters": {},
+      "subject": "api::user-courses-status.user-courses-status",
+      "properties": {
+        "fields": [
+          "user",
+          "course",
+          "expiredAt"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "plugin::users-permissions.user",
+      "properties": {
+        "fields": [
+          "username",
+          "email",
+          "provider",
+          "password",
+          "resetPasswordToken",
+          "confirmationToken",
+          "confirmed",
+          "blocked",
+          "role",
+          "orders"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::upload.assets.copy-link",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "plugin::upload.assets.create",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "plugin::upload.assets.download",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "plugin::upload.assets.update",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "plugin::upload.configure-view",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "plugin::upload.read",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
       "conditions": []
     }
   ]

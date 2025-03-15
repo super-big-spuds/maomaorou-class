@@ -8,7 +8,7 @@
   "options": {},
   "attributes": {
     "richText": {
-      "type": "blocks",
+      "type": "richtext",
       "required": true
     }
   }

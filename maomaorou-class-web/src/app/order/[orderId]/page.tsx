@@ -11,11 +11,25 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useQuery } from "@apollo/client";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useMutation, useQuery } from "@apollo/client";
 import { z } from "zod";
 import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
-import useToken from "@/hook/useToken";
+import { useUser } from "@/provider/user-provider";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { useToast } from "@/components/ui/use-toast";
 
 const QUERY = gql(`
   query GetOrderData($orderId: ID!) {
@@ -30,7 +44,6 @@ const QUERY = gql(`
             data {
               id
               attributes {
-                expiredAt
                 price
                 course {
                   data {
@@ -55,6 +68,16 @@ const QUERY = gql(`
   }
 `);
 
+const ConfirmPaymentMutation = gql(`
+  mutation ConfirmPayment($orderId: ID!) {
+    userDoneHandlePayment(orderId: $orderId) {
+      data {
+        id
+      }
+    }
+  }
+`);
+
 const schema = z.object({
   myOrder: z.object({
     data: z.object({
@@ -68,7 +91,6 @@ const schema = z.object({
             z.object({
               id: z.string(),
               attributes: z.object({
-                expiredAt: z.string(),
                 price: z.number(),
                 course: z.object({
                   data: z.object({
@@ -98,7 +120,8 @@ export default function OrderViewPage({
 }: {
   params: { orderId: string };
 }) {
-  const { token } = useToken();
+  const { toast } = useToast();
+  const { token } = useUser();
   const { data, loading } = useQuery(QUERY, {
     skip: !token,
     variables: {
@@ -110,12 +133,34 @@ export default function OrderViewPage({
       },
     },
   });
+  const [
+    sendConfirmPaymentRequest,
+    { loading: isSendConfirmPaymentRequestLoading },
+  ] = useMutation(ConfirmPaymentMutation);
 
   const parseResult = schema.safeParse(data);
 
+  const onSubmitConfirmPayment = async () => {
+    toast({
+      title: "已送出付款確認",
+      description: "請等待管理員確認付款",
+    });
+
+    await sendConfirmPaymentRequest({
+      variables: {
+        orderId: params.orderId,
+      },
+      context: {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+      },
+    });
+  };
+
   return (
     <Card className="bg-gray-100 p-8">
-      {loading ? (
+      {loading || !token ? (
         <Skeleton className="w-full h-12" />
       ) : !parseResult.success ? (
         <div className="text-xl font-bold">讀取內容發生錯誤</div>
@@ -129,17 +174,51 @@ export default function OrderViewPage({
               </CardDescription>
             </div>
 
-            <div className="text-sm">
-              <strong>
-                {parseResult.data.myOrder.data.attributes.createdAt
-                  .toISOString()
-                  .slice(0, 10)}
-                下單
-              </strong>
-              <span>，目前狀態為 </span>
-              <span className="text-yellow-500">
-                {parseResult.data.myOrder.data.attributes.status}
-              </span>
+            <div className="flex flex-col justify-end">
+              {parseResult.data.myOrder.data.attributes.status == "pending" && (
+                <AlertDialog>
+                  <AlertDialogTrigger
+                    className={cn(
+                      buttonVariants(),
+                      "text-lg font-semibold w-full"
+                    )}
+                  >
+                    我要付款/我已完成付款
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>完成匯款</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        <p>
+                          請匯款至以下帳戶並
+                          <span className="text-red-600">備註訂單編號</span>
+                          ，完成後請按送出
+                        </p>
+                        <p>銀行編號：012</p>
+                        <p>帳戶編號：82210000081322</p>
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>取消</AlertDialogCancel>
+                      <AlertDialogAction onClick={onSubmitConfirmPayment}>
+                        我已完成匯款
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
+              <div className="text-sm">
+                <strong>
+                  {parseResult.data.myOrder.data.attributes.createdAt
+                    .toISOString()
+                    .slice(0, 10)}
+                  下單
+                </strong>
+                <span>，目前狀態為 </span>
+                <span className="text-yellow-500">
+                  {parseResult.data.myOrder.data.attributes.status}
+                </span>
+              </div>
             </div>
           </div>
           <div className="py-4">

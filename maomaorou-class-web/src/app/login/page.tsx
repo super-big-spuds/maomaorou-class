@@ -22,11 +22,11 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { gql } from "@/__generated__";
 import { useMutation } from "@apollo/client";
-import useToken from "@/hook/useToken";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { useUser } from "@/provider/user-provider";
 import { useToast } from "@/components/ui/use-toast";
+import Link from "next/link";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -60,10 +60,8 @@ export default function LoginPage() {
       form.reset();
       const token = data.login.jwt;
       if (typeof token === "string") {
-        setToken(token);
-        await userContext.handleRefetch();
+        userContext.handleLogin(token);
         router.push("/my-courses");
-        router.refresh();
       }
     },
     onError: (error) => {
@@ -73,7 +71,6 @@ export default function LoginPage() {
       });
     },
   });
-  const { setToken } = useToken();
   const userContext = useUser();
   const router = useRouter();
 
@@ -94,7 +91,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="p-4 relative h-[80vh] w-full bg-slate-100">
+    <div className="p-4 relative w-full">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className=" mt-16">
           {loading && (
@@ -129,7 +126,15 @@ export default function LoginPage() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>密碼</FormLabel>
+                      <FormLabel className="flex justify-between items-center">
+                        <p>密碼</p>
+                        <Link
+                          className="text-sm hover:underline"
+                          href={"/missing-password"}
+                        >
+                          忘記密碼?
+                        </Link>
+                      </FormLabel>
                       <FormControl>
                         <Input placeholder="密碼" type="password" {...field} />
                       </FormControl>
@@ -137,13 +142,14 @@ export default function LoginPage() {
                     </FormItem>
                   )}
                 />
+
                 {error && (
                   <p className="text-red-400 w-full text-center">
                     {submitMessageTransformer(error.message)}
                   </p>
                 )}
                 <Button className="w-full" type="submit">
-                  Login
+                  登入
                 </Button>
               </div>
             </CardContent>

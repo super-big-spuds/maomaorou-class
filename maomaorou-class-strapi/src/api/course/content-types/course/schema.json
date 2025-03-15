@@ -20,22 +20,12 @@
         "images"
       ]
     },
-    "description": {
-      "type": "text",
-      "default": "預設課程介紹",
-      "required": true
-    },
-    "goal": {
-      "type": "text",
-      "default": "預設課程目標",
-      "required": true
-    },
-    "price": {
+    "renewPrice": {
       "default": 100,
       "required": true,
       "type": "integer"
     },
-    "durationDay": {
+    "renewDurationDay": {
       "type": "integer",
       "required": true,
       "default": 30
@@ -51,6 +41,39 @@
       "required": true,
       "default": "課程名稱",
       "unique": true
+    },
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::category.category",
+      "inversedBy": "courses"
+    },
+    "sequence": {
+      "type": "integer",
+      "required": true,
+      "default": 0,
+      "min": 0,
+      "unique": true
+    },
+    "firstPrice": {
+      "type": "integer",
+      "required": true,
+      "default": 100
+    },
+    "firstDurationDay": {
+      "type": "integer",
+      "required": true,
+      "default": 30
+    },
+    "description": {
+      "type": "richtext",
+      "default": "課程內容",
+      "required": true
+    },
+    "buyOption": {
+      "type": "component",
+      "repeatable": true,
+      "component": "buy-option.buy-option"
     }
   }
 }

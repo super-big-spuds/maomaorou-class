@@ -1,7 +1,6 @@
 "use client";
 
 import { gql } from "@/__generated__";
-import useToken from "@/hook/useToken";
 import { useQuery } from "@apollo/client";
 import { z } from "zod";
 import Link from "next/link";
@@ -16,6 +15,7 @@ import {
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useUser } from "@/provider/user-provider";
 
 const QUERY = gql(`
 query getMyOrders {
@@ -50,7 +50,7 @@ const schema = z.object({
 });
 
 export default function MyOrdersPage() {
-  const { token } = useToken();
+  const { token } = useUser();
   const { data, loading } = useQuery(QUERY, {
     skip: !token,
     context: {
@@ -63,9 +63,9 @@ export default function MyOrdersPage() {
   const parseResult = schema.safeParse(data);
 
   return (
-    <Card className="grow p-4">
-      <CardTitle>我的訂單</CardTitle>
-      <Separator className="my-2" />
+    <Card className="grow p-4 w-full">
+      <CardTitle className="text-center">訂單檢視</CardTitle>
+      <Separator className="my-4" />
       <CardContent>
         <Table>
           <TableHeader>

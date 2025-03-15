@@ -1,14 +1,23 @@
 "use client";
 
 import { gql } from "@/__generated__";
-import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
-import useToken from "@/hook/useToken";
-import { cn, getPaymentUrl } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { useCart } from "@/provider/cart-provider";
 import { useUser } from "@/provider/user-provider";
 import { useMutation, useQuery } from "@apollo/client";
-import { FormEventHandler } from "react";
+import { FormEventHandler, useRef } from "react";
 import { z } from "zod";
 import {
   Card,
@@ -29,8 +38,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useToast } from "@/components/ui/use-toast";
 import Image from "next/image";
-import { X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
+import useCartWithUserCourseStatus from "@/hook/useCartWithUserCourseStatus";
+import { useRouter } from "next/navigation";
+import { buttonVariants } from "@/components/ui/button";
 
 const GET_LATEST_PRICE_QUERY = gql(`
   query GetCoursesQueryData($courseIds: [ID]) {
@@ -43,7 +56,14 @@ const GET_LATEST_PRICE_QUERY = gql(`
         id
         attributes {
           title
-          price
+          firstPrice
+          renewPrice
+          isFirstBuy
+          buyOption {
+            id
+            name
+            price
+          }
           image {
             data {
               id
@@ -67,9 +87,10 @@ mutation registerUser($userData: UsersPermissionsRegisterInput!) {
 `);
 
 const SUBMIT_ORDER_MUTATION = gql(`
-mutation createOrderWithPayment($courseIds: [ID]) {
-  createOrderWithPayment(courseIds: $courseIds) {
+mutation createOrderWithPayment($courses: [CreateOrderWithPaymentInput!]) {
+  createOrderWithPayment(courses: $courses) {
     paymentUrl
+    orderId
     error
   }
 }
@@ -82,7 +103,9 @@ const schema = z.object({
         id: z.string(),
         attributes: z.object({
           title: z.string(),
-          price: z.number(),
+          firstPrice: z.number(),
+          renewPrice: z.number(),
+          isFirstBuy: z.boolean(),
           image: z.object({
             data: z.object({
               id: z.string(),
@@ -91,6 +114,13 @@ const schema = z.object({
               }),
             }),
           }),
+          buyOption: z.array(
+            z.object({
+              id: z.string(),
+              name: z.string(),
+              price: z.number(),
+            })
+          ),
         }),
       })
     ),
@@ -105,17 +135,33 @@ type IFormData = {
 };
 
 export default function CheckoutPage() {
+  const cartDataWithUserCourseStatus = useCartWithUserCourseStatus();
   const cartData = useCart();
-  const { data: latestCartData, loading } = useQuery(GET_LATEST_PRICE_QUERY, {
-    variables: {
-      courseIds: cartData.cart.map((item) => item.id),
-    },
-  });
-  const [sendRegisterUserMutation] = useMutation(REGISTER_MUTATION);
-  const [sendSubmitOrderMutation] = useMutation(SUBMIT_ORDER_MUTATION);
+  const { toast } = useToast();
   const userContext = useUser();
-  const { token, setToken } = useToken();
+  const router = useRouter();
+  const formRef = useRef<HTMLFormElement>(null);
+  const { data: latestCartData, loading: getPriceLoading } = useQuery(
+    GET_LATEST_PRICE_QUERY,
+    {
+      variables: {
+        courseIds: cartData.cart.map((item) => item.id),
+      },
+      context: {
+        headers: {
+          Authorization: `Bearer ${userContext.token}`,
+        },
+      },
+    }
+  );
+  const [sendRegisterUserMutation, { loading: registerLoading }] =
+    useMutation(REGISTER_MUTATION);
+  const [sendSubmitOrderMutation, { loading: submitOrderLoading }] =
+    useMutation(SUBMIT_ORDER_MUTATION);
+
   const parseResult = schema.safeParse(latestCartData);
+
+  const loading = registerLoading || submitOrderLoading || getPriceLoading;
 
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -124,6 +170,10 @@ export default function CheckoutPage() {
       alert("載入購物車資料失敗, 請重新整理頁面後再試一次");
       return;
     }
+    toast({
+      title: "已送出訂單",
+      description: "即將為您跳轉至付款頁面, 請稍後...",
+    });
 
     const formData = new FormData(e.currentTarget);
 
@@ -131,8 +181,8 @@ export default function CheckoutPage() {
 
     // Register a user
     const getToken = async () => {
-      if (userContext.userData !== null && token !== null) {
-        return token;
+      if (userContext.userData !== null && userContext.token !== null) {
+        return userContext.token;
       } else {
         const registerResponse = await sendRegisterUserMutation({
           variables: {
@@ -146,12 +196,12 @@ export default function CheckoutPage() {
         if (registerResponse.errors || !registerResponse.data?.register?.jwt) {
           return null;
         }
-        setToken(registerResponse.data.register.jwt);
+        userContext.handleLogin(registerResponse.data.register.jwt);
         return registerResponse.data.register.jwt;
       }
     };
 
-    const createOrderToken = getToken();
+    const createOrderToken = await getToken();
 
     if (createOrderToken === null) {
       alert("Failed to register user");
@@ -161,7 +211,10 @@ export default function CheckoutPage() {
     // Send Create Order To Server.
     const submitOrderResponse = await sendSubmitOrderMutation({
       variables: {
-        courseIds: parseResult.data.courses.data.map((course) => course.id),
+        courses: cartData.cart.map((item) => ({
+          courseId: item.id,
+          optionId: item.selectedOption?.id,
+        })),
       },
       context: {
         headers: {
@@ -177,17 +230,83 @@ export default function CheckoutPage() {
       return;
     }
 
-    window.location.href = getPaymentUrl(
-      submitOrderResponse.data.createOrderWithPayment.paymentUrl
+    // 因為藍新有問題 暫時不導向到付款連結 直接導向到訂單葉面
+    //window.location.href = getPaymentUrl(
+    //  submitOrderResponse.data.createOrderWithPayment.paymentUrl
+    //);
+    router.push(
+      `/order/${submitOrderResponse.data.createOrderWithPayment.orderId}`
     );
   };
 
+  const getCourseExpiryDate = (courseId: string) => {
+    const course = cartDataWithUserCourseStatus.find(
+      (courseStatus) => courseStatus.id === courseId
+    );
+    if (course === undefined) {
+      return "未知";
+    }
+
+    const expiredAt = new Date(course.expiredAt);
+
+    if (expiredAt.getFullYear() > 2100) {
+      return "永久有效";
+    }
+
+    return `${expiredAt.getFullYear()}/${
+      expiredAt.getMonth() + 1
+    }/${expiredAt.getDate()}`;
+  };
+
+  const getCoursePriceInCart = (courseId: string) => {
+    const courseStatus = cartDataWithUserCourseStatus.find(
+      (courseStatus) => courseStatus.id === courseId
+    );
+
+    if (courseStatus === undefined) {
+      return 0;
+    }
+
+    if (!parseResult.success) {
+      return 0;
+    }
+
+    const course = parseResult.data.courses.data.find(
+      (course) => course.id === courseId
+    );
+
+    if (course === undefined) {
+      return 0;
+    }
+
+    if (course.attributes.isFirstBuy) {
+      const inOption = course.attributes.buyOption.find(
+        (option) => option.id === courseStatus.selectedOption?.id
+      );
+
+      return inOption?.price || course.attributes.firstPrice;
+    } else {
+      return course.attributes.renewPrice;
+    }
+  };
+
   return (
-    <div className="w-full h-full ">
+    <div className="w-full h-full relative">
       <form
+        ref={formRef}
         onSubmit={onSubmit}
-        className="flex md:flex-row flex-col items-center justify-center w-full h-full gap-4 m-4"
+        className={cn(
+          "flex md:flex-row flex-col items-center justify-center w-full h-full gap-4 m-4",
+          {
+            "animate-pulse": loading,
+          }
+        )}
       >
+        {loading && (
+          <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 top-1/2  ">
+            <Loader2 className="animate-spin" />
+          </div>
+        )}
         <Card className="flex flex-col w-full max-w-3xl justify-center p-4">
           <CardTitle>結帳</CardTitle>
           {userContext.userData !== null && (
@@ -198,10 +317,10 @@ export default function CheckoutPage() {
           <CardContent className="flex flex-col gap-4 p-0 my-4">
             {/* 已註冊時不用填寫會員資料 */}
             <div>
-              <p>姓名</p>
+              <p>使用者名稱</p>
               <Input
                 required
-                placeholder="輸入本名"
+                placeholder="使用者名稱"
                 name="name"
                 disabled={userContext.userData !== null}
                 className={cn("w-full", {
@@ -240,6 +359,10 @@ export default function CheckoutPage() {
           <CardContent className="flex flex-col gap-4 p-0 my-4">
             {cartData.cart.length === 0 ? (
               <p className="text-center">購物車是空的</p>
+            ) : getPriceLoading ? (
+              <div>
+                <Skeleton className="w-full h-24" />
+              </div>
             ) : !parseResult.success ? (
               <div>系統發生錯誤, 請通知管理員</div>
             ) : (
@@ -249,11 +372,11 @@ export default function CheckoutPage() {
                     <TableHead>操作</TableHead>
                     <TableHead>商品預覽</TableHead>
                     <TableHead>課程名稱</TableHead>
+                    <TableHead>課程有效至</TableHead>
                     <TableHead className="text-right">價格</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {/* TODO: do skeleton her */}
                   {parseResult.data.courses.data.map((course) => (
                     <TableRow key={course.id}>
                       <TableCell>
@@ -271,22 +394,48 @@ export default function CheckoutPage() {
                           alt={course.attributes.title}
                         />
                       </TableCell>
-                      <TableCell>{course.attributes.title}</TableCell>
+                      <TableCell>
+                        {course.attributes.title}{" "}
+                        {cartDataWithUserCourseStatus.find(
+                          (courseStatus) => courseStatus.id === course.id
+                        )?.selectedOption &&
+                          `- ${
+                            cartDataWithUserCourseStatus.find(
+                              (courseStatus) => courseStatus.id === course.id
+                            )?.selectedOption?.name
+                          }`}
+                      </TableCell>
+                      <TableCell>{getCourseExpiryDate(course.id)}</TableCell>
                       <TableCell className="text-right">
-                        NT$ {course.attributes.price.toLocaleString()}元
+                        {course.attributes.isFirstBuy ? (
+                          <p>
+                            {getCoursePriceInCart(course.id).toLocaleString()}元
+                          </p>
+                        ) : (
+                          <p>
+                            續訂：NT${" "}
+                            {course.attributes.renewPrice.toLocaleString()}元
+                          </p>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
                 <TableFooter>
                   <TableRow>
-                    <TableCell colSpan={3}>總金額</TableCell>
+                    <TableCell colSpan={4}>總金額</TableCell>
                     <TableCell className="text-right">
                       NT$
-                      {parseResult.data.courses.data.reduce(
-                        (acc, course) => acc + course.attributes.price,
-                        0
-                      )}
+                      {parseResult.data.courses.data
+                        .reduce(
+                          (acc, course) =>
+                            acc +
+                            (course.attributes.isFirstBuy
+                              ? getCoursePriceInCart(course.id)
+                              : course.attributes.renewPrice),
+                          0
+                        )
+                        .toLocaleString()}
                       元
                     </TableCell>
                   </TableRow>
@@ -296,13 +445,32 @@ export default function CheckoutPage() {
           </CardContent>
           <Separator className="mb-4" />
           <CardFooter className="flex-col">
-            <Button
-              type="submit"
-              className="text-lg font-semibold w-full"
-              disabled={cartData.cart.length === 0 || loading}
-            >
-              下單購買
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger
+                className={cn(buttonVariants(), "text-lg font-semibold w-full")}
+                disabled={cartData.cart.length === 0 || loading}
+              >
+                下單購買
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>確認下訂?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    送出訂單後，請依據提示進行匯款，並於匯款後聯絡我們，以完成訂單流程。
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>取消</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => {
+                      formRef.current!.requestSubmit();
+                    }}
+                  >
+                    確定送出
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
             <p className=" text-gray-400 text-center">
               您的個人資訊將會被用於處理您的訂單，以及支持您在整個網站上的體驗，以及其他在我們的
               <Link className="text-blue-500 hover:underline" href="/terms">

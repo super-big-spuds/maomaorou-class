@@ -53,6 +53,56 @@
     {
       "action": "plugin::content-manager.explorer.create",
       "actionParameters": {},
+      "subject": "api::category.category",
+      "properties": {
+        "fields": [
+          "courses",
+          "image"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.delete",
+      "actionParameters": {},
+      "subject": "api::category.category",
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.publish",
+      "actionParameters": {},
+      "subject": "api::category.category",
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::category.category",
+      "properties": {
+        "fields": [
+          "courses",
+          "image"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.update",
+      "actionParameters": {},
+      "subject": "api::category.category",
+      "properties": {
+        "fields": [
+          "courses",
+          "image"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.create",
+      "actionParameters": {},
       "subject": "api::chapter.chapter",
       "properties": {
         "fields": [
@@ -113,12 +163,17 @@
       "properties": {
         "fields": [
           "image",
-          "description",
-          "goal",
-          "price",
-          "durationDay",
+          "renewPrice",
+          "renewDurationDay",
           "chapters",
-          "title"
+          "title",
+          "category",
+          "sequence",
+          "firstPrice",
+          "firstDurationDay",
+          "description",
+          "buyOption.name",
+          "buyOption.price"
         ]
       },
       "conditions": []
@@ -144,12 +199,17 @@
       "properties": {
         "fields": [
           "image",
-          "description",
-          "goal",
-          "price",
-          "durationDay",
+          "renewPrice",
+          "renewDurationDay",
           "chapters",
-          "title"
+          "title",
+          "category",
+          "sequence",
+          "firstPrice",
+          "firstDurationDay",
+          "description",
+          "buyOption.name",
+          "buyOption.price"
         ]
       },
       "conditions": []
@@ -161,12 +221,17 @@
       "properties": {
         "fields": [
           "image",
-          "description",
-          "goal",
-          "price",
-          "durationDay",
+          "renewPrice",
+          "renewDurationDay",
           "chapters",
-          "title"
+          "title",
+          "category",
+          "sequence",
+          "firstPrice",
+          "firstDurationDay",
+          "description",
+          "buyOption.name",
+          "buyOption.price"
         ]
       },
       "conditions": []
@@ -270,7 +335,8 @@
           "chapter",
           "sequence",
           "content",
-          "name"
+          "name",
+          "isStar"
         ]
       },
       "conditions": []
@@ -298,7 +364,8 @@
           "chapter",
           "sequence",
           "content",
-          "name"
+          "name",
+          "isStar"
         ]
       },
       "conditions": []
@@ -312,7 +379,61 @@
           "chapter",
           "sequence",
           "content",
-          "name"
+          "name",
+          "isStar"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.create",
+      "actionParameters": {},
+      "subject": "api::new.new",
+      "properties": {
+        "fields": [
+          "title",
+          "image",
+          "content"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.delete",
+      "actionParameters": {},
+      "subject": "api::new.new",
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.publish",
+      "actionParameters": {},
+      "subject": "api::new.new",
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.read",
+      "actionParameters": {},
+      "subject": "api::new.new",
+      "properties": {
+        "fields": [
+          "title",
+          "image",
+          "content"
+        ]
+      },
+      "conditions": []
+    },
+    {
+      "action": "plugin::content-manager.explorer.update",
+      "actionParameters": {},
+      "subject": "api::new.new",
+      "properties": {
+        "fields": [
+          "title",
+          "image",
+          "content"
         ]
       },
       "conditions": []
@@ -326,7 +447,8 @@
           "course",
           "order",
           "price",
-          "expiredAt"
+          "durationDay",
+          "option"
         ]
       },
       "conditions": []
@@ -347,7 +469,8 @@
           "course",
           "order",
           "price",
-          "expiredAt"
+          "durationDay",
+          "option"
         ]
       },
       "conditions": []
@@ -361,7 +484,8 @@
           "course",
           "order",
           "price",
-          "expiredAt"
+          "durationDay",
+          "option"
         ]
       },
       "conditions": []
@@ -885,6 +1009,20 @@
     },
     {
       "action": "plugin::i18n.locale.update",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "plugin::import-export-entries.export",
+      "actionParameters": {},
+      "subject": null,
+      "properties": {},
+      "conditions": []
+    },
+    {
+      "action": "plugin::import-export-entries.import",
       "actionParameters": {},
       "subject": null,
       "properties": {},

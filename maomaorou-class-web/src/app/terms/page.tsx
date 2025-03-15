@@ -2,6 +2,13 @@ import { gql } from "@/__generated__/gql";
 import StrapiMdxToHtmlConverter from "@/components/mdx-converter/strapi-mdx-to-html-converter";
 import { createApolloSSRClient } from "@/lib/apollo-client";
 import { z } from "zod";
+import type { Metadata } from "next";
+import { Card } from "@/components/ui/card";
+
+export const metadata: Metadata = {
+  title: "服務條款 - 價量投機線上課程網站",
+  description: "價量投機線上課程網站服務條款",
+};
 
 const QUERY = gql(`
   query getTerm {
@@ -43,12 +50,14 @@ export default async function TermsPage() {
   }
 
   return (
-    <div className="mx-auto flex h-fit w-4/5 flex-col gap-y-2">
-      <h1 className="py-4 text-4xl text-primary-100">服務條款</h1>
+    <Card className="mx-auto flex h-fit w-4/5 flex-col p-4 gap-y-2">
+      <h1 className="text-4xl text-primary-100">服務條款</h1>
       <div className="flex flex-row justify-between">
         <div className="flex flex-row items-center">
-          <span className="bg-primary-100 py-1">最新更新日期:</span>
-          <p className="ml-2 text-primary-100">
+          <span className="bg-primary-100 py-1 text-gray-200">
+            最新更新日期:
+          </span>
+          <p className="ml-2 text-gray-200">
             {parsedData.data.term.data.attributes.updatedAt}
           </p>
         </div>
@@ -57,6 +66,6 @@ export default async function TermsPage() {
       <StrapiMdxToHtmlConverter
         mdx={parsedData.data.term.data.attributes.content}
       />
-    </div>
+    </Card>
   );
 }

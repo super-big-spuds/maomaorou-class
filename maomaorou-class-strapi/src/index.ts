@@ -17,6 +17,7 @@ export default {
       typeDefs: `
         type Query {
           courseByTitle(title: String!): CourseEntityResponse
+          newByTitle(title: String!): NewEntityResponse
         }
       `,
       resolvers: {
@@ -28,6 +29,22 @@ export default {
               ).returnTypes;
 
               const data = await strapi.services["api::course.course"].find({
+                filters: { title: args.title },
+                publicationState: "preview",
+              });
+
+              const response = toEntityResponse(data.results[0]);
+
+              return response;
+            },
+          },
+          newByTitle: {
+            resolve: async (parent, args, context) => {
+              const { toEntityResponse } = strapi.service(
+                "plugin::graphql.format"
+              ).returnTypes;
+
+              const data = await strapi.services["api::new.new"].find({
                 filters: { title: args.title },
               });
 
@@ -42,6 +59,9 @@ export default {
         "Query.courseByTitle": {
           auth: false,
         },
+        "Query.newByTitle": {
+          auth: false,
+        },
       },
     }));
 
@@ -49,11 +69,17 @@ export default {
       typeDefs: `
       type createOrderWithPaymentResponse {
         paymentUrl: String
+        orderId: ID
         error: String
       }
 
+      input CreateOrderWithPaymentInput {
+        courseId: String!
+        optionId: String
+      }
+
       type Mutation {
-        createOrderWithPayment(courseIds: [ID]): createOrderWithPaymentResponse
+        createOrderWithPayment(courses: [CreateOrderWithPaymentInput]): createOrderWithPaymentResponse
       }
 
       `,
@@ -68,9 +94,10 @@ export default {
               const courses = await strapi.services["api::course.course"].find({
                 filters: {
                   id: {
-                    $in: args.courseIds,
+                    $in: args.courses.map((course) => course.courseId),
                   },
                 },
+                populate: ["buyOption"],
               });
 
               const order = await strapi.services["api::order.order"].create({
@@ -81,17 +108,48 @@ export default {
 
               const orderCourses = await Promise.all(
                 courses.results.map(async (course) => {
-                  await strapi.services[
+                  const userCourseStatus = await strapi.services[
+                    "api::user-courses-status.user-courses-status"
+                  ].find({
+                    filters: {
+                      user: context.state.user.id,
+                      course: course.id,
+                    },
+                  });
+
+                  const isFirstBuy = userCourseStatus.results.length === 0;
+
+                  const userInputOfThisCourse = args.courses.find(
+                    (c) => c.courseId == course.id
+                  );
+
+                  if (isFirstBuy && !userInputOfThisCourse) {
+                    throw new ForbiddenError("使用者未選擇購買方式");
+                  }
+
+                  const userOption = course.buyOption.find(
+                    (option) => option.id == userInputOfThisCourse.optionId
+                  );
+
+                  const costPrice = isFirstBuy
+                    ? userOption.price
+                    : course.renewPrice;
+
+                  const durationDay = isFirstBuy
+                    ? 99999
+                    : course.renewDurationDay;
+
+                  return await strapi.services[
                     "api::order-course.order-course"
                   ].create({
                     data: {
                       course: course.id,
                       order: order.id,
-                      price: course.price,
-                      expiredAt: new Date(
-                        new Date().getTime() + course.durationDay * 1000
-                      ),
+                      price: costPrice,
+                      durationDay: durationDay,
+                      option: isFirstBuy ? userOption.name : "續訂",
                     },
+                    populate: ["course"],
                   });
                 })
               );
@@ -111,12 +169,13 @@ export default {
                   (resolve, reject) => {
                     paymentService
                       .getPaymentUrl({
-                        courses: courses.results.map((course) => ({
-                          courseId: course.id,
-                          name: course.title,
-                          price: course.price,
+                        courses: orderCourses.map((orderCourse) => ({
+                          courseId: orderCourse.course.id,
+                          name: orderCourse.course.title,
+                          price: orderCourse.price,
                         })),
                         paymentId: payment.id,
+                        orderId: order.id,
                       })
                       .then((result) => {
                         resolve({
@@ -144,6 +203,7 @@ export default {
 
               return {
                 paymentUrl: paymentUrl,
+                orderId: order.id,
                 error: error,
               };
             },
@@ -174,7 +234,11 @@ export default {
                 filters: {
                   user: user.id,
                 },
-                populate: ["course"],
+                populate: {
+                  course: {
+                    publicationState: "preview",
+                  },
+                },
               });
 
               const userBuyedCourses = userCourseStatus.results.map(
@@ -355,6 +419,345 @@ export default {
               );
 
               return toEntityResponse(newUser);
+            },
+          },
+        },
+      },
+    }));
+
+    extensionService.use(({ strapi }) => ({
+      typeDefs: `
+        type Query {
+          myLesson(id: ID!): LessonEntityResponse
+        }
+      `,
+      resolvers: {
+        Query: {
+          myLesson: {
+            resolve: async (parent, args, context) => {
+              const { toEntityResponse } = strapi.service(
+                "plugin::graphql.format"
+              ).returnTypes;
+
+              const user = context.state.user;
+
+              const lesson = await strapi.services["api::lesson.lesson"].find({
+                filters: {
+                  id: args.id,
+                },
+                publicationState: "preview",
+                populate: ["chapter", "chapter.course"],
+              });
+
+              if (lesson.results.length === 0) {
+                throw new NotFoundError("未找到該小節");
+              }
+
+              //Check auth
+              const userCourseStatus = await strapi.services[
+                "api::user-courses-status.user-courses-status"
+              ].find({
+                filters: {
+                  user: user.id,
+                  course: lesson.results[0].chapter.course.id,
+                },
+              });
+
+              if (userCourseStatus.results.length === 0) {
+                throw new ForbiddenError("使用者未購買此課程");
+              }
+
+              if (userCourseStatus.results[0].expiredAt < new Date()) {
+                throw new ForbiddenError("使用者課程已過期");
+              }
+
+              return toEntityResponse(lesson.results[0]);
+            },
+          },
+        },
+      },
+    }));
+
+    extensionService.use(({ strapi }) => ({
+      typeDefs: `
+        type Course {
+          withUserStatus: UserCoursesStatusEntityResponse
+          staredLessons: [LessonEntityResponse]
+          isFirstBuy: Boolean
+        }
+      `,
+      resolvers: {
+        Course: {
+          withUserStatus: {
+            resolve: async (parent, args, context) => {
+              const { toEntityResponse } = strapi.service(
+                "plugin::graphql.format"
+              ).returnTypes;
+
+              const user = context?.state?.user;
+
+              if (user === null) {
+                throw new ForbiddenError("使用者未登入");
+              }
+
+              const userCourseStatus = await strapi.services[
+                "api::user-courses-status.user-courses-status"
+              ].find({
+                filters: {
+                  user: user.id,
+                  course: parent.id,
+                },
+              });
+
+              return toEntityResponse(userCourseStatus.results[0]);
+            },
+          },
+          staredLessons: {
+            resolve: async (parent, args, context) => {
+              const { toEntityResponse } = strapi.service(
+                "plugin::graphql.format"
+              ).returnTypes;
+
+              const user = context.state.user;
+
+              const userCourseStatus = await strapi.services[
+                "api::user-courses-status.user-courses-status"
+              ].find({
+                filters: {
+                  user: user.id,
+                  course: parent.id,
+                },
+              });
+
+              if (userCourseStatus.results.length === 0) {
+                throw new ForbiddenError("使用者未購買此課程");
+              }
+
+              const lessons = await strapi.services["api::lesson.lesson"].find({
+                filters: {
+                  chapter: {
+                    course: parent.id,
+                  },
+                  isStar: true,
+                },
+              });
+
+              const lessonEntities = lessons.results.map((lesson) => {
+                return toEntityResponse(lesson);
+              });
+
+              return lessonEntities;
+            },
+          },
+          isFirstBuy: {
+            resolve: async (parent, args, context) => {
+              const user = context?.state?.user;
+
+              if (!user) {
+                return true;
+              }
+
+              const userCourseStatus = await strapi.services[
+                "api::user-courses-status.user-courses-status"
+              ].find({
+                filters: {
+                  user: user.id,
+                  course: parent.id,
+                },
+              });
+
+              return userCourseStatus.results.length === 0;
+            },
+          },
+        },
+      },
+      resolversConfig: {
+        "Course.staredLessons": {
+          auth: false,
+        },
+        "Course.withUserStatus": {
+          auth: false,
+        },
+        "Course.isFirstBuy": {
+          auth: false,
+        },
+      },
+    }));
+
+    extensionService.use(({ strapi }) => ({
+      typeDefs: `
+          type Mutation {
+            AddZeroPriceCourseToMyCourse(courseId: ID): UserCoursesStatusEntityResponse
+          }
+        `,
+      resolvers: {
+        Mutation: {
+          AddZeroPriceCourseToMyCourse: {
+            resolve: async (parent, args, context) => {
+              const { toEntityResponse } = strapi.service(
+                "plugin::graphql.format"
+              ).returnTypes;
+
+              const userId = context.state.user.id;
+              const courseResult = await strapi.services[
+                "api::course.course"
+              ].find({
+                filters: { id: args.courseId },
+              });
+
+              if (courseResult.results.length === 0) {
+                throw new NotFoundError("找不到該課程");
+              }
+
+              const course = courseResult.results[0];
+
+              const userCourseStatus = await strapi.services[
+                "api::user-courses-status.user-courses-status"
+              ].find({
+                filters: {
+                  user: userId,
+                  course: args.courseId,
+                },
+              });
+
+              // 第一次領取該課程
+              if (userCourseStatus.results.length === 0) {
+                if (course.firstPrice !== 0) {
+                  throw new ForbiddenError("此課程不是免費課程");
+                }
+
+                const newUserCourseStatus = await strapi.services[
+                  "api::user-courses-status.user-courses-status"
+                ].create({
+                  data: {
+                    user: userId,
+                    course: args.courseId,
+                    expiredAt: new Date(
+                      new Date().getTime() +
+                        course.firstDurationDay * 1000 * 60 * 60 * 24
+                    ),
+                  },
+                });
+                return toEntityResponse(newUserCourseStatus);
+              }
+
+              // 已經擁有課程
+              if (course.renewPrice !== 0) {
+                throw new ForbiddenError("此課程不是續訂免費課程");
+              }
+
+              const isExpired =
+                userCourseStatus.results[0].expiredAt < new Date();
+
+              const newExpiredAt = isExpired
+                ? new Date(
+                    new Date().getTime() +
+                      course.firstDurationDay * 1000 * 60 * 60 * 24
+                  )
+                : new Date(
+                    new Date(userCourseStatus.results[0].expiredAt).getTime() +
+                      course.renewDurationDay * 1000 * 60 * 60 * 24
+                  );
+
+              const newUserCourseStatus = await strapi.services[
+                "api::user-courses-status.user-courses-status"
+              ].update(userCourseStatus.results[0].id, {
+                data: {
+                  expiredAt: newExpiredAt,
+                },
+              });
+
+              return toEntityResponse(newUserCourseStatus);
+            },
+          },
+        },
+      },
+    }));
+
+    extensionService.use(({ strapi }) => ({
+      typeDefs: `
+
+      type Mutation {
+        userDoneHandlePayment(orderId: ID!): OrderEntityResponse
+      }
+
+      `,
+      resolvers: {
+        Mutation: {
+          userDoneHandlePayment: {
+            resolve: async (parent, args, context) => {
+              const { toEntityResponse } = strapi.service(
+                "plugin::graphql.format"
+              ).returnTypes;
+
+              const orderId = args.orderId;
+
+              const orderResult = await strapi.services[
+                "api::order.order"
+              ].find({
+                filters: { id: orderId },
+                populate: ["user", "order_courses", "order_courses.course"],
+              });
+
+              if (orderResult.results.length === 0) {
+                throw new NotFoundError("Order not found");
+              }
+
+              const user = context.state.user;
+
+              const order = orderResult.results[0];
+
+              if (order.user.id !== user.id) {
+                throw new ForbiddenError("User not match");
+              }
+
+              const orderCourseString = order.order_courses
+                .map((orderCourse) => {
+                  return `${orderCourse.course.title} - ${orderCourse.option}`;
+                })
+                .join(", ");
+
+              const totalPrice = order.order_courses.reduce(
+                (acc, orderCourse) => {
+                  return Number(acc) + Number(orderCourse.price);
+                },
+                0
+              );
+
+              // send email
+              const isDev = process.env.NODE_ENV === "development";
+              await strapi.plugins["email"].services.email.send({
+                to: isDev ? "rgok307085@gmail.com" : process.env.SMTP_USERNAME,
+                from: process.env.SMTP_USERNAME,
+                cc: process.env.SMTP_USERNAME,
+                bcc: process.env.SMTP_USERNAME,
+                replyTo: process.env.SMTP_USERNAME,
+                subject: `價量投機課程網站, 訂單編號${orderId}已繳費`,
+                html: `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                <title>使用者繳款通知</title>
+                </head>
+                <body>
+
+                <h1>訂單編號${orderId}已由使用者${user.username}進行繳費</h1>
+
+                <p>購買的課程內容為：${orderCourseString}</p>
+                <p>總金額為： ${Number(totalPrice).toLocaleString()}</p>
+                <p>請確認款項是否已入帳</p>
+
+                <a href="${
+                  process.env.BACKEND_URL
+                }/api/order/admin-confirmPayment/${orderId}">已入帳請點擊我為使用者確認款項</a>
+
+                </body>
+                </html>
+
+                `,
+              });
+
+              return toEntityResponse(order);
             },
           },
         },

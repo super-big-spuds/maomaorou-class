@@ -4,14 +4,24 @@ import { Button } from "../ui/button";
 import { useCart } from "./../../provider/cart-provider";
 
 type Props = {
-  courseId: string;
-  title: string;
-  price: number;
-  durationDay: number;
+  course: {
+    id: string;
+    title: string;
+    price: number;
+    durationDay: number;
+  };
+  selectedOption?: {
+    id: string;
+    name: string;
+    price: number;
+  };
   className?: string;
 };
 
+// Check is firstBuy outside of the component
 export default function CourseAddToCartButton({
+  course,
+  selectedOption,
   className = "",
   ...props
 }: Props) {
@@ -27,12 +37,15 @@ export default function CourseAddToCartButton({
       className={className}
       onClick={() =>
         useCartData.addToCart({
-          id: props.courseId,
-          title: props.title,
-          price: props.price,
-          expiredAt: getExpiredAt(props.durationDay),
+          id: course.id,
+          title: course.title,
+          price: course.price,
+          expiredAt: getExpiredAt(course.durationDay),
+          durationDay: course.durationDay,
+          selectedOption: selectedOption,
         })
       }
+      {...props}
     >
       加入購物車
     </Button>

@@ -76,6 +76,20 @@
           "sortable": true
         }
       },
+      "isStar": {
+        "edit": {
+          "label": "isStar",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "isStar",
+          "searchable": true,
+          "sortable": true
+        }
+      },
       "createdAt": {
         "edit": {
           "label": "createdAt",
@@ -143,11 +157,15 @@
             "size": 6
           },
           {
-            "name": "chapter",
-            "size": 6
+            "name": "isStar",
+            "size": 4
           }
         ],
         [
+          {
+            "name": "chapter",
+            "size": 6
+          },
           {
             "name": "sequence",
             "size": 4
@@ -161,7 +179,7 @@
         ]
       ],
       "list": [
-        "id",
+        "name",
         "chapter",
         "sequence",
         "createdAt"

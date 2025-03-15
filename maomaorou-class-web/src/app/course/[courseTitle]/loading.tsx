@@ -1,36 +1,20 @@
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+
 export default function CourseTitleLoadingPage() {
   return (
-    <div className="flex flex-wrap justify-center relative h-full min-h-screen  bg-slate-100 ">
-      <div className="flex flex-col px-10 py-5 gap-6 max-w-3xl min-w-[25vw] border bg-white ">
-        <p className="text-3xl font-bold"></p>
-        <p className=" w-[150px] h-[35px] bg-slate-300 rounded-full animate-pulse"></p>
-        <p className=" w-[400px] h-[300px] bg-slate-300 rounded-2xl animate-pulse"></p>
-        <p className=" w-[200px] h-[20px] bg-slate-300 rounded-full animate-pulse"></p>
-        <p className=" w-[300px] h-[20px] bg-slate-300 rounded-full animate-pulse"></p>
-        <p className=" w-[200px] h-[20px] bg-slate-300 rounded-full animate-pulse"></p>
-        <p className=" w-[300px] h-[20px] bg-slate-300 rounded-full animate-pulse"></p>
-        <p className=" w-[200px] h-[20px] bg-slate-300 rounded-full animate-pulse"></p>
-        <p className=" w-[400px] h-[60px] bg-slate-300 rounded-2xl animate-pulse"></p>
-        <p className=" w-[400px] h-[60px] bg-slate-300 rounded-2xl animate-pulse"></p>
-        <p className=" w-[400px] h-[60px] bg-slate-300 rounded-2xl animate-pulse"></p>
-      </div>
+    <div className="flex md:flex-row flex-col justify-center relative h-full w-full gap-4">
+      <Card className="flex flex-col px-10 py-5 gap-6 max-w-3xl border bg-white ">
+        <Skeleton className="w-[60vw] max-w-full h-24" />
+        <Skeleton className="w-2/3 h-12" />
+        <Skeleton className="w-full h-12" />
+      </Card>
 
-      <div className="sticky top-20 flex flex-col  mt-5 w-full  lg:w-1/6 sm:w-1/2 h-full bg-white p-3 items-center rounded shadow-xl ">
-        <div className=" rounded border p-2 w-4/5 lg:w-full flex flex-col gap-3 ">
-          <p className=" w-[80px] h-[20px] bg-slate-300 rounded-full animate-pulse"></p>
-          <p className=" w-[200px] h-[20px] bg-slate-300 rounded-full animate-pulse"></p>
-
-          <p className=" w-[200px] h-[20px] bg-slate-300 rounded-full animate-pulse"></p>
-          <p className=" w-[80px] h-[20px] bg-slate-300 rounded-full animate-pulse"></p>
-        </div>
-        <div className=" rounded border p-2 w-4/5 lg:w-full flex flex-col gap-3 ">
-          <p className="w-[60px] h-[20px] bg-slate-300 rounded-full animate-pulse"></p>
-          <p className=" w-[100px] h-[20px] bg-slate-300 rounded-full animate-pulse"></p>
-
-          <p className="w-[60px] h-[20px] bg-slate-300 rounded-full animate-pulse"></p>
-          <p className=" w-[100px] h-[20px] bg-slate-300 rounded-full animate-pulse"></p>
-        </div>
-      </div>
+      <Card className="sticky top-20 flex flex-col max-w-lg gap-6 mt-5 w-full bg-white p-3 items-start rounded shadow-full">
+        <Skeleton className="w-[20vw] h-16" />
+        <Skeleton className="w-2/3 h-12" />
+        <Skeleton className="w-full h-12" />
+      </Card>
     </div>
   );
 }

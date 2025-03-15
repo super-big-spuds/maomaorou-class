@@ -8,6 +8,12 @@ type CartItem = {
   title: string;
   price: number;
   expiredAt: Date;
+  durationDay: number;
+  selectedOption?: {
+    id: string;
+    name: string;
+    price: number;
+  };
 };
 
 const context = createContext({
@@ -40,9 +46,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const removeFromCart = (courseId: string) => {
-    setCartData((prevCart) =>
-      prevCart.filter((cartItem) => cartItem.id !== courseId)
-    );
+    setCartData((prevCart) => {
+      const newCartData = prevCart.filter(
+        (cartItem) => cartItem.id !== courseId
+      );
+      if (newCartData.length === 0) {
+        localStorage.removeItem("cart");
+      }
+      return newCartData;
+    });
   };
 
   const clearCart = () => {
@@ -63,6 +75,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           title: z.string(),
           price: z.number(),
           expiredAt: z.string().transform((v) => new Date(v)),
+          durationDay: z.number(),
+          selectedOption: z
+            .object({
+              id: z.string(),
+              name: z.string(),
+              price: z.number(),
+            })
+            .optional(),
         })
       );
 
@@ -87,7 +107,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <context.Provider
-      value={{ cart: cartData, addToCart, removeFromCart, clearCart }}
+      value={{
+        cart: cartData,
+        addToCart,
+        removeFromCart,
+        clearCart,
+      }}
     >
       {children}
     </context.Provider>

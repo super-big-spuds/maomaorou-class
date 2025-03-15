@@ -22,46 +22,54 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useMutation } from "@apollo/client";
-import useToken from "@/hook/useToken";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { useSearchParams } from "next/navigation";
 
-const formSchema = z.object({
-  email: z.string().email({
-    message: "請輸入正確的 Email 格式",
-  }),
-});
+const formSchema = z
+  .object({
+    newPassword: z.string().min(6, "至少 6 個字元"),
+    confirmNewPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    message: "密碼不一致",
+    path: ["confirmNewPassword"],
+  });
 
-const SEND_USER_PASSWORD_EMAIL_MUTATION = gql(`
-mutation sendForgetPasswordEmail($email: String!) {
-	forgotPassword(email: $email) {
-    ok
+const SEND_RESET_PASSWORD_MUTATION = gql(`
+mutation resetPasswordWithCode($password: String!, $passwordConfirmation: String!, $code: String!) {
+	resetPassword(password: $password, passwordConfirmation: $passwordConfirmation, code: $code) {
+    user {
+      username
+    }
   }
 }
 `);
 
 export default function MissingPasswordPage() {
   const { toast } = useToast();
-  const { token } = useToken();
+  const searchParams = useSearchParams();
+  const code = searchParams.get("code");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      newPassword: "",
+      confirmNewPassword: "",
     },
   });
   const [
-    sendForgetPasswordEmailMutation,
+    sendResetPasswordMutation,
     { loading: isSendUpdateUserProfileLoading },
-  ] = useMutation(SEND_USER_PASSWORD_EMAIL_MUTATION, {
+  ] = useMutation(SEND_RESET_PASSWORD_MUTATION, {
     onCompleted: () => {
       form.reset();
       toast({
-        description: "信件已發送成功, 請至信箱確認內容",
+        description: "密碼重設成功, 請重新登入",
       });
     },
     onError: (error) => {
       toast({
-        title: "信件發送失敗, 請確認信箱是否正確",
+        title: "密碼重設失敗, 請重新至遺失密碼頁面重新寄信",
         description: errorMessageTrasformer(error.message),
         variant: "destructive",
       });
@@ -69,14 +77,28 @@ export default function MissingPasswordPage() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    sendForgetPasswordEmailMutation({
+    if (code === null) {
+      toast({
+        title: "重設密碼Code錯誤",
+        description: "請重新至遺失密碼頁面重新寄信",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    console.log("variable", {
       variables: {
-        email: values.email,
+        password: values.newPassword,
+        passwordConfirmation: values.confirmNewPassword,
+        code: code,
       },
-      context: {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    });
+
+    sendResetPasswordMutation({
+      variables: {
+        password: values.newPassword,
+        passwordConfirmation: values.confirmNewPassword,
+        code: code,
       },
     });
   }
@@ -103,23 +125,40 @@ export default function MissingPasswordPage() {
               </div>
             )}
             <CardHeader className="space-y-1">
-              <CardTitle className="text-2xl font-bold">重新找回密碼</CardTitle>
-              <CardDescription>
-                請重新輸入您的信箱以確認身份, 我們將會寄送密碼重設信給您
-              </CardDescription>
+              <CardTitle className="text-2xl font-bold">重新設定密碼</CardTitle>
+              <CardDescription>請輸入您的新密碼</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <FormField
                   control={form.control}
-                  name="email"
+                  name="newPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>電子信箱</FormLabel>
+                      <FormLabel>新密碼</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="電子信箱"
+                          placeholder="新密碼"
                           disabled={isSendUpdateUserProfileLoading}
+                          type="password"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="confirmNewPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>確認新密碼</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="確認新密碼"
+                          disabled={isSendUpdateUserProfileLoading}
+                          type="password"
                           {...field}
                         />
                       </FormControl>

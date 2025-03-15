@@ -3,6 +3,7 @@ import * as Aes from "aes-js";
 
 export type ISendPaymentRequestToNewebParameter = {
   paymentId: number;
+  orderId: number;
   courses: {
     courseId: number;
     name: string;
@@ -54,8 +55,8 @@ export class NewebPaymentService {
   readonly newebHashKey = process.env.NEWEB_HASH_KEY;
   readonly newebHashIv = process.env.NEWEB_HASH_IV;
 
-  readonly frontendURL = process.env.FRONTEND_URL;
-  readonly backendURL = process.env.BACKEND_URL;
+  readonly frontendURL = process.env.DOMAIN_URL;
+  readonly backendURL = process.env.DOMAIN_URL_BK;
 
   constructor() {}
 
@@ -74,23 +75,42 @@ export class NewebPaymentService {
   };
 
   // tradeInfoString
-  private createSesDescrypt(data: string) {
+  private createSesDescrypt(tradeInfoString: string) {
+    if (!this.newebHashKey || !this.newebHashIv) {
+      throw new Error("HashKey or HashIV is empty");
+    }
+
+    const algorithm: string = "AES-256-CBC";
     const decrypt = crypto.createDecipheriv(
-      "aes256",
+      algorithm,
       this.newebHashKey,
       this.newebHashIv
     );
     decrypt.setAutoPadding(false);
-    const text = decrypt.update(data, "hex", "utf8");
+    const text = decrypt.update(tradeInfoString, "hex", "utf8");
     const plainText = text + decrypt.final("utf8");
     const result = plainText.replace(/[\x00-\x20]+/g, "");
     return JSON.parse(result) as IDescryptResponse;
   }
 
+  private createMpgAesEncrypt(tradeInfo: ITradeInfo) {
+    if (!this.newebHashKey || !this.newebHashIv) {
+      throw new Error("HashKey or HashIV is empty");
+    }
+    const algorithm: string = "AES-256-CBC";
+    const encrypt = crypto.createCipheriv(
+      algorithm,
+      this.newebHashKey,
+      this.newebHashIv
+    );
+    const enc = encrypt.update(this.getQueryString(tradeInfo), "utf8", "hex");
+    return enc + encrypt.final("hex");
+  }
+
   // tradeInfoString
-  private createShaEncrypt(data: string) {
+  private createMpgShaEncrypt(aesEncrypt: string) {
     const sha = crypto.createHash("sha256");
-    const plainText = `HashKey=${this.newebHashKey}&${data}&HashIV=${this.newebHashIv}`;
+    const plainText = `HashKey=${this.newebHashKey}&${aesEncrypt}&HashIV=${this.newebHashIv}`;
 
     return sha.update(plainText).digest("hex").toUpperCase();
   }
@@ -98,34 +118,27 @@ export class NewebPaymentService {
   async getPaymentUrl(data: ISendPaymentRequestToNewebParameter) {
     const price = data.courses.reduce((acc, course) => acc + course.price, 0);
 
-    const cbc = new Aes.ModeOfOperation.cbc(
-      Buffer.from(this.newebHashKey),
-      Buffer.from(this.newebHashIv)
-    );
+    const finalRedirectUrl = `${this.frontendURL}/order/${data.orderId}`;
+    const middleRedirectUrl = `${this.frontendURL}/redirect?redirectUrl=${finalRedirectUrl}`;
 
     const tradeInfo: ITradeInfo = {
-      MerchantID: this.newebMerchantId,
+      MerchantID: this.newebMerchantId.toString(),
       RespondType: "JSON",
       TimeStamp: Date.now().toString(),
       Version: "2.0",
       MerchantOrderNo: data.paymentId.toString(),
       Amt: price.toString(),
-      ItemDesc: "Maomaorou-class",
-      ReturnURL: `${this.frontendURL}/order/${data.paymentId}`,
+      ItemDesc: encodeURIComponent(
+        `購買課程： ${data.courses.map((course) => course.name)}`
+      ),
+      ReturnURL: middleRedirectUrl,
       NotifyURL: `${this.backendURL}/api/order/neweb-pay-notify-callback`,
     };
-    const tradeInfoQueryString = this.getQueryString(tradeInfo);
 
-    const cryptedTradeInfo = Aes.utils.hex.fromBytes(
-      cbc.encrypt(Aes.utils.utf8.toBytes(this.padding(tradeInfoQueryString)))
-    );
+    const cryptedTradeInfo = this.createMpgAesEncrypt(tradeInfo);
 
-    const rawTradeShahashs = `HashKey=${this.newebHashKey}&${cryptedTradeInfo}&HashIV=${this.newebHashIv}`;
-    const cryptedTradeSha = crypto
-      .createHash("sha256")
-      .update(rawTradeShahashs)
-      .digest("hex")
-      .toUpperCase();
+    const cryptedTradeSha = this.createMpgShaEncrypt(cryptedTradeInfo);
+
     const returnBody = new URLSearchParams({
       MerchantID: this.newebMerchantId,
       TradeInfo: cryptedTradeInfo,
@@ -215,7 +228,7 @@ export class NewebPaymentService {
     if (decodedInfo.Status !== "SUCCESS") {
       throw new Error("Payment failed");
     }
-    const thisShaEncrypt = this.createShaEncrypt(cryptedTradeInfoString);
+    const thisShaEncrypt = this.createMpgShaEncrypt(cryptedTradeInfoString);
     if (thisShaEncrypt !== cryptedTradeShaString) {
       throw new Error("Invalid TradeSha");
     }

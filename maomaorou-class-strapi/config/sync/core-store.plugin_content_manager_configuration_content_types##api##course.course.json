@@ -6,7 +6,7 @@
       "filterable": true,
       "searchable": true,
       "pageSize": 10,
-      "mainField": "id",
+      "mainField": "title",
       "defaultSortBy": "id",
       "defaultSortOrder": "ASC"
     },
@@ -33,58 +33,30 @@
           "sortable": false
         }
       },
-      "description": {
+      "renewPrice": {
         "edit": {
-          "label": "description",
+          "label": "renewPrice",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "description",
+          "label": "renewPrice",
           "searchable": true,
           "sortable": true
         }
       },
-      "goal": {
+      "renewDurationDay": {
         "edit": {
-          "label": "goal",
+          "label": "renewDurationDay",
           "description": "",
           "placeholder": "",
           "visible": true,
           "editable": true
         },
         "list": {
-          "label": "goal",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "price": {
-        "edit": {
-          "label": "price",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "price",
-          "searchable": true,
-          "sortable": true
-        }
-      },
-      "durationDay": {
-        "edit": {
-          "label": "durationDay",
-          "description": "",
-          "placeholder": "",
-          "visible": true,
-          "editable": true
-        },
-        "list": {
-          "label": "durationDay",
+          "label": "renewDurationDay",
           "searchable": true,
           "sortable": true
         }
@@ -116,6 +88,91 @@
           "label": "title",
           "searchable": true,
           "sortable": true
+        }
+      },
+      "category": {
+        "edit": {
+          "label": "category",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true,
+          "mainField": "id"
+        },
+        "list": {
+          "label": "category",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "sequence": {
+        "edit": {
+          "label": "sequence",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "sequence",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "firstPrice": {
+        "edit": {
+          "label": "firstPrice",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "firstPrice",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "firstDurationDay": {
+        "edit": {
+          "label": "firstDurationDay",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "firstDurationDay",
+          "searchable": true,
+          "sortable": true
+        }
+      },
+      "description": {
+        "edit": {
+          "label": "description",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "description",
+          "searchable": false,
+          "sortable": false
+        }
+      },
+      "buyOption": {
+        "edit": {
+          "label": "購買選項",
+          "description": "",
+          "placeholder": "",
+          "visible": true,
+          "editable": true
+        },
+        "list": {
+          "label": "buyOption",
+          "searchable": false,
+          "sortable": false
         }
       },
       "createdAt": {
@@ -178,49 +235,72 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "image",
-        "description",
-        "goal"
-      ],
       "edit": [
-        [
-          {
-            "name": "image",
-            "size": 6
-          },
-          {
-            "name": "description",
-            "size": 6
-          }
-        ],
-        [
-          {
-            "name": "goal",
-            "size": 6
-          },
-          {
-            "name": "price",
-            "size": 4
-          }
-        ],
-        [
-          {
-            "name": "durationDay",
-            "size": 4
-          },
-          {
-            "name": "chapters",
-            "size": 6
-          }
-        ],
         [
           {
             "name": "title",
             "size": 6
           }
+        ],
+        [
+          {
+            "name": "image",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "description",
+            "size": 12
+          }
+        ],
+        [
+          {
+            "name": "firstPrice",
+            "size": 4
+          },
+          {
+            "name": "firstDurationDay",
+            "size": 4
+          }
+        ],
+        [
+          {
+            "name": "renewPrice",
+            "size": 4
+          },
+          {
+            "name": "renewDurationDay",
+            "size": 4
+          }
+        ],
+        [
+          {
+            "name": "sequence",
+            "size": 4
+          }
+        ],
+        [
+          {
+            "name": "chapters",
+            "size": 6
+          },
+          {
+            "name": "category",
+            "size": 6
+          }
+        ],
+        [
+          {
+            "name": "buyOption",
+            "size": 12
+          }
         ]
+      ],
+      "list": [
+        "image",
+        "title",
+        "buyOption"
       ]
     },
     "uid": "api::course.course"

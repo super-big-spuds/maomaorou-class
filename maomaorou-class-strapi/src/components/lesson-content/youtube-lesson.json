@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_lesson_content_youtube_lessons",
+  "info": {
+    "displayName": "YoutubeLesson",
+    "icon": "monitor"
+  },
+  "options": {},
+  "attributes": {
+    "url": {
+      "type": "string",
+      "required": true,
+      "default": "youtube embed網址"
+    }
+  }
+}

@@ -123,12 +123,6 @@
       }
     },
     "layouts": {
-      "list": [
-        "id",
-        "createdAt",
-        "updatedAt",
-        "createdBy"
-      ],
       "edit": [
         [
           {
@@ -146,6 +140,11 @@
             "size": 4
           }
         ]
+      ],
+      "list": [
+        "user",
+        "course",
+        "expiredAt"
       ]
     },
     "uid": "api::user-courses-status.user-courses-status"
