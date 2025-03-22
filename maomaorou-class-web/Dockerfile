@@ -8,6 +8,4 @@ COPY . .
 RUN npm install
 RUN npm run build
 
-RUN npm install pm2 -g
-
-CMD ["pm2-runtime", "start", "npm", "--name", "web", "--", "start"]
+CMD ["npm", "run", "start"]
