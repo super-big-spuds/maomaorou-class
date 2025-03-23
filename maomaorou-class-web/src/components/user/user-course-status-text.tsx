@@ -35,6 +35,14 @@ export default function UserCourseStatusText({
     return <Skeleton className="h-6 w-full" />;
   }
 
+  if (userContext.userData == null) {
+    return (
+      <p className={cn("text-gray-400", className)} {...props}>
+        您尚未進行登入
+      </p>
+    );
+  }
+
   if (!expiredAt) {
     return (
       <p className={cn("text-gray-400", className)} {...props}>

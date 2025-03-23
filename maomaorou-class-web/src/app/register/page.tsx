@@ -150,7 +150,7 @@ export default function RegisterPage() {
                   </p>
                 )}
                 <Button className="w-full" type="submit">
-                  Login
+                  註冊
                 </Button>
               </div>
             </CardContent>

@@ -67,11 +67,9 @@ export default function CourseSideSection({ data }: { data: CoursePageData }) {
   if (loading) {
     return <Skeleton className="w-full h-10" />;
   }
-  if (!parsedResult.success) {
-    return <div>系統發生錯誤, 無法加入課程!</div>;
-  }
-
-  const isFirstBuy = parsedResult.data.course.data.attributes.isFirstBuy;
+  const isFirstBuy = parsedResult.success
+    ? parsedResult.data.course.data.attributes.isFirstBuy
+    : true;
 
   return (
     <Card className="sticky top-20 flex flex-col md:w-fit w-full h-full gap-3 p-4">
