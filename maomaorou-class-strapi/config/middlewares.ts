@@ -33,6 +33,7 @@ export default ({ env }) => [
       enabled: true,
       headers: ["*"],
       origin: [
+        "http://localhost:3200",
         process.env.FRONTEND_URL,
         process.env.BACKEND_URL,
         process.env.DOMAIN_URL,
